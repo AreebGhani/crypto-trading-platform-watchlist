@@ -1,3 +1,4 @@
+import NextLink from "next/link";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-scroll";
 
@@ -36,33 +37,33 @@ const Header: React.FC = () => {
               <nav className="menu-nav">
                 {/* Logo */}
                 <div className="logo">
-                  <a href="#">
+                  <NextLink href="/">
                     <img src="/assetz/img/logo/logo.png" alt="Logo" />
-                  </a>
+                  </NextLink>
                 </div>
 
                 {/* Navbar Links */}
                 <div className="navbar-wrap main-menu d-none d-lg-flex">
                   <ul className="navigation">
                     <li
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", }}
                       className="active menu-item-has-children"
                     >
                       <Link to="header" smooth={true} duration={1000}>
                         Home
                       </Link>
                     </li>
-                    <li style={{ cursor: "pointer" }}>
+                    <li style={{ cursor: "pointer", color:"#fff" }}>
                       <Link to="about" smooth={true} duration={1000}>
                         About us
                       </Link>
                     </li>
-                    <li style={{ cursor: "pointer" }}>
+                    <li style={{ cursor: "pointer",color:"#fff" }}>
                       <Link to="sales" smooth={true} duration={1000}>
                         Sales
                       </Link>
                     </li>
-                    <li style={{ cursor: "pointer" }}>
+                    <li style={{ cursor: "pointer", color:"#fff" }}>
                       <Link to="contact" smooth={true} duration={1000}>
                         Contact us
                       </Link>
@@ -74,9 +75,11 @@ const Header: React.FC = () => {
                 <div className="header-action d-none d-md-block">
                   <ul>
                     <li className="header-btn">
-                      <a href="/login" className="btn">
-                        TRADE NOW
-                      </a>
+                      <div className="new-header-div">
+                        <NextLink href="/login" className="btn">
+                          TRADE NOW
+                        </NextLink>
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -92,49 +95,49 @@ const Header: React.FC = () => {
 
                 {/* Mobile Logo */}
                 <div className="nav-logo">
-                  <a href="#">
+                  <NextLink href="/">
                     <img
                       src="/assetz/img/logo/logo.png"
                       alt="Logo"
                       title="Logo"
                     />
-                  </a>
+                  </NextLink>
                 </div>
 
                 {/* Social Links */}
                 <div className="social-links">
                   <ul className="clearfix">
                     <li>
-                      <a href="#">
+                      <NextLink href="#">
                         <i className="fab fa-facebook-f"></i>
-                      </a>
+                      </NextLink>
                     </li>
                     <li>
-                      <a href="#">
+                      <NextLink href="#">
                         <i className="fab fa-twitter"></i>
-                      </a>
+                      </NextLink>
                     </li>
                     <li>
-                      <a href="#">
+                      <NextLink href="#">
                         <i className="fab fa-instagram"></i>
-                      </a>
+                      </NextLink>
                     </li>
                     <li>
-                      <a href="#">
+                      <NextLink href="#">
                         <i className="fab fa-linkedin-in"></i>
-                      </a>
+                      </NextLink>
                     </li>
                     <li>
-                      <a href="#">
+                      <NextLink href="#">
                         <i className="fab fa-youtube"></i>
-                      </a>
+                      </NextLink>
                     </li>
                   </ul>
                   <br />
                   <br />
-                  <a href="/login" className="btn">
+                  <NextLink href="/login" className="btn">
                     TRADE NOW
-                  </a>
+                  </NextLink>
                 </div>
               </nav>
             </div>

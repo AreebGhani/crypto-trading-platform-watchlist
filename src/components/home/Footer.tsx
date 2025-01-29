@@ -1,5 +1,7 @@
+import Link from "next/link";
 import React from "react";
 import { animateScroll as scroll } from "react-scroll";
+import ScrollAnimation from "react-animate-on-scroll";
 
 const Footer = () => {
   const handleScrollToTop = () => {
@@ -26,126 +28,135 @@ const Footer = () => {
           <div className="footer-top">
             <div className="row">
               <div className="col-xl-3 col-lg-4 col-md-6">
-                <div
-                  className="footer-widget wow fadeInUp logo"
-                  data-wow-delay=".2s"
-                >
-                  <a href="#">
-                    <img src="/assetz/img/logo/logo.png" alt="Logo" />
-                  </a>
-                  <div className="footer-content">
-                    <p>
-                      Sign up today to access our full suite of AI bots, trading
-                      tools, decentralized marketplace, and more. Embrace the
-                      future of blockchain-powered intelligence with Acrypto
-                      Cloud—the ultimate platform for AI and crypto innovation.
-                    </p>
-                    <ul className="footer-social">
-                      <li>
-                        <a href="/#">
-                          <i className="fab fa-youtube"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="/#">
-                          <i className="fab fa-twitter"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="/#">
-                          <i className="fab fa-facebook-f"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="/#">
-                          <i className="fab fa-skype"></i>
-                        </a>
-                      </li>
-                    </ul>
+                <ScrollAnimation animateIn="fadeInUp">
+                  <div
+                    className="footer-widget wow fadeInUp logo"
+                    data-wow-delay=".2s"
+                  >
+                    <Link href="/">
+                      <img src="/assetz/img/logo/logo.png" alt="Logo" />
+                    </Link>
+                    <div className="footer-content">
+                      <p>
+                        Sign up today to access our full suite of AI bots,
+                        trading tools, decentralized marketplace, and more.
+                        Embrace the future of blockchain-powered intelligence
+                        with Acrypto Cloud—the ultimate platform for AI and
+                        crypto innovation.
+                      </p>
+                      <ul className="footer-social">
+                        <li>
+                          <Link href="/">
+                            <i className="fab fa-youtube"></i>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/">
+                            <i className="fab fa-twitter"></i>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/">
+                            <i className="fab fa-facebook-f"></i>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/">
+                            <i className="fab fa-skype"></i>
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
+                </ScrollAnimation>
               </div>
               <div className="col-xl-3 col-lg-5 col-sm-6">
-                <div
-                  className="footer-widget wow fadeInUp"
-                  data-wow-delay=".4s"
-                >
-                  <h4 className="fw-title">Useful Links</h4>
-                  <div className="footer-link">
-                    <ul>
-                      <li>
-                        <a
-                          href="https://realworldaihub.co.uk/public/acryptoclouditepaper.pdf"
-                          target="_blank"
-                        >
-                          Litepaper
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="https://realworldaihub.co.uk/whitepaper.pdf"
-                          target="_blank"
-                        >
-                          Whitepaper
-                        </a>
-                      </li>
-                      <li>
-                        <a href="/login">Login / Signup</a>
-                      </li>
-                    </ul>
+                <ScrollAnimation animateIn="fadeInUp">
+                  <div
+                    className="footer-widget wow fadeInUp"
+                    data-wow-delay=".4s"
+                  >
+                    <h4 className="fw-title">Useful Links</h4>
+                    <div className="footer-link">
+                      <ul>
+                        <li>
+                          <Link
+                            href="https://realworldaihub.co.uk/public/acryptoclouditepaper.pdf"
+                            target="_blank"
+                          >
+                            Litepaper
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href="https://realworldaihub.co.uk/whitepaper.pdf"
+                            target="_blank"
+                          >
+                            Whitepaper
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/login">Login / Signup</Link>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
+                </ScrollAnimation>
               </div>
               <div className="col-xl-2 col-lg-3 col-sm-6">
-                <div
-                  className="footer-widget wow fadeInUp"
-                  data-wow-delay=".6s"
-                >
-                  <h4 className="fw-title">Features</h4>
-                  <div className="footer-link">
-                    <ul>
-                      <li>
-                        <a href="#">Spot Trading</a>
-                      </li>
-                      <li>
-                        <a href="#">Forex Trading</a>
-                      </li>
-                      <li>
-                        <a href="#">Futures Trading</a>
-                      </li>
-                      <li>
-                        <a href="#">AI Investments</a>
-                      </li>
-                      <li>
-                        <a href="#">P2P Trading</a>
-                      </li>
-                    </ul>
+                <ScrollAnimation animateIn="fadeInUp">
+                  <div
+                    className="footer-widget wow fadeInUp"
+                    data-wow-delay=".6s"
+                  >
+                    <h4 className="fw-title">Features</h4>
+                    <div className="footer-link">
+                      <ul>
+                        <li>
+                          <Link href="#">Spot Trading</Link>
+                        </li>
+                        <li>
+                          <Link href="#">Forex Trading</Link>
+                        </li>
+                        <li>
+                          <Link href="#">Futures Trading</Link>
+                        </li>
+                        <li>
+                          <Link href="#">AI Investments</Link>
+                        </li>
+                        <li>
+                          <Link href="#">P2P Trading</Link>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
+                </ScrollAnimation>
               </div>
               <div className="col-xl-4 col-lg-4 col-md-6">
-                <div
-                  className="footer-widget wow fadeInUp"
-                  data-wow-delay=".8s"
-                >
-                  <h4 className="fw-title">Subscribe Newsletter</h4>
-                  <div className="footer-newsletter">
-                    <p>
-                      Subscribe to our newsletter to receive latest news and
-                      updates
-                    </p>
-                    <form action="#">
-                      <input
-                        type="email"
-                        placeholder="support@acrypto.cloud"
-                        required
-                      />
-                      <button type="submit">
-                        <i className="fas fa-paper-plane"></i>
-                      </button>
-                    </form>
+                <ScrollAnimation animateIn="fadeInUp">
+                  <div
+                    className="footer-widget wow fadeInUp"
+                    data-wow-delay=".8s"
+                  >
+                    <h4 className="fw-title">Subscribe Newsletter</h4>
+                    <div className="footer-newsletter">
+                      <p>
+                        Subscribe to our newsletter to receive latest news and
+                        updates
+                      </p>
+                      <form action="#">
+                        <input
+                          type="email"
+                          placeholder="support@acrypto.cloud"
+                          required
+                        />
+                        <button type="submit">
+                          <i className="fas fa-paper-plane"></i>
+                        </button>
+                      </form>
+                    </div>
                   </div>
-                </div>
+                </ScrollAnimation>
               </div>
             </div>
           </div>

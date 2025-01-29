@@ -1,8 +1,10 @@
 "use client";
 
+import NextLink from "next/link";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-scroll";
+import ScrollAnimation from "react-animate-on-scroll";
 
 const Main: React.FC = () => {
   const symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT"];
@@ -92,24 +94,20 @@ const Main: React.FC = () => {
                   Solutions
                 </h2>
               </div>
-              <script
-                defer
-                src="https://www.livecoinwatch.com/static/lcw-widget.js"
-              ></script>
               <div
                 className="livecoinwatch-widget-5"
-                data-lcw-base="USD"
-                data-lcw-color-tx="#00c4f4"
-                data-lcw-marquee-1="coins"
-                data-lcw-marquee-2="movers"
-                data-lcw-marquee-items="30"
+                lcw-base="USD"
+                lcw-color-tx="#00c4f4"
+                lcw-marquee-1="coins"
+                lcw-marquee-2="movers"
+                lcw-marquee-items="30"
               ></div>
             </div>
           </div>
         </div>
       </section>
 
-      <div className="partner-area pb-130">
+      <div className="partner-area pt-40 pb-130">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8">
@@ -140,32 +138,40 @@ const Main: React.FC = () => {
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-6">
-              <div className="about-img">
-                <img src="/assetz/img/images/about_img01.png" alt="" />
-                <img
-                  src="/assetz/img/images/about_img02.png"
-                  alt=""
-                  className="img-two"
-                />
-              </div>
+              <ScrollAnimation animateIn="fadeIn">
+                <div className="about-img">
+                  <img src="/assetz/img/images/about_img01.png" alt="" />
+                  <img
+                    src="/assetz/img/images/about_img02.png"
+                    alt=""
+                    className="img-two"
+                  />
+                </div>
+              </ScrollAnimation>
             </div>
             <div className="col-lg-6">
-              <div className="about-content">
-                <div className="section-title mb-30">
-                  <span className="sub-title">Who we are</span>
-                  <h2 className="title">Welcome to Acrypto Cloud</h2>
+              <ScrollAnimation animateIn="fadeIn">
+                <div className="about-content">
+                  <div className="section-title mb-30">
+                    <span className="sub-title">Who we are</span>
+                    <h2 className="title">Welcome to Acrypto</h2>
+                    <h2 className="title">Cloud</h2>
+                  </div>
+                  <p>
+                    Your all-in-one platform for advanced AI, blockchain, and
+                    decentralized finance. We offer a powerful suite of
+                    crypto-native AI tools, multi-platform chatbots,
+                    decentralized marketplaces, trading solutions, and more, all
+                    underpinned by the <span>$REAI</span> token.Whether you’re a
+                    trader, developer, or blockchain enthusiast, Acrypto Cloud
+                    is here to empower your journey with cutting-edge,
+                    blockchain-secured AI technology.
+                  </p>
+                  <NextLink href="/login" className="btn">
+                    Trade Now
+                  </NextLink>
                 </div>
-                <p>
-                  Your all-in-one platform for advanced AI, blockchain, and
-                  decentralized finance. We offer a powerful suite of
-                  crypto-native AI tools, multi-platform chatbots, decentralized
-                  marketplaces, trading solutions, and more, all underpinned by
-                  the <span>$REAI</span> token.
-                </p>
-                <a href="/login" className="btn">
-                  Trade Now
-                </a>
-              </div>
+              </ScrollAnimation>
             </div>
           </div>
         </div>
@@ -210,83 +216,115 @@ const Main: React.FC = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-xl-6">
-              <motion.div
-                className="section-title text-center mb-50"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
+              <div className="section-title text-center mb-50">
                 <span className="sub-title">Why Choose Acrypto Cloud?</span>
                 <h2 className="title">
                   All-In-One <span>AI and Blockchain Platform</span>
                 </h2>
-              </motion.div>
+              </div>
             </div>
           </div>
           <div className="row choose-active">
-            {[
-              {
-                icon: "/assetz/img/icon/choose_icon01.svg",
-                title: "Decentralized, Community-Driven Governance",
-                content:
-                  "The $REAI token empowers our community to influence the platform’s growth, ensuring Acrypto Cloud evolves with user needs. Staking and governance opportunities give users direct control and incentives for contributing to the ecosystem.",
-              },
-              {
-                icon: "/assetz/img/icon/choose_icon02.svg",
-                title: "Developer-Friendly with Extensive API and Integration",
-                content:
-                  "With open APIs for AI, trading, and data, plus a secure testing sandbox, Acrypto Cloud is the go-to choice for developers looking to build innovative blockchain applications.",
-              },
-              {
-                icon: "/assetz/img/icon/choose_icon02.svg",
-                title: "Ready to Dive into the Future of AI and Blockchain",
-                content:
-                  "Join the thousands of users who rely on Acrypto Cloud for their blockchain and AI needs. From traders and developers to businesses and crypto enthusiasts, our platform offers the tools, insights, and innovation needed to thrive in a decentralized world.",
-              },
-              {
-                icon: "/assetz/img/icon/choose_icon03.svg",
-                title: "Privacy-Focused and Blockchain-Backed",
-                content:
-                  "Protect your data with decentralized storage and advanced anonymization tools that ensure privacy, user sovereignty, and data ownership.",
-              },
-              {
-                icon: "/assetz/img/icon/choose_icon04.svg",
-                title: "Trusted by the Crypto and Blockchain Community",
-                content:
-                  "Acrypto Cloud incorporates the best features of leading blockchain AI projects, offering a complete solution that integrates their capabilities and more—all within a secure, user-centric platform.",
-              },
-            ].map((item, index) => (
-              <motion.div
-                className="col-lg-3"
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-              >
-                <div className="choose-item">
-                  <div className="choose-icon">
-                    <img src={item.icon} alt="" />
-                  </div>
-                  <div className="choose-content">
-                    <h2 className="title">
-                      <Link to={`item-${index}`} smooth={true} duration={500}>
-                        {item.title}
-                      </Link>
-                    </h2>
-                    <p>{item.content}</p>
-                  </div>
+            <div className="col-lg-3">
+              <div className="choose-item">
+                <div className="choose-icon">
+                  <img src="/assetz/img/icon/choose_icon01.svg" alt="" />
                 </div>
-              </motion.div>
-            ))}
-          </div>
-          <div
-            className="slide-progress"
-            role="progressbar"
-            aria-valuemin="0"
-            aria-valuemax="100"
-          >
-            <span className="slider__label sr-only"></span>
+                <div className="choose-content">
+                  <h2 className="title">
+                    <a href="#">Decentralized, Community-Driven Governance</a>
+                  </h2>
+                  <p>
+                    The $REAI token empowers our community to influence the
+                    platform’s growth, ensuring Acrypto Cloud evolves with user
+                    needs. Staking and governance opportunities give users
+                    direct control and incentives for contributing to the
+                    ecosystem.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-3">
+              <div className="choose-item">
+                <div className="choose-icon">
+                  <img src="/assetz/img/icon/choose_icon02.svg" alt="" />
+                </div>
+                <div className="choose-content">
+                  <h2 className="title">
+                    <a href="#">
+                      Developer-Friendly with Extensive API and Integration
+                    </a>
+                  </h2>
+                  <p>
+                    With open APIs for AI, trading, and data, plus a secure
+                    testing sandbox, Acrypto Cloud is the go-to choice for
+                    developers looking to build innovative blockchain
+                    applications.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-3">
+              <div className="choose-item">
+                <div className="choose-icon">
+                  <img src="/assetz/img/icon/choose_icon02.svg" alt="" />
+                </div>
+                <div className="choose-content">
+                  <h2 className="title">
+                    <a href="#">
+                      Ready to Dive into the Future of AI and Blockchain
+                    </a>
+                  </h2>
+                  <p>
+                    Join the thousands of users who rely on Acrypto Cloud for
+                    their blockchain and AI needs. From traders and developers
+                    to businesses and crypto enthusiasts, our platform offers
+                    the tools, insights, and innovation needed to thrive in a
+                    decentralized world.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-3">
+              <div className="choose-item">
+                <div className="choose-icon">
+                  <img src="/assetz/img/icon/choose_icon03.svg" alt="" />
+                </div>
+                <div className="choose-content">
+                  <h2 className="title">
+                    <a href="#">Privacy-Focused and Blockchain-Backed</a>
+                  </h2>
+                  <p>
+                    Protect your data with decentralized storage and advanced
+                    anonymization tools that ensure privacy, user sovereignty,
+                    and data ownership.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-3">
+              <div className="choose-item">
+                <div className="choose-icon">
+                  <img src="/assetz/img/icon/choose_icon04.svg" alt="" />
+                </div>
+                <div className="choose-content">
+                  <h2 className="title">
+                    <a href="#">
+                      Trusted by the Crypto and Blockchain Community
+                    </a>
+                  </h2>
+                  <p>
+                    Acrypto Cloud incorporates the best features of leading
+                    blockchain AI projects, offering a complete solution that
+                    integrates their capabilities and more—all within a secure,
+                    user-centric platform.
+                  </p>
+                </div>
+              </div>
+              <div className="slide-progress" role="progressbar">
+                <span className="slider__label sr-only"></span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -297,75 +335,79 @@ const Main: React.FC = () => {
             <div className="row align-items-center justify-content-center">
               {/* Chart Wrap Section */}
               <div className="col-lg-6 col-md-10 order-0 order-lg-2">
-                <div
-                  className="chart-wrap wow fadeInRight"
-                  data-wow-delay=".2s"
-                >
-                  <img src="/assetz/img/images/chart.png" alt="Chart" />
-                  <ul>
-                    <li>$REAI Tokenomics Overview</li>
-                    <li>Total Supply: 21 million $REAI</li>
-                    <li>Token Distribution:</li>
-                    <li>Founders and Team: 20% (vested over 3 years)</li>
-                    <li>Public Sale: 30%</li>
-                    <li>Staking Rewards: 20%</li>
-                    <li>Ecosystem Growth: 20%</li>
-                    <li>Liquidity Pool: 10%</li>
-                  </ul>
-                </div>
+                <ScrollAnimation animateIn="fadeInRight">
+                  <div
+                    className="chart-wrap wow fadeInRight"
+                    data-wow-delay=".2s"
+                  >
+                    <img src="/assetz/img/images/chart.png" alt="Chart" />
+                    <ul>
+                      <li>$REAI Tokenomics Overview</li>
+                      <li>Total Supply: 21 million $REAI</li>
+                      <li>Token Distribution:</li>
+                      <li>Founders and Team: 20% (vested over 3 years)</li>
+                      <li>Public Sale: 30%</li>
+                      <li>Staking Rewards: 20%</li>
+                      <li>Ecosystem Growth: 20%</li>
+                      <li>Liquidity Pool: 10%</li>
+                    </ul>
+                  </div>
+                </ScrollAnimation>
               </div>
 
               {/* Chart Content Section */}
               <div className="col-lg-6 col-md-10">
-                <div
-                  className="chart-content wow fadeInLeft"
-                  data-wow-delay=".2s"
-                >
-                  <ul className="nav nav-tabs" id="myTab" role="tablist">
-                    <li className="nav-item" role="presentation">
-                      <button
-                        className="nav-link active"
-                        id="funding-tab"
-                        data-bs-toggle="tab"
-                        data-bs-target="#funding"
-                        type="button"
-                        role="tab"
-                        aria-controls="funding"
-                        aria-selected="true"
-                      >
-                        Unlock the Power of AI and Blockchain in One Platform
-                      </button>
-                    </li>
-                  </ul>
+                <ScrollAnimation animateIn="fadeInLeft">
+                  <div
+                    className="chart-content wow fadeInLeft"
+                    data-wow-delay=".2s"
+                  >
+                    <ul className="nav nav-tabs" id="myTab" role="tablist">
+                      <li className="nav-item" role="presentation">
+                        <button
+                          className="nav-link active"
+                          id="funding-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#funding"
+                          type="button"
+                          role="tab"
+                          aria-controls="funding"
+                          aria-selected="true"
+                        >
+                          Unlock the Power of AI and Blockchain in One Platform
+                        </button>
+                      </li>
+                    </ul>
 
-                  <div className="tab-content" id="myTabContent">
-                    <div
-                      className="tab-pane fade show active"
-                      id="funding"
-                      role="tabpanel"
-                      aria-labelledby="funding-tab"
-                    >
-                      <div className="chart-content-inner">
-                        <h2 className="title">At Acrypto Cloud</h2>
-                        <p>
-                          We combine the capabilities of Acrypto Cloud and
-                          RealWorld AI Hub to deliver a complete,
-                          blockchain-powered AI ecosystem. With everything from
-                          AI bots and data analytics to self-sovereign identity
-                          management and extensive API access, our platform
-                          covers all your AI and blockchain needs. Backed by the
-                          $REAI governance token, Acrypto Cloud is designed to
-                          offer decentralized, community-driven solutions that
-                          keep you at the forefront of crypto and blockchain
-                          innovation.
-                        </p>
-                        <a href="/login" className="btn">
-                          Buy Crypto
-                        </a>
+                    <div className="tab-content" id="myTabContent">
+                      <div
+                        className="tab-pane fade show active"
+                        id="funding"
+                        role="tabpanel"
+                        aria-labelledby="funding-tab"
+                      >
+                        <div className="chart-content-inner">
+                          <h2 className="title">At Acrypto Cloud</h2>
+                          <p>
+                            We combine the capabilities of Acrypto Cloud and
+                            RealWorld AI Hub to deliver a complete,
+                            blockchain-powered AI ecosystem. With everything
+                            from AI bots and data analytics to self-sovereign
+                            identity management and extensive API access, our
+                            platform covers all your AI and blockchain needs.
+                            Backed by the $REAI governance token, Acrypto Cloud
+                            is designed to offer decentralized, community-driven
+                            solutions that keep you at the forefront of crypto
+                            and blockchain innovation.
+                          </p>
+                          <NextLink href="/login" className="btn">
+                            Buy Crypto
+                          </NextLink>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </ScrollAnimation>
               </div>
             </div>
           </div>
@@ -573,7 +615,7 @@ const Main: React.FC = () => {
                 </div>
                 <div className="choose-content">
                   <h2 className="title">
-                    <a href="#">Blockchain-Integrated AI Tools</a>
+                    <NextLink href="#">Blockchain-Integrated AI Tools</NextLink>
                   </h2>
                   <p>
                     Our blockchain-enabled AI tools are designed to give you
@@ -642,7 +684,7 @@ const Main: React.FC = () => {
                 </div>
                 <div className="choose-content">
                   <h2 className="title">
-                    <a href="#">Developer Tools and API Access</a>
+                    <NextLink href="#">Developer Tools and API Access</NextLink>
                   </h2>
                   <p>
                     Unlock the potential of Acrypto Cloud’s AI and trading
@@ -694,9 +736,9 @@ const Main: React.FC = () => {
                 </div>
                 <div className="choose-content">
                   <h2 className="title">
-                    <a href="#">
+                    <NextLink href="#">
                       Comprehensive AI Bots for Crypto, Trading, and More
-                    </a>
+                    </NextLink>
                   </h2>
                   <p>
                     Leverage our advanced AI bots across every platform for
@@ -741,7 +783,7 @@ const Main: React.FC = () => {
                 </div>
                 <div className="choose-content">
                   <h2 className="title">
-                    <a href="#">Decentralized AI Marketplace</a>
+                    <NextLink href="#">Decentralized AI Marketplace</NextLink>
                   </h2>
                   <p>
                     Access an open marketplace for AI models, data, and services
@@ -781,10 +823,10 @@ const Main: React.FC = () => {
                 </div>
                 <div className="choose-content">
                   <h2 className="title">
-                    <a href="#">
+                    <NextLink href="#">
                       Advanced Trading Solutions for Crypto, Forex, Spot, and
                       Futures
-                    </a>
+                    </NextLink>
                   </h2>
                   <p>
                     Trade with confidence across a variety of markets with our
@@ -821,7 +863,7 @@ const Main: React.FC = () => {
                 </div>
                 <div className="choose-content">
                   <h2 className="title">
-                    <a href="#">The $REAI Governance Token</a>
+                    <NextLink href="#">The $REAI Governance Token</NextLink>
                   </h2>
                   <p>
                     The <strong>$REAI</strong> token powers our entire
@@ -859,7 +901,9 @@ const Main: React.FC = () => {
                 </div>
                 <div className="choose-content">
                   <h2 className="title">
-                    <a href="#">Data Privacy, Security, and Ownership</a>
+                    <NextLink href="#">
+                      Data Privacy, Security, and Ownership
+                    </NextLink>
                   </h2>
                   <p>
                     Data privacy and user sovereignty are at the heart of
@@ -881,14 +925,9 @@ const Main: React.FC = () => {
                   </p>
                 </div>
               </div>
-            </div>
-            <div
-              className="slide-progress"
-              role="progressbar"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              <span className="slider__label sr-only"></span>
+              <div className="slide-progress" role="progressbar">
+                <span className="slider__label sr-only"></span>
+              </div>
             </div>
           </div>
         </div>

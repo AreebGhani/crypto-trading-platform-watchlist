@@ -2946,19 +2946,6 @@ ALTER TABLE `wallet_pnl`
   ADD CONSTRAINT `wallet_pnl_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 COMMIT;
 
-
---
--- Add Slug for table `ecommerce_category`
---
-ALTER TABLE `ecommerce_category`
-ADD COLUMN `slug` varchar(191) DEFAULT NULL AFTER `description`;
-
---
--- Add Slug for table `ecommerce_product`
---
-ALTER TABLE `ecommerce_product`
-ADD COLUMN `slug` varchar(191) DEFAULT NULL AFTER `walletType`;
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
