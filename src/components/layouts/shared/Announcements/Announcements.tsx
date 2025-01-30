@@ -68,7 +68,7 @@ const AnnouncementsBase: React.FC<AnnouncementsProps> = ({}) => {
   const { announcements } = useDashboardStore();
   return (
     <div className="relative w-full flex flex-col overflow-x-hidden slimscroll">
-      <div className="flex-grow mt-2">
+      <div className="grow mt-2">
         {announcements.length === 0 ? (
           <div className="text-center text-muted-500 text-md">
             {t("No announcements available.")}

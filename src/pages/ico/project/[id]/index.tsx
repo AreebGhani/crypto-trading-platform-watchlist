@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/layouts/Default";
-import $fetch from "@/utils/api";
+import { $serverFetch } from "@/utils/api";
 import Input from "@/components/elements/form/input/Input";
 import Card from "@/components/elements/base/card/Card";
 import Progress from "@/components/elements/base/progress/Progress";
@@ -10,9 +10,11 @@ import Avatar from "@/components/elements/base/avatar/Avatar";
 import ButtonLink from "@/components/elements/base/button-link/ButtonLink";
 import { parseISO, differenceInSeconds } from "date-fns";
 import { formatLargeNumber } from "@/utils/market";
-import { capitalize, debounce } from "lodash";
+import { capitalize } from "lodash";
 import { BackButton } from "@/components/elements/base/button/BackButton";
 import { useTranslation } from "next-i18next";
+import { ErrorPage } from "@/components/ui/Errors";
+
 type Token = {
   id: string;
   projectId: string;
@@ -67,77 +69,64 @@ type Token = {
     contributionAmount: number;
   }[];
 };
-const TokenInitialOfferingDashboard = () => {
+
+const calculateCountdown = (startDate: string, endDate: string) => {
+  const now = new Date();
+  const start = parseISO(startDate);
+  const end = parseISO(endDate);
+  const isStarted = now >= start;
+  const targetDate = isStarted ? end : start;
+  let timeRemaining = differenceInSeconds(targetDate, now);
+  const totalDuration = differenceInSeconds(end, start);
+  if (timeRemaining < 0) {
+    timeRemaining = 0;
+  }
+  const progress = isStarted
+    ? ((totalDuration - timeRemaining) / totalDuration) * 100
+    : 0;
+  const days = Math.floor(timeRemaining / (60 * 60 * 24));
+  const hours = Math.floor((timeRemaining % (60 * 60 * 24)) / (60 * 60));
+  const minutes = Math.floor((timeRemaining % (60 * 60)) / 60);
+  const seconds = timeRemaining % 60;
+  return { days, hours, minutes, seconds, isStarted, progress };
+};
+
+interface Props {
+  project?: any;
+  tokens?: Token[];
+  error?: string;
+}
+
+const TokenInitialOfferingDashboard: React.FC<Props> = ({
+  project = {},
+  tokens = [],
+  error,
+}) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { id } = router.query as {
-    id: string;
-  };
-  const [project, setProject] = useState<any>({});
-  const [tokens, setTokens] = useState<Token[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchIcoTokens = async () => {
-    const url = `/api/ext/ico/project/${id}`;
-    const { data, error } = await $fetch({
-      url,
-      silent: true,
-    });
-    if (!error) {
-      const { tokens, ...project } = data;
-      setProject(project);
-      setTokens(tokens);
-    }
-  };
+  if (error) {
+    return (
+      <ErrorPage
+        title={t("Error")}
+        description={t(error)}
+        link="/ico"
+        linkTitle={t("Back to ICO Dashboard")}
+      />
+    );
+  }
 
-  const debouncedFetchIcoTokens = debounce(fetchIcoTokens, 100);
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
   const filteredTokens = tokens.filter(
     (token) =>
       token.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       token.currency.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  useEffect(() => {
-    if (router.isReady && id) {
-      debouncedFetchIcoTokens();
-    }
-    const intervalId = setInterval(() => {
-      setTokens((prevTokens) =>
-        prevTokens.map((token) => {
-          const activePhase = token.phases?.find(
-            (phase) => phase.status === "ACTIVE"
-          );
-          const countdown = activePhase
-            ? calculateCountdown(activePhase.startDate, activePhase.endDate)
-            : null;
-          return { ...token, countdown };
-        })
-      );
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [router.isReady, id]);
-  const calculateCountdown = (startDate: string, endDate: string) => {
-    const now = new Date();
-    const start = parseISO(startDate);
-    const end = parseISO(endDate);
-    const isStarted = now >= start;
-    const targetDate = isStarted ? end : start;
-    let timeRemaining = differenceInSeconds(targetDate, now);
-    const totalDuration = differenceInSeconds(end, start);
-    if (timeRemaining < 0) {
-      timeRemaining = 0;
-    }
-    const progress = isStarted
-      ? ((totalDuration - timeRemaining) / totalDuration) * 100
-      : 0;
-    const days = Math.floor(timeRemaining / (60 * 60 * 24));
-    const hours = Math.floor((timeRemaining % (60 * 60 * 24)) / (60 * 60));
-    const minutes = Math.floor((timeRemaining % (60 * 60)) / 60);
-    const seconds = timeRemaining % 60;
-    return { days, hours, minutes, seconds, isStarted, progress };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
+
   return (
     <Layout title={`${capitalize(project.name)} Project`} color="muted">
       <div className="flex flex-col md:flex-row gap-5 justify-between items-center">
@@ -239,7 +228,7 @@ const TokenInitialOfferingDashboard = () => {
                       </h3>
                       <ButtonLink
                         href={`/ico/offer/${token.id}`}
-                        shape="rounded"
+                        shape="rounded-sm"
                         size="sm"
                         color="primary"
                       >
@@ -282,4 +271,39 @@ const TokenInitialOfferingDashboard = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps(context: any) {
+  try {
+    const { id } = context.params;
+
+    const { data, error } = await $serverFetch(context, {
+      url: `/api/ext/ico/project/${id}`,
+    });
+
+    if (error || !data) {
+      return {
+        props: {
+          error: error || "Unable to fetch ICO project details.",
+        },
+      };
+    }
+
+    const { tokens, ...project } = data;
+
+    return {
+      props: {
+        project,
+        tokens,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching ICO project details:", error);
+    return {
+      props: {
+        error: `An unexpected error occurred: ${error.message}`,
+      },
+    };
+  }
+}
+
 export default TokenInitialOfferingDashboard;

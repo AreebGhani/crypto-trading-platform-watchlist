@@ -85,7 +85,7 @@ const WalletDashboard = () => {
 
   return (
     <Layout title={t("Wallets Dashboard")} color="muted">
-      <Card className="mb-4 p-4 relative" color={"mutedContrast"}>
+      <Card className="mb-2 p-4 relative" color={"mutedContrast"}>
         <div className="flex justify-between items-start sm:items-center px-4 flex-col sm:flex-row gap-5 mb-6 sm:mb-0">
           <h1 className="font-sans text-xl font-light uppercase tracking-wide text-muted-800 dark:text-muted-200">
             {t("Estimated Balance")}
@@ -165,16 +165,18 @@ const WalletDashboard = () => {
               </p>
             </div>
           </div>
-          <div className="absolute bottom-0 left-[50%] border-t border-x bg-muted-50 dark:bg-muted-900 hover:bg-muted-200 hover:dark:bg-muted-950 text-muted-400 dark:text-muted-400 hover:text-muted-600 dark:hover:text-muted-300 cursor-pointer border-muted-200 dark:border-muted-700 transform -translate-x-1/2 w-12 flex items-center justify-center rounded-t-md">
+          <div
+            onClick={() => setTogglePnl(!togglePnl)}
+            className="absolute bottom-0 left-[50%] border-t border-x bg-muted-50 dark:bg-muted-900 hover:bg-muted-200 dark:hover:bg-muted-950 text-muted-400 dark:text-muted-400 hover:text-muted-600 dark:hover:text-muted-300 cursor-pointer border-muted-200 dark:border-muted-700 transform -translate-x-1/2 w-12 flex items-center justify-center rounded-t-md"
+          >
             <Icon
               icon={togglePnl ? "mdi:chevron-up" : "mdi:chevron-down"}
-              className="h-6 w-6 "
-              onClick={() => setTogglePnl(!togglePnl)}
+              className="h-6 w-6"
             />
           </div>
         </div>
         <AnimatePresence>
-          {togglePnl && pnl?.chart && (
+          {togglePnl && pnl?.chart && pnl.chart.length > 0 && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
@@ -187,46 +189,44 @@ const WalletDashboard = () => {
         </AnimatePresence>
       </Card>
 
-      <div className="mt-4">
-        <DataTable
-          title={t("Wallets")}
-          postTitle=""
-          endpoint={api}
-          columnConfig={columnConfig}
-          hasStructure={false}
-          canDelete={false}
-          canEdit={false}
-          canCreate={false}
-          viewPath="/user/wallet/[type]/[currency]"
-          blank={false}
-          isParanoid={false}
-          navSlot={
-            <div className="flex gap-2">
-              {deposit && (
-                <Link href="/user/wallet/deposit">
-                  <Button color="primary" variant="outlined" shape={"rounded"}>
-                    {t("Deposit")}
-                  </Button>
-                </Link>
-              )}
-              {withdraw && (
-                <Link href="/user/wallet/withdraw">
-                  <Button color="warning" variant="outlined" shape={"rounded"}>
-                    {t("Withdraw")}
-                  </Button>
-                </Link>
-              )}
-              {transfer && (
-                <Link href="/user/wallet/transfer">
-                  <Button color="info" variant="outlined" shape={"rounded"}>
-                    {t("Transfer")}
-                  </Button>
-                </Link>
-              )}
-            </div>
-          }
-        />
-      </div>
+      <DataTable
+        title={t("Wallets")}
+        postTitle=""
+        endpoint={api}
+        columnConfig={columnConfig}
+        hasStructure={false}
+        canDelete={false}
+        canEdit={false}
+        canCreate={false}
+        viewPath="/user/wallet/[type]/[currency]"
+        blank={false}
+        isParanoid={false}
+        navSlot={
+          <div className="flex gap-2">
+            {deposit && (
+              <Link href="/user/wallet/deposit">
+                <Button color="primary" variant="outlined" shape={"rounded-sm"}>
+                  {t("Deposit")}
+                </Button>
+              </Link>
+            )}
+            {withdraw && (
+              <Link href="/user/wallet/withdraw">
+                <Button color="warning" variant="outlined" shape={"rounded-sm"}>
+                  {t("Withdraw")}
+                </Button>
+              </Link>
+            )}
+            {transfer && (
+              <Link href="/user/wallet/transfer">
+                <Button color="info" variant="outlined" shape={"rounded-sm"}>
+                  {t("Transfer")}
+                </Button>
+              </Link>
+            )}
+          </div>
+        }
+      />
     </Layout>
   );
 };

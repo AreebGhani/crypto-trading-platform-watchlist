@@ -30,7 +30,7 @@ const Dialog: React.FC<DialogProps> = ({ open, setOpen, node, actions }) => {
         <div className="p-4 md:px-6">
           <Input
             type="text"
-            shape="rounded"
+            shape="rounded-sm"
             label="Section Id"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 mb-4"
             placeholder="Eg. section-1"

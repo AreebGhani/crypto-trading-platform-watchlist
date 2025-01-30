@@ -65,7 +65,7 @@ interface TradeDetail {
   amount: number;
   price: number;
   cost: number;
-  side: EcosystemOrderSide;
+  side: "BUY" | "SELL";
   timestamp: number;
 }
 

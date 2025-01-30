@@ -4,7 +4,7 @@ import Button from "@/components/elements/base/button/Button";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
 import { useNftStore } from "@/stores/nft";
 import { toast } from "sonner";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 
 const SocialLinksAndButtons = () => {
   const {
@@ -60,7 +60,7 @@ const SocialLinksAndButtons = () => {
       {collection.links && Object.keys(collection.links).length > 0 && (
         <div className="flex gap-4 md:gap-6 border-e pe-4 border-muted-200 dark:border-muted-800">
           {collection.links?.website && (
-            <AnimatedTooltip content="Website">
+            <Tooltip content="Website">
               <a
                 href={collection.links.website}
                 target="_blank"
@@ -69,10 +69,10 @@ const SocialLinksAndButtons = () => {
               >
                 <Icon icon="mdi:web" />
               </a>
-            </AnimatedTooltip>
+            </Tooltip>
           )}
           {collection.links?.youtube && (
-            <AnimatedTooltip content="YouTube">
+            <Tooltip content="YouTube">
               <a
                 href={collection.links.youtube}
                 target="_blank"
@@ -81,10 +81,10 @@ const SocialLinksAndButtons = () => {
               >
                 <Icon icon="mdi:youtube" />
               </a>
-            </AnimatedTooltip>
+            </Tooltip>
           )}
           {collection.links?.twitter && (
-            <AnimatedTooltip content="Twitter">
+            <Tooltip content="Twitter">
               <a
                 href={collection.links.twitter}
                 target="_blank"
@@ -93,10 +93,10 @@ const SocialLinksAndButtons = () => {
               >
                 <Icon icon="mdi:twitter" />
               </a>
-            </AnimatedTooltip>
+            </Tooltip>
           )}
           {collection.links?.instagram && (
-            <AnimatedTooltip content="Instagram">
+            <Tooltip content="Instagram">
               <a
                 href={collection.links.instagram}
                 target="_blank"
@@ -105,10 +105,10 @@ const SocialLinksAndButtons = () => {
               >
                 <Icon icon="mdi:instagram" />
               </a>
-            </AnimatedTooltip>
+            </Tooltip>
           )}
           {collection.links?.discord && (
-            <AnimatedTooltip content="Discord">
+            <Tooltip content="Discord">
               <a
                 href={collection.links.discord}
                 target="_blank"
@@ -117,10 +117,10 @@ const SocialLinksAndButtons = () => {
               >
                 <Icon icon="mdi:discord" />
               </a>
-            </AnimatedTooltip>
+            </Tooltip>
           )}
           {collection.links?.telegram && (
-            <AnimatedTooltip content="Telegram">
+            <Tooltip content="Telegram">
               <a
                 href={collection.links.telegram}
                 target="_blank"
@@ -129,7 +129,7 @@ const SocialLinksAndButtons = () => {
               >
                 <Icon icon="mdi:telegram" />
               </a>
-            </AnimatedTooltip>
+            </Tooltip>
           )}
         </div>
       )}
@@ -170,11 +170,11 @@ const SocialLinksAndButtons = () => {
           </span>
         </Button>
 
-        <AnimatedTooltip content="Share">
+        <Tooltip content="Share">
           <IconButton color={"contrast"} onClick={handleShare}>
             <Icon icon="mdi:share-variant" />
           </IconButton>
-        </AnimatedTooltip>
+        </Tooltip>
       </div>
     </div>
   );

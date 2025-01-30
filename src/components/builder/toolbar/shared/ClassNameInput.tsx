@@ -8,7 +8,7 @@ const ClassNameInput = ({ value, onChange, onKeyPress, placeholder }) => (
     onKeyPress={onKeyPress}
     placeholder={placeholder}
     size="sm"
-    shape={"rounded-sm"}
+    shape={"rounded-xs"}
   />
 );
 

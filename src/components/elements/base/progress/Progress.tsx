@@ -3,7 +3,7 @@ import React, { type FC } from "react";
 export interface ProgressProps {
   color?: "primary" | "info" | "success" | "warning" | "danger";
   contrast?: "default" | "contrast";
-  shape?: "straight" | "rounded" | "curved" | "full";
+  shape?: "straight" | "rounded-sm" | "curved" | "full";
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   value?: number;
   max?: number;
@@ -30,7 +30,7 @@ const Progress: FC<ProgressProps> = ({
         ${size === "md" ? "h-3" : ""}
         ${size === "lg" ? "h-4" : ""}
         ${size === "xl" ? "h-5" : ""}
-        ${shape === "rounded" ? "rounded-md" : ""}
+        ${shape === "rounded-sm" ? "rounded-md" : ""}
         ${shape === "curved" ? "rounded-lg" : ""}
         ${shape === "full" ? "rounded-full" : ""}
         ${contrast === "default" ? "bg-muted-200 dark:bg-muted-700" : ""}
@@ -39,13 +39,13 @@ const Progress: FC<ProgressProps> = ({
       `}
     >
       <div
-        className={`absolute start-0 top-0 h-full transition-all duration-300
+        className={`absolute left-0 top-0 h-full transition-all duration-300
           ${color === "primary" ? "bg-primary-500" : ""}
           ${color === "info" ? "bg-info-500" : ""}
           ${color === "success" ? "bg-success-500" : ""}
           ${color === "warning" ? "bg-warning-500" : ""}
           ${color === "danger" ? "bg-danger-500" : ""}
-          ${shape === "rounded" ? "rounded-md" : ""}
+          ${shape === "rounded-sm" ? "rounded-md" : ""}
           ${shape === "curved" ? "rounded-lg" : ""}
           ${shape === "full" ? "rounded-full" : ""}
           ${value === undefined ? "animate-indeterminate w-full" : ""}

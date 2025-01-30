@@ -76,14 +76,14 @@ const pickerStyles = cva(
         isToday: false,
         isSameMonth: true,
         className:
-          "text-center hover:bg-muted-100 hover:text-primary-500 dark:hover:bg-muted-800 disabled:dark:hover:bg-transparent disabled:text-muted-300 dark:disabled:text-muted-700 disabled:cursor-not-allowed",
+          "text-center hover:bg-muted-100 hover:text-primary-500 dark:hover:bg-muted-800 dark:disabled:hover:bg-transparent disabled:text-muted-300 dark:disabled:text-muted-700 disabled:cursor-not-allowed",
       },
       {
         isSelected: false,
         isToday: false,
         isSameMonth: false,
         className:
-          "text-muted-300 dark:hover:bg-muted-800 disabled:dark:hover:bg-transparent disabled:cursor-not-allowed",
+          "text-muted-300 dark:hover:bg-muted-800 dark:disabled:hover:bg-transparent disabled:cursor-not-allowed",
       },
       {
         isSelected: true,
@@ -99,7 +99,7 @@ interface DatePickerProps
   valueFormat?: string;
   icon?: IconifyIcon | string;
   label?: string;
-  shape?: "straight" | "rounded" | "smooth" | "curved" | "full";
+  shape?: "straight" | "rounded-sm" | "smooth" | "curved" | "full";
   size?: "sm" | "md" | "lg";
   color?: "default" | "contrast" | "muted" | "mutedContrast";
   placeholder?: string;
@@ -219,9 +219,9 @@ const DatePicker: FC<DatePickerProps> = ({
       />
       <div
         ref={pickerModalRef}
-        className={`absolute start-0 top-full isolate z-10 mt-2 w-full border border-muted-200 bg-white p-5 shadow-lg shadow-muted-300/30 dark:border-muted-800 dark:bg-muted-950 dark:shadow-muted-800/20 
+        className={`absolute left-0 top-full isolate z-10 mt-2 w-full border border-muted-200 bg-white p-5 shadow-lg shadow-muted-300/30 dark:border-muted-800 dark:bg-muted-950 dark:shadow-muted-800/20 
           ${pickerOpen ? "block" : "hidden"}
-          ${shape === "rounded" ? "rounded-md" : ""}     
+          ${shape === "rounded-sm" ? "rounded-md" : ""}     
           ${shape === "smooth" ? "rounded-lg" : ""}    
           ${shape === "curved" ? "rounded-xl" : ""}    
           ${shape === "full" ? "rounded-xl" : ""}   
@@ -291,7 +291,7 @@ const DatePicker: FC<DatePickerProps> = ({
                     isToday: isToday(day),
                     isSameMonth: isSameMonth(day, firstDayCurrentMonth),
                   })}
-                  ${shape === "rounded" ? "rounded-md" : ""}     
+                  ${shape === "rounded-sm" ? "rounded-md" : ""}     
                   ${shape === "smooth" ? "rounded-lg" : ""}    
                   ${shape === "curved" ? "rounded-xl" : ""}    
                   ${shape === "full" ? "rounded-full" : ""} 
@@ -308,7 +308,7 @@ const DatePicker: FC<DatePickerProps> = ({
 
         <div
           className={`absolute inset-0 flex flex-col justify-between rounded-lg bg-white p-5 text-white transition-all duration-300 dark:bg-muted-950 
-            ${showOverlay ? "z-[2] opacity-100" : "-z-[1] opacity-0"} 
+            ${showOverlay ? "z-2 opacity-100" : "-z-1 opacity-0"} 
           `}
         >
           <div>
@@ -318,13 +318,13 @@ const DatePicker: FC<DatePickerProps> = ({
               placeholder={t("4-digit year")}
               value={overlayInput}
               onChange={handleOverlayYear}
-              className="mx-auto block w-4/5 border-b border-muted-200 bg-transparent py-1 text-center text-base text-muted-800 focus:outline-none dark:border-muted-800 dark:text-muted-100"
+              className="mx-auto block w-4/5 border-b border-muted-200 bg-transparent py-1 text-center text-base text-muted-800 focus:outline-hidden dark:border-muted-800 dark:text-muted-100"
             />
 
             <button
               type="button"
               onClick={() => setShowOverlay(false)}
-              className="absolute end-2 top-0 p-2 text-2xl opacity-70"
+              className="absolute right-2 top-0 p-2 text-2xl opacity-70"
             >
               {t("times")}
             </button>
@@ -339,7 +339,7 @@ const DatePicker: FC<DatePickerProps> = ({
                 onClick={() => handleGotoMonth(index)}
                 className={`
                   py-2 text-sm text-muted-800/70 hover:bg-muted-100 hover:text-muted-800 dark:text-muted-400 dark:hover:bg-muted-800 dark:hover:text-white
-                  ${shape === "rounded" ? "rounded-md" : ""}     
+                  ${shape === "rounded-sm" ? "rounded-md" : ""}     
                   ${shape === "smooth" ? "rounded-lg" : ""}    
                   ${shape === "curved" ? "rounded-xl" : ""}    
                   ${shape === "full" ? "rounded-full" : ""} 
@@ -356,7 +356,7 @@ const DatePicker: FC<DatePickerProps> = ({
             shape={shape}
             onClick={handleConfirm}
             disabled={overlayInput.length != 4}
-            className="mx-auto !h-auto !px-3 !py-[.28rem]"
+            className="mx-auto h-auto! px-3! py-[.28rem]!"
           >
             {t("Confirm")}
           </Button>

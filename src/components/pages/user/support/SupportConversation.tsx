@@ -37,8 +37,8 @@ const SupportConversation: FC<SupportConversationProps> = ({
             isLeft ? "bg-muted-200/80" : "bg-white"
           } ${
             isLeft
-              ? "before:start-full after:start-full"
-              : "before:end-full after:end-full"
+              ? "before:left-full after:left-full"
+              : "before:right-full after:right-full"
           } before:pointer-events-none before:absolute before:top-[20px] before:-mt-[6px] before:h-0 before:w-0 before:border-[6px] before:border-transparent after:pointer-events-none after:absolute after:top-[21px] after:-mt-2 after:h-0 after:w-0 after:border-[5px] after:border-transparent ${
             isLeft
               ? "before:border-l-muted-200 after:border-l-muted-200/80"

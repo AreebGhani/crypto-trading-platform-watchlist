@@ -280,7 +280,7 @@ const StakingLogs = () => {
                   collectStake(selectedItem.id);
                 }}
                 color="primary"
-                shape="rounded"
+                shape="rounded-sm"
                 className="w-full"
                 disabled={!isCollectable}
               >

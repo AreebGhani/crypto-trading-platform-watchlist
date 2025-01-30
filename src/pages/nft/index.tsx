@@ -59,15 +59,12 @@ const NFTHomePage: React.FC<Props> = ({
 };
 
 export async function getServerSideProps(context: any) {
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const baseUrl = `${protocol}://${context.req.headers.host}`;
-
   try {
     const [trendingResponse, topCollectionsResponse, featuredAssetsResponse] =
       await Promise.all([
-        $serverFetch({ url: `${baseUrl}/api/ext/nft/collection/trending` }),
-        $serverFetch({ url: `${baseUrl}/api/ext/nft/collection/top` }),
-        $serverFetch({ url: `${baseUrl}/api/ext/nft/asset/featured` }),
+        $serverFetch(context, { url: `/api/ext/nft/collection/trending` }),
+        $serverFetch(context, { url: `/api/ext/nft/collection/top` }),
+        $serverFetch(context, { url: `/api/ext/nft/asset/featured` }),
       ]);
 
     return {

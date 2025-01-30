@@ -104,6 +104,7 @@ type DashboardStore = {
   setFetchInitiated: (value: boolean) => void;
   setFilteredMenu: (menu: any[]) => void;
   setProfile: (profile: User | null) => void;
+  setSettings: (settings: any) => void;
   setActiveSidebar: (s: string) => void;
   setPanelOpen: (title: string, isOpen: boolean) => void;
   setIsSidebarOpenedMobile: (b: boolean) => void;
@@ -201,9 +202,12 @@ export const useDashboardStore = create<DashboardStore>()(
               menuItem.auth === false
                 ? !profile
                 : menuItem.auth
-                ? profile &&
-                  checkPermission(menuItem.permission, profile.role.permissions)
-                : true;
+                  ? profile &&
+                    checkPermission(
+                      menuItem.permission,
+                      profile.role.permissions
+                    )
+                  : true;
             const hasRequiredExtension =
               !menuItem.extension || hasExtension(menuItem.extension);
             const hasRequiredSetting =
@@ -228,12 +232,12 @@ export const useDashboardStore = create<DashboardStore>()(
                   subItem.auth === false
                     ? !profile
                     : subItem.auth
-                    ? profile &&
-                      checkPermission(
-                        subItem.permission,
-                        profile.role.permissions
-                      )
-                    : true;
+                      ? profile &&
+                        checkPermission(
+                          subItem.permission,
+                          profile.role.permissions
+                        )
+                      : true;
                 const hasSubExtension =
                   !subItem.extension || hasExtension(subItem.extension);
                 const hasSubSetting =
@@ -257,12 +261,12 @@ export const useDashboardStore = create<DashboardStore>()(
                     subMenuItem.auth === false
                       ? !profile
                       : subMenuItem.auth
-                      ? profile &&
-                        checkPermission(
-                          subMenuItem.permission,
-                          profile.role.permissions
-                        )
-                      : true;
+                        ? profile &&
+                          checkPermission(
+                            subMenuItem.permission,
+                            profile.role.permissions
+                          )
+                        : true;
                   const hasSubMenuExtension =
                     !subMenuItem.extension ||
                     hasExtension(subMenuItem.extension);
@@ -368,6 +372,24 @@ export const useDashboardStore = create<DashboardStore>()(
         }
       },
 
+      setProfile: (profile) => {
+        set((state) => {
+          state.profile = profile;
+        });
+      },
+
+      setSettings: (data) => {
+        set((state) => {
+          state.extensions = data.extensions;
+          state.settings = data.settings.reduce((acc, setting) => {
+            acc[setting.key] = setting.value;
+            return acc;
+          }, {});
+        });
+
+        get().initializeMenu();
+      },
+
       initializeMenu: () => {
         const { filterMenu, activeMenuType } = get();
         const menuToFilter = activeMenuType === "admin" ? adminMenu : userMenu;
@@ -462,12 +484,6 @@ export const useDashboardStore = create<DashboardStore>()(
       setFilteredMenu: (menu) => {
         set((state) => {
           state.filteredMenu = menu;
-        });
-      },
-
-      setProfile: (profile) => {
-        set((state) => {
-          state.profile = profile;
         });
       },
 

@@ -7,6 +7,12 @@ import { useTranslation } from "next-i18next";
 const api = "/api/admin/finance/transaction";
 const columnConfig: ColumnConfigType[] = [
   {
+    field: "id",
+    label: "Transaction ID",
+    type: "text",
+    sortable: true,
+  },
+  {
     field: "user",
     label: "User",
     sublabel: "user.email",
@@ -20,6 +26,15 @@ const columnConfig: ColumnConfigType[] = [
     imageKey: "user.avatar",
     placeholder: "/img/avatars/placeholder.webp",
     className: "rounded-full",
+  },
+  {
+    field: "walletId",
+    label: "Wallet Currency",
+    sublabel: "walletId",
+    type: "text",
+    sortable: true,
+    getValue: (item) => `${item.wallet?.currency} (${item.wallet?.type})`,
+    getSubValue: (item) => item.walletId,
   },
   {
     field: "type",
@@ -49,7 +64,6 @@ const columnConfig: ColumnConfigType[] = [
     options: statusOptions,
     sortable: true,
   },
-  // created at
   {
     field: "createdAt",
     label: "Date",

@@ -14,17 +14,13 @@ const darkmodeInitScript = `(function () {
 
 export default function Document() {
   return (
-    <Html className="no-js" lang="en" suppressHydrationWarning={true}>
+    <Html suppressHydrationWarning={true}>
       <Head>
-        <link rel="icon" href="/assetz/img/favicon.png" type="image/png" />
-
-        <meta charSet="utf-8" />
-        <meta httpEquiv="x-ua-compatible" content="ie=edge" />
         <script
           dangerouslySetInnerHTML={{ __html: darkmodeInitScript }}
         ></script>
       </Head>
-      <body className="home-01" onContextMenu={() => false}>
+      <body>
         <Main />
         <NextScript />
         <div id="portal-root"></div>

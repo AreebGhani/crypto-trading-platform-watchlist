@@ -1,13 +1,13 @@
 import Layout from "@/layouts/Default";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDashboardStore } from "@/stores/dashboard";
 import Card from "@/components/elements/base/card/Card";
 import { MashImage } from "@/components/elements/MashImage";
-import { useRouter } from "next/router";
-import $fetch from "@/utils/api";
-import { debounce } from "lodash";
-import { BackButton } from "@/components/elements/base/button/BackButton";
 import { useTranslation } from "next-i18next";
+import { BackButton } from "@/components/elements/base/button/BackButton";
+import { $serverFetch } from "@/utils/api";
+import { ErrorPage } from "@/components/ui/Errors";
+
 type Condition = {
   id: string;
   title: string;
@@ -16,26 +16,27 @@ type Condition = {
   rewardType: string;
   rewardCurrency: string;
 };
-const AffiliateDashboard = () => {
+
+interface Props {
+  conditions: Condition[];
+  error?: string;
+}
+
+const AffiliateDashboard: React.FC<Props> = ({ conditions, error }) => {
   const { t } = useTranslation();
   const { profile } = useDashboardStore();
-  const router = useRouter();
-  const [validConditions, setValidConditions] = useState<Condition[]>([]);
-  const fetchConditions = async () => {
-    const { data, error } = await $fetch({
-      url: `/api/ext/affiliate/condition`,
-      silent: true,
-    });
-    if (!error) {
-      setValidConditions(data);
-    }
-  };
-  const debounceFetchConditions = debounce(fetchConditions, 100);
-  useEffect(() => {
-    if (router.isReady) {
-      debounceFetchConditions();
-    }
-  }, [router.isReady]);
+
+  if (error) {
+    return (
+      <ErrorPage
+        title={t("Error")}
+        description={t(error)}
+        link="/user/affiliate"
+        linkTitle={t("Back to Affiliate Dashboard")}
+      />
+    );
+  }
+
   return (
     <Layout title={t("Affiliate")} color="muted">
       <div className="flex items-center justify-between">
@@ -47,8 +48,8 @@ const AffiliateDashboard = () => {
             </span>
           </h2>
           <p className="font-sans text-base text-muted-500 dark:text-muted-400">
-            {t("Welcome to the affiliate program")} {profile?.firstName}
-            {t("Here are the conditions for earning rewards.")}
+            {t("Welcome to the affiliate program")} {profile?.firstName}.
+            {t("Here are the conditions for earning rewards.")}.
           </p>
         </div>
         <BackButton href="/user/affiliate" />
@@ -65,7 +66,7 @@ const AffiliateDashboard = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {validConditions.map((condition, index) => (
+        {conditions.map((condition, index) => (
           <Card
             key={index}
             shape="smooth"
@@ -102,4 +103,34 @@ const AffiliateDashboard = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps(context: any) {
+  try {
+    const { data, error } = await $serverFetch(context, {
+      url: `/api/ext/affiliate/condition`,
+    });
+
+    if (error || !data) {
+      return {
+        props: {
+          error: error || "Unable to fetch affiliate conditions.",
+        },
+      };
+    }
+
+    return {
+      props: {
+        conditions: data,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching affiliate conditions:", error);
+    return {
+      props: {
+        error: `An unexpected error occurred: ${error.message}`,
+      },
+    };
+  }
+}
+
 export default AffiliateDashboard;

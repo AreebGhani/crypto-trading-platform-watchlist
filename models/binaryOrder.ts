@@ -12,8 +12,22 @@ export default class binaryOrder
   price!: number;
   amount!: number;
   profit!: number;
-  side!: "RISE" | "FALL";
-  type!: "RISE_FALL";
+  side!:
+    | "RISE"
+    | "FALL"
+    | "HIGHER"
+    | "LOWER"
+    | "TOUCH"
+    | "NO_TOUCH"
+    | "CALL"
+    | "PUT"
+    | "UP"
+    | "DOWN";
+  type!: "RISE_FALL" | "HIGHER_LOWER" | "TOUCH_NO_TOUCH" | "CALL_PUT" | "TURBO";
+  durationType!: "TIME" | "TICKS";
+  barrier?: number;
+  strikePrice?: number;
+  payoutPerPoint?: number;
   status!: "PENDING" | "WIN" | "LOSS" | "DRAW" | "CANCELED";
   isDemo!: boolean;
   closedAt!: Date;
@@ -22,7 +36,6 @@ export default class binaryOrder
   deletedAt?: Date;
   updatedAt?: Date;
 
-  // binaryOrder belongsTo user via userId
   user!: user;
   getUser!: Sequelize.BelongsToGetAssociationMixin<user>;
   setUser!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
@@ -74,22 +87,94 @@ export default class binaryOrder
           },
         },
         side: {
-          type: DataTypes.ENUM("RISE", "FALL"),
+          type: DataTypes.ENUM(
+            "RISE",
+            "FALL",
+            "HIGHER",
+            "LOWER",
+            "TOUCH",
+            "NO_TOUCH",
+            "CALL",
+            "PUT",
+            "UP",
+            "DOWN"
+          ),
           allowNull: false,
           validate: {
             isIn: {
-              args: [["RISE", "FALL"]],
-              msg: "side: Side must be either 'RISE' or 'FALL'",
+              args: [
+                [
+                  "RISE",
+                  "FALL",
+                  "HIGHER",
+                  "LOWER",
+                  "TOUCH",
+                  "NO_TOUCH",
+                  "CALL",
+                  "PUT",
+                  "UP",
+                  "DOWN",
+                ],
+              ],
+              msg: "side: Invalid side for order",
             },
           },
         },
         type: {
-          type: DataTypes.ENUM("RISE_FALL"),
+          type: DataTypes.ENUM(
+            "RISE_FALL",
+            "HIGHER_LOWER",
+            "TOUCH_NO_TOUCH",
+            "CALL_PUT",
+            "TURBO"
+          ),
           allowNull: false,
           validate: {
             isIn: {
-              args: [["RISE_FALL"]],
-              msg: "type: Type must be 'RISE_FALL'",
+              args: [
+                [
+                  "RISE_FALL",
+                  "HIGHER_LOWER",
+                  "TOUCH_NO_TOUCH",
+                  "CALL_PUT",
+                  "TURBO",
+                ],
+              ],
+              msg: "type: Invalid type for order",
+            },
+          },
+        },
+        durationType: {
+          type: DataTypes.ENUM("TIME", "TICKS"),
+          allowNull: false,
+          defaultValue: "TIME",
+          validate: {
+            isIn: {
+              args: [["TIME", "TICKS"]],
+              msg: "durationType: must be 'TIME' or 'TICKS'",
+            },
+          },
+        },
+        barrier: {
+          type: DataTypes.DOUBLE,
+          allowNull: true,
+          validate: {
+            isNumeric: { msg: "barrier: Barrier must be a number" },
+          },
+        },
+        strikePrice: {
+          type: DataTypes.DOUBLE,
+          allowNull: true,
+          validate: {
+            isNumeric: { msg: "strikePrice: Strike Price must be a number" },
+          },
+        },
+        payoutPerPoint: {
+          type: DataTypes.DOUBLE,
+          allowNull: true,
+          validate: {
+            isNumeric: {
+              msg: "payoutPerPoint: Payout Per Point must be a number",
             },
           },
         },
@@ -99,7 +184,7 @@ export default class binaryOrder
           validate: {
             isIn: {
               args: [["PENDING", "WIN", "LOSS", "DRAW", "CANCELED"]],
-              msg: "status: Status must be one of 'PENDING', 'WIN', 'LOSS', 'DRAW','CANCELED'",
+              msg: "status: must be one of 'PENDING', 'WIN', 'LOSS', 'DRAW','CANCELED'",
             },
           },
         },

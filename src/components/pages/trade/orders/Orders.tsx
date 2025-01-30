@@ -55,6 +55,8 @@ const OrdersBase = () => {
     addMessageHandler,
     removeMessageHandler,
     ordersConnection,
+    removeConnection,
+    createConnection,
   } = useWebSocketStore();
 
   const {
@@ -65,7 +67,6 @@ const OrdersBase = () => {
     fetchOrders,
     setOrders,
     setOpenOrders,
-    handleOrderMessage,
     loading,
     cancelOrder,
     aiInvestments,
@@ -75,40 +76,84 @@ const OrdersBase = () => {
   } = useOrderStore();
   const router = useRouter();
 
-  useEffect(() => {
-    if (router.isReady && profile?.id && market && !market.isEco) {
-      const handleOpen = () => {
-        subscribe("ordersConnection", "orders", { userId: profile.id });
-      };
+  const handleOrderMessage = (message: any) => {
+    if (!message || !message.data) return;
+    const { data } = message;
+    if (!data || !Array.isArray(data)) return;
 
-      const handleClose = () => {
-        unsubscribe("ordersConnection", "orders", { userId: profile.id });
-      };
-
-      if (ordersConnection.isConnected) {
-        handleOpen();
+    const newItems = [...openOrders];
+    for (const orderItem of data) {
+      const index = newItems.findIndex((i) => i.id === orderItem.id);
+      if (index > -1) {
+        if (
+          orderItem.status === "CLOSED" ||
+          orderItem.status === "CANCELED" ||
+          orderItem.status === "EXPIRED" ||
+          orderItem.status === "REJECTED"
+        ) {
+          // If the order is no longer open, remove it from open orders
+          newItems.splice(index, 1);
+        } else {
+          newItems[index] = { ...newItems[index], ...orderItem };
+        }
       } else {
-        addMessageHandler(
-          "ordersConnection",
-          handleOpen,
-          (msg) => msg.type === "open"
-        );
+        // Add only if still open/active
+        if (orderItem.status === "OPEN" || orderItem.status === "ACTIVE") {
+          newItems.push(orderItem);
+        }
       }
-
-      return () => {
-        removeMessageHandler("ordersConnection", handleOpen);
-        handleClose();
-      };
     }
+    setOpenOrders(newItems);
+  };
+
+  useEffect(() => {
+    if (!router.isReady || !profile?.id || !market?.currency || !market?.pair)
+      return;
+
+    const path = market.isEco
+      ? `/api/ext/ecosystem/order?userId=${profile.id}`
+      : `/api/exchange/order?userId=${profile.id}`;
+
+    createConnection("ordersConnection", path, {
+      onOpen: () => {
+        console.log("Trades connection open");
+      },
+    });
+
+    return () => {
+      if (!router.query.symbol) {
+        removeConnection("ordersConnection");
+      }
+    };
+  }, [router.isReady, profile?.id, market?.currency, market?.pair]);
+
+  useEffect(() => {
+    if (!market?.currency || !market?.pair || !profile?.id) return;
+
+    const connectionKey = "ordersConnection";
+
+    const isConnected = ordersConnection?.isConnected;
+    if (!isConnected) return; // ensure websocket is open before subscribing
+
+    subscribe(connectionKey, "orders", {
+      userId: profile.id,
+    });
+    // Add message handler after subscription
+    const messageFilter = (message: any) => message.stream === "orders";
+    addMessageHandler(connectionKey, handleOrderMessage, messageFilter);
+
+    return () => {
+      unsubscribe(connectionKey, "orders", {
+        userId: profile.id,
+      });
+      removeMessageHandler(connectionKey, handleOrderMessage);
+      setOpenOrders([]);
+    };
   }, [
-    router.isReady,
+    market?.currency,
+    market?.pair,
     profile?.id,
-    market?.isEco,
-    subscribe,
-    unsubscribe,
-    ordersConnection.isConnected,
-    addMessageHandler,
-    removeMessageHandler,
+    ordersConnection?.isConnected,
   ]);
 
   const debouncedFetchOrders = debounce(fetchOrders, 100);
@@ -340,42 +385,6 @@ const OrdersBase = () => {
       ],
     },
   ];
-
-  useEffect(() => {
-    if (!market || !router.isReady || !profile?.id) return;
-
-    const { isEco } = market;
-    const path = isEco
-      ? `/api/ext/ecosystem/market/${market?.symbol}?userId=${profile?.id}`
-      : `/api/exchange/order?userId=${profile?.id}`;
-
-    subscribe("ordersConnection", "orders", { userId: profile.id });
-
-    return () => {
-      unsubscribe("ordersConnection", "orders", { userId: profile.id });
-    };
-  }, [market, router.isReady, profile?.id, subscribe, unsubscribe]);
-
-  useEffect(() => {
-    if (!ordersConnection?.isConnected) return;
-
-    addMessageHandler(
-      "ordersConnection",
-      handleOrderMessage,
-      (message) => message.stream === "openOrders"
-    );
-
-    return () => {
-      removeMessageHandler("ordersConnection", handleOrderMessage);
-      setOrders([]);
-      setOpenOrders([]);
-    };
-  }, [
-    ordersConnection?.isConnected,
-    addMessageHandler,
-    removeMessageHandler,
-    "ordersConnection",
-  ]);
 
   return (
     <div className="w-full h-full flex flex-col">

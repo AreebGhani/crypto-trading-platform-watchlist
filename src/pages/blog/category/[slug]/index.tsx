@@ -1,60 +1,93 @@
 import Layout from "@/layouts/Default";
-import { useEffect, useState } from "react";
-import $fetch from "@/utils/api";
 import { PostsGrid } from "@/components/pages/blog/PostsGrid";
-import { useRouter } from "next/router";
 import Input from "@/components/elements/form/input/Input";
 import { PageHeader } from "@/components/elements/base/page-header";
-import { capitalize } from "lodash";
 import Pagination from "@/components/elements/base/pagination/Pagination";
 import Select from "@/components/elements/form/select/Select";
 import { motion, AnimatePresence } from "framer-motion";
+import { capitalize } from "lodash";
 import { useTranslation } from "next-i18next";
-export default function Blog() {
+import $fetch, { $serverFetch } from "@/utils/api";
+import { useState } from "react";
+import { ErrorPage, NotFound } from "@/components/ui/Errors";
+
+interface Props {
+  initialData?: {
+    items: BlogPost[];
+    pagination: {
+      totalItems: number;
+      currentPage: number;
+      perPage: number;
+      totalPages: number;
+    };
+  };
+  slug?: string;
+  error?: string;
+}
+
+const Blog: React.FC<Props> = ({ initialData, slug, error }) => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const { slug } = router.query;
   const [filter, setFilter] = useState<any>({});
   const [sort] = useState({ field: "createdAt", rule: "desc" });
-  const [items, setItems] = useState([]);
-  const [pagination, setPagination] = useState({
-    totalItems: 0,
-    currentPage: 1,
-    perPage: 10,
-    totalPages: 0,
-  });
-  const fetchData = async (slug) => {
-    if (!slug) return;
-    const endpoint = "/api/content/post";
-    const params: Record<string, string> = {};
-    params["page"] = String(pagination.currentPage);
-    params["perPage"] = String(pagination.perPage);
-    params["sortField"] = sort.field;
-    params["sortOrder"] = sort.rule;
+  const [items, setItems] = useState(initialData?.items || []);
+  const [pagination, setPagination] = useState<{
+    totalItems: number;
+    currentPage: number;
+    perPage: number;
+    totalPages: number;
+  }>(
+    initialData?.pagination || {
+      totalItems: 0,
+      currentPage: 1,
+      perPage: 10,
+      totalPages: 0,
+    }
+  );
+
+  if (error) {
+    return (
+      <ErrorPage
+        title={t("Error")}
+        description={t(error)}
+        link="/blog"
+        linkTitle={t("Back to Blog")}
+      />
+    );
+  }
+
+  const handleFilterChange = async (value: string) => {
     const activeFilter: Record<string, any> = {
-      "category.name": {
+      "category.slug": {
         value: slug,
         operator: "like",
       },
     };
-    if (filter && filter.value !== "") {
-      activeFilter.title = filter;
+
+    if (value.trim()) {
+      activeFilter.title = {
+        value: value.trim().toLowerCase(),
+        operator: "startsWith",
+      };
     }
-    params["filter"] = JSON.stringify(activeFilter);
-    const queryString = new URLSearchParams(params).toString();
-    const url = `${endpoint}?${queryString}`;
-    const { data, error } = await $fetch({
-      url,
-      silent: true,
+
+    const params = new URLSearchParams({
+      page: String(pagination.currentPage),
+      perPage: String(pagination.perPage),
+      sortField: sort.field,
+      sortOrder: sort.rule,
+      filter: JSON.stringify(activeFilter),
     });
-    if (!error) {
-      setItems(data.items);
-      setPagination(data.pagination);
+
+    const response = await $fetch({
+      url: `/api/content/post?${params.toString()}`,
+    });
+
+    if (response.data) {
+      setItems(response.data.items);
+      setPagination(response.data.pagination);
     }
   };
-  useEffect(() => {
-    fetchData(slug);
-  }, [slug, filter, pagination.perPage, pagination.currentPage]);
+
   return (
     <Layout title={t("Blog")} color="muted">
       <div className="space-y-5 max-w-5xl lg:mx-auto">
@@ -63,17 +96,16 @@ export default function Blog() {
             type="text"
             placeholder={t("Search posts")}
             icon="ic:twotone-search"
-            className="w-full px-3 py-1.5 text-sm text-muted-700 dark:text-muted-300 bg-muted-200 dark:bg-muted-800 rounded-md focus:ring-1 focus:ring-primary-500 focus:outline-none"
+            className="w-full px-3 py-1.5 text-sm text-muted-700 dark:text-muted-300 bg-muted-200 dark:bg-muted-800 rounded-md focus:ring-1 focus:ring-primary-500 focus:outline-hidden"
             onChange={(e) => {
-              setFilter({
-                value: e.target.value.trim().toLowerCase(),
-                operator: "startsWith",
-              });
+              setFilter({ value: e.target.value });
+              handleFilterChange(e.target.value);
             }}
           />
         </PageHeader>
+
         <div className="relative">
-          <hr className="border-muted-200 dark:border-muted-700" />
+          <hr className="border-muted-200 dark:border-muted-800" />
           <span className="absolute inset-0 -top-2 text-center font-semibold text-xs text-muted-500 dark:text-muted-400">
             <span className="bg-muted-50 dark:bg-muted-900 px-2">
               {filter.value
@@ -82,6 +114,7 @@ export default function Blog() {
             </span>
           </span>
         </div>
+
         {items.length > 0 ? (
           <PostsGrid posts={items} />
         ) : (
@@ -108,22 +141,10 @@ export default function Blog() {
                     name="pageSize"
                     value={pagination.perPage}
                     options={[
-                      {
-                        value: "5",
-                        label: "5 per page",
-                      },
-                      {
-                        value: "10",
-                        label: "10 per page",
-                      },
-                      {
-                        value: "15",
-                        label: "15 per page",
-                      },
-                      {
-                        value: "20",
-                        label: "20 per page",
-                      },
+                      { value: "5", label: "5 per page" },
+                      { value: "10", label: "10 per page" },
+                      { value: "15", label: "15 per page" },
+                      { value: "20", label: "20 per page" },
                     ]}
                     onChange={(e) =>
                       setPagination({
@@ -140,7 +161,6 @@ export default function Blog() {
                   totalCount={pagination.totalItems}
                   pageSize={pagination.perPage}
                   onPageChange={(page) =>
-                    pagination.currentPage !== page &&
                     setPagination({
                       ...pagination,
                       currentPage: page,
@@ -154,4 +174,47 @@ export default function Blog() {
       </div>
     </Layout>
   );
+};
+
+export async function getServerSideProps(context: any) {
+  const { slug } = context.params;
+  try {
+    const params = new URLSearchParams({
+      page: "1",
+      perPage: "10",
+      sortField: "createdAt",
+      sortOrder: "desc",
+      filter: JSON.stringify({
+        "category.slug": { value: slug, operator: "like" },
+      }),
+    });
+
+    const { data, error } = await $serverFetch(context, {
+      url: `/api/content/post?${params.toString()}`,
+    });
+
+    if (error || !data) {
+      return {
+        props: {
+          error: error || "Unable to fetch posts.",
+        },
+      };
+    }
+
+    return {
+      props: {
+        initialData: data,
+        slug,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return {
+      props: {
+        error: `An unexpected error occurred: ${error.message}`,
+      },
+    };
+  }
 }
+
+export default Blog;

@@ -77,7 +77,7 @@ const MenuBase = () => {
 
   return (
     <div
-      className={`flex-grow flex-wrap items-stretch overflow-y-auto scrollbar-hidden dark:bg-muted-900 lg:flex lg:overflow-visible lg:bg-transparent dark:lg:bg-transparent ${
+      className={`grow flex-wrap items-stretch overflow-y-auto scrollbar-hidden dark:bg-muted-900 lg:flex lg:overflow-visible lg:bg-transparent dark:lg:bg-transparent ${
         isSidebarOpenedMobile ? "block max-h-[80vh]" : "hidden lg:block"
       }`}
     >

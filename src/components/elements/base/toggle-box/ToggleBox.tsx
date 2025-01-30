@@ -7,7 +7,7 @@ interface ToggleBoxProps {
   isToggle?: boolean;
   open?: boolean;
   title?: string;
-  shape?: "straight" | "rounded" | "smooth" | "curved";
+  shape?: "straight" | "rounded-sm" | "smooth" | "curved";
   color?:
     | "default"
     | "contrast"

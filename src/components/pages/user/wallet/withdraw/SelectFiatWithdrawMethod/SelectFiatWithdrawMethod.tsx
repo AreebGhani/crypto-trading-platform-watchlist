@@ -25,7 +25,7 @@ const SelectFiatWithdrawMethodBase = () => {
         </p>
       </div>
 
-      <div className="mx-auto mb-4 w-full max-w-xl space-y-5 rounded px-8 pb-8">
+      <div className="mx-auto mb-4 w-full max-w-xl space-y-5 rounded-sm px-8 pb-8">
         {withdrawMethods?.gateways?.map((gateway) => (
           <div
             key={gateway.id}
@@ -34,8 +34,8 @@ const SelectFiatWithdrawMethodBase = () => {
             }}
             className={
               selectedWithdrawMethod?.alias === gateway.alias
-                ? "border border-primary-600 dark:border-primary-400 rounded cursor-pointer transition-colors duration-30 bg-white dark:bg-muted-950"
-                : "group relative border rounded cursor-pointer transition-colors duration-300 border-muted-200 dark:border-muted-800 hover:border-primary-600 dark:hover:border-primary-400 bg-muted-100 dark:bg-muted-800 hover:bg-white dark:hover:bg-muted-900"
+                ? "border border-primary-600 dark:border-primary-400 rounded-sm cursor-pointer transition-colors duration-30 bg-white dark:bg-muted-950"
+                : "group relative border rounded-sm cursor-pointer transition-colors duration-300 border-muted-200 dark:border-muted-800 hover:border-primary-600 dark:hover:border-primary-400 bg-muted-100 dark:bg-muted-800 hover:bg-white dark:hover:bg-muted-900"
             }
           >
             <div className="flex items-center justify-between gap-5 px-4 py-3 font-sans text-sm text-muted-600 transition-colors duration-300">
@@ -69,11 +69,11 @@ const SelectFiatWithdrawMethodBase = () => {
             }}
             className={
               selectedWithdrawMethod?.id === method.id
-                ? "border border-primary-600 dark:border-primary-400 rounded cursor-pointer transition-colors duration-30 bg-white dark:bg-muted-950"
-                : "group relative border rounded cursor-pointer transition-colors duration-300 border-muted-200 dark:border-muted-800 hover:border-primary-600 dark:hover:border-primary-400 bg-muted-100 dark:bg-muted-800 hover:bg-white dark:hover:bg-muted-900"
+                ? "border border-primary-600 dark:border-primary-400 rounded-sm cursor-pointer transition-colors duration-30 bg-white dark:bg-muted-950"
+                : "group relative border rounded-sm cursor-pointer transition-colors duration-300 border-muted-200 dark:border-muted-800 hover:border-primary-600 dark:hover:border-primary-400 bg-muted-100 dark:bg-muted-800 hover:bg-white dark:hover:bg-muted-900"
             }
           >
-            <div className="flex items-center justify-between gap-5 px-4 py-3 font-sans text-sm text-muted-600 transition-colors duration-300 peer-hover:bg-muted-100 dark:text-muted-400 dark:peer-hover:bg-muted-800 peer-checked:[&>button]:hidden peer-checked:[&>div]:!flex">
+            <div className="flex items-center justify-between gap-5 px-4 py-3 font-sans text-sm text-muted-600 transition-colors duration-300 peer-hover:bg-muted-100 dark:text-muted-400 dark:peer-hover:bg-muted-800 [&>button]:peer-checked:hidden [&>div]:peer-checked:flex!">
               <div className="flex items-center gap-4">
                 <Avatar src={method.image} alt={method.title} size="md" />
                 <div>
@@ -96,7 +96,7 @@ const SelectFiatWithdrawMethodBase = () => {
             </div>
           </div>
         ))}
-        <div className="mx-auto !mt-16 max-w-sm">
+        <div className="mx-auto mt-16! max-w-sm">
           <div className="flex w-full gap-4 justify-center">
             <Button
               type="button"

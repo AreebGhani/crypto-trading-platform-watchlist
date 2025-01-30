@@ -4,7 +4,7 @@ import { AccountDropdown } from "../shared/AccountDropdown";
 import { LocaleLogo } from "../shared/Locales/LocaleLogo";
 import { useDashboardStore } from "@/stores/dashboard";
 import { FC } from "react";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import { Icon } from "@iconify/react";
 
 const AccountControls: FC<{
@@ -30,7 +30,7 @@ const AccountControls: FC<{
       }
     >
       {isFetched && profile && isAdmin && (
-        <AnimatedTooltip
+        <Tooltip
           content={activeMenuType === "admin" ? "Admin" : "User"}
           position="bottom"
         >
@@ -41,7 +41,7 @@ const AccountControls: FC<{
               activeMenuType === "admin" ? "text-primary-500" : "text-muted-400"
             } transition-colors duration-300 cursor-pointer`}
           />
-        </AnimatedTooltip>
+        </Tooltip>
       )}
       {!isMobile && (
         <button
@@ -68,7 +68,7 @@ const AccountControls: FC<{
         <>
           <div className="group relative text-start">
             {announcements && announcements.length > 0 && (
-              <span className="absolute end-0.5 top-0.5 z-[2] block h-2 w-2 rounded-full bg-primary-500 "></span>
+              <span className="absolute right-0.5 top-0.5 z-2 block h-2 w-2 rounded-full bg-primary-500 "></span>
             )}
             <button
               className="mask mask-blob flex h-10 w-10 cursor-pointer items-center justify-center transition-all duration-300 text-muted-400 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rotate-0"

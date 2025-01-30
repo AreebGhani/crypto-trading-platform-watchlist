@@ -4,7 +4,7 @@ import { Chat } from "@/components/pages/user/Chat";
 import { useDashboardStore } from "@/stores/dashboard";
 import { useTranslation } from "next-i18next";
 import useSupportStore from "@/stores/user/support";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 
 const FloatingLiveChat = () => {
   const { t } = useTranslation();
@@ -38,12 +38,11 @@ const FloatingLiveChat = () => {
   const messageSide = (userId) => (userId === profile?.id ? "right" : "left");
 
   return (
-    <div className="group/layouts">
+    <div
+      className={`group/layouts fixed bottom-5 ${floatingLiveChatEnabled ? "right-20" : "right-5"} ${open ? "z-50" : "z-40"}`}
+    >
       {/* Support Button */}
-      <AnimatedTooltip
-        content={t("Live Chat")}
-        classNames={`fixed bottom-5 ${floatingLiveChatEnabled ? "end-20" : "end-5"} z-[40]`}
-      >
+      <Tooltip content={t("Live Chat")}>
         <button
           name="supportChatToggle"
           aria-label="Support Chat"
@@ -60,11 +59,11 @@ const FloatingLiveChat = () => {
             className="h-6 w-6 shrink-0 text-muted-400 transition-colors duration-300 group-hover/layouts:text-info-500"
           />
         </button>
-      </AnimatedTooltip>
+      </Tooltip>
 
       {/* Chat Panel */}
       <div
-        className={`fixed bottom-5 end-5 z-[1000] h-[420px] w-[300px] max-w-[90%] overflow-hidden rounded-lg border border-muted-200 bg-white shadow-lg shadow-muted-300/30 transition-all duration-300 hover:border-info-500 dark:border-muted-800 dark:bg-muted-950 dark:shadow-muted-800/30 dark:hover:border-info-500 ${
+        className={`fixed bottom-5 right-5 z-1000 h-[420px] w-[300px] max-w-[90%] overflow-hidden rounded-lg border border-muted-200 bg-white shadow-lg shadow-muted-300/30 transition-all duration-300 hover:border-info-500 dark:border-muted-800 dark:bg-muted-950 dark:shadow-muted-800/30 dark:hover:border-info-500 ${
           open
             ? "pointer-events-auto translate-y-0 opacity-100"
             : "pointer-events-none translate-y-full opacity-0"

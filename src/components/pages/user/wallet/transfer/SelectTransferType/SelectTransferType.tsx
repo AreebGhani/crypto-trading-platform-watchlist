@@ -39,7 +39,7 @@ const SelectTransferTypeBase = () => {
         </p>
       </div>
 
-      <div className="mx-auto mb-4 w-full max-w-lg rounded px-8 pb-8">
+      <div className="mx-auto mb-4 w-full max-w-lg rounded-sm px-8 pb-8">
         <ListBox
           selected={selectedTransferType}
           options={transferTypes}
@@ -78,7 +78,7 @@ const SelectTransferTypeBase = () => {
             <span>{t("Having any trouble")}</span>
             <Link
               href="#"
-              className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-none"
+              className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-hidden"
             >
               {t("Contact us")}
             </Link>

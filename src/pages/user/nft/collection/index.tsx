@@ -6,7 +6,7 @@ import Layout from "@/layouts/Nav";
 import Input from "@/components/elements/form/input/Input";
 import Link from "next/link";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import PaginationControls from "@/components/pages/nft/collection/elements/PaginationControls";
 import { SortableHeader } from "@/components/pages/trade/markets/SortableHeader";
 
@@ -91,32 +91,32 @@ const CollectionPage: React.FC = () => {
                 value={maxPrice !== undefined ? maxPrice : ""}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
               />
-              <AnimatedTooltip content="Filter">
+              <Tooltip content="Filter">
                 <IconButton onClick={fetchCollections}>
                   <Icon icon="mdi:filter" />
                 </IconButton>
-              </AnimatedTooltip>
+              </Tooltip>
             </div>
 
             {/* View Toggle */}
             <div className="flex items-center gap-2 border-s ps-4 border-muted-200 dark:border-muted-800">
-              <AnimatedTooltip content="List View">
+              <Tooltip content="List View">
                 <IconButton
                   onClick={() => setViewMode("list")}
                   color={viewMode === "list" ? "purple" : "muted"}
                 >
                   <Icon icon="stash:list-ul" />
                 </IconButton>
-              </AnimatedTooltip>
+              </Tooltip>
 
-              <AnimatedTooltip content="Grid View">
+              <Tooltip content="Grid View">
                 <IconButton
                   onClick={() => setViewMode("grid")}
                   color={viewMode === "grid" ? "purple" : "muted"}
                 >
                   <Icon icon="bitcoin-icons:grid-filled" />
                 </IconButton>
-              </AnimatedTooltip>
+              </Tooltip>
             </div>
           </div>
         </div>

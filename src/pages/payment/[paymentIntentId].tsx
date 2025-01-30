@@ -306,9 +306,9 @@ const PaymentPage: React.FC<Props> = ({ paymentDetails, error }) => {
               </Button>
             </div>
             <section className="py-8 antialiased">
-              <form action="#" className="mx-auto max-w-screen-xl text-lg">
+              <form action="#" className="mx-auto max-w-(--breakpoint-xl) text-lg">
                 <div className="lg:flex lg:items-start lg:gap-8">
-                  <div className="min-w-0 flex-1 divide-y divide-muted-200 rounded-lg border border-muted-200 bg-white shadow-sm dark:divide-muted-700 dark:border-muted-700 dark:bg-muted-800">
+                  <div className="min-w-0 flex-1 divide-y divide-muted-200 rounded-lg border border-muted-200 bg-white shadow-xs dark:divide-muted-700 dark:border-muted-700 dark:bg-muted-800">
                     {paymentDetails.products.map((product) => (
                       <div
                         key={product.id}
@@ -324,7 +324,7 @@ const PaymentPage: React.FC<Props> = ({ paymentDetails, error }) => {
                         <div className="flex items-center col-span-2 gap-4">
                           <a
                             href="#"
-                            className="block w-16 h-16 overflow-hidden rounded"
+                            className="block w-16 h-16 overflow-hidden rounded-sm"
                           >
                             {product.image ? (
                               <img
@@ -528,7 +528,7 @@ const PaymentPage: React.FC<Props> = ({ paymentDetails, error }) => {
                           !selectedWallet || loading || !hasEnoughBalance
                         }
                         type="button"
-                        className={`flex w-full items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 ${
+                        className={`flex w-full items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-white focus:outline-hidden focus:ring-4 ${
                           hasEnoughBalance
                             ? "bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                             : "bg-muted-200 dark:bg-muted-700 cursor-not-allowed"
@@ -593,8 +593,6 @@ const PaymentPage: React.FC<Props> = ({ paymentDetails, error }) => {
 
 export async function getServerSideProps(context: any) {
   const { paymentIntentId } = context.query;
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const baseUrl = `${protocol}://${context.req.headers.host}`;
 
   if (!paymentIntentId) {
     return {
@@ -606,8 +604,8 @@ export async function getServerSideProps(context: any) {
   }
 
   try {
-    const paymentResponse = await $serverFetch({
-      url: `${baseUrl}/api/ext/payment/intent/${paymentIntentId}`,
+    const paymentResponse = await $serverFetch(context, {
+      url: `/api/ext/payment/intent/${paymentIntentId}`,
       silent: true,
     });
 

@@ -74,8 +74,10 @@ const EcosystemBlockchains: React.FC = () => {
         return "xmr";
       case "MO":
         return "mo";
+      case "TON":
+        return "ton";
       default:
-        return "";
+        return chain.toLowerCase();
     }
   };
 
@@ -230,7 +232,7 @@ const EcosystemBlockchains: React.FC = () => {
                 color="primary"
                 className="w-full"
                 size="sm"
-                shape={"rounded-sm"}
+                shape={"rounded-xs"}
                 onClick={() =>
                   router.push(
                     `/admin/ext/ecosystem/blockchain/${item.info.productId}`
@@ -248,7 +250,7 @@ const EcosystemBlockchains: React.FC = () => {
                 color="success"
                 className="w-full"
                 size="sm"
-                shape={"rounded-sm"}
+                shape={"rounded-xs"}
                 onClick={() =>
                   router.push(
                     `/admin/ext/ecosystem/blockchain/${item.info.productId}`
@@ -266,7 +268,7 @@ const EcosystemBlockchains: React.FC = () => {
                 color="info"
                 className="w-full"
                 size="sm"
-                shape={"rounded-sm"}
+                shape={"rounded-xs"}
                 onClick={() =>
                   router.push(
                     `/admin/ext/ecosystem/blockchain/${item.info.productId}`

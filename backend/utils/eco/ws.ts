@@ -59,11 +59,11 @@ export async function handleOrderBroadcast(order) {
   };
 
   sendMessageToRoute(
-    `/api/ext/ecosystem/market/${order.symbol}`,
+    `/api/ext/ecosystem/order`,
     { type: "orders", userId: order.userId },
     {
       stream: "orders",
-      data: filteredOrder,
+      data: [filteredOrder],
     }
   );
 }

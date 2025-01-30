@@ -27,7 +27,7 @@ const Dialog: React.FC<DialogProps> = ({ open, setOpen, node, actions }) => {
         <div className="p-4 md:px-6">
           <Textarea
             rows={4}
-            shape="rounded"
+            shape="rounded-sm"
             label="SVG Path"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 mb-4"
             placeholder="Eg. d = 'M150 0 L75 200 L225 200 Z'"

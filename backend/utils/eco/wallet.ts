@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-// import TonWeb from "tonweb";
+import TonWeb from "tonweb";
 import { fromBigInt } from "./blockchain";
 import { estimateGas, getAdjustedGasPrice } from "./gas";
 import { getTokenContractAddress } from "./tokens";
@@ -30,7 +30,7 @@ import { PublicKey } from "@solana/web3.js";
 import SolanaService from "@b/blockchains/sol";
 import TronService from "@b/blockchains/tron";
 import MoneroService from "@b/blockchains/xmr";
-// import TonService from "@b/blockchains/ton";
+import TonService from "@b/blockchains/ton";
 
 export async function getActiveTokensByCurrency(
   currency: string
@@ -200,8 +200,8 @@ export const generateAndAddAddresses = async (wallet, tokens, transaction) => {
             await handleTronNativeWallet(wallet, addresses, transaction);
           } else if (token.chain === "XMR") {
             await handleMoneroNativeWallet(wallet, addresses, transaction);
-            // } else if (token.chain === "TON") {
-            //   await handleTonNativeWallet(wallet, addresses, transaction);
+          } else if (token.chain === "TON") {
+            await handleTonNativeWallet(wallet, addresses, transaction);
           } else {
             await handleNativeContract(token, wallet, addresses, transaction);
           }
@@ -497,50 +497,50 @@ const handleMoneroNativeWallet = async (wallet, addresses, transaction) => {
   }
 };
 
-// const handleTonNativeWallet = async (wallet, addresses, transaction) => {
-//   const tonService = await TonService.getInstance();
-//   const { address, data } = await tonService.createWallet();
+const handleTonNativeWallet = async (wallet, addresses, transaction) => {
+  const tonService = await TonService.getInstance();
+  const { address, data } = await tonService.createWallet();
 
-//   addresses["TON"] = {
-//     address,
-//     network: process.env.TON_NETWORK || "mainnet",
-//     balance: 0,
-//   };
+  addresses["TON"] = {
+    address,
+    network: process.env.TON_NETWORK || "mainnet",
+    balance: 0,
+  };
 
-//   const encryptedWalletData = encrypt(JSON.stringify(data));
+  const encryptedWalletData = encrypt(JSON.stringify(data));
 
-//   const walletData = await models.walletData.findOne({
-//     where: {
-//       walletId: wallet.id,
-//       currency: "TON",
-//       chain: "TON",
-//     },
-//     transaction,
-//   });
+  const walletData = await models.walletData.findOne({
+    where: {
+      walletId: wallet.id,
+      currency: "TON",
+      chain: "TON",
+    },
+    transaction,
+  });
 
-//   if (walletData) {
-//     // Update the existing record
-//     await walletData.update(
-//       {
-//         balance: 0,
-//         data: encryptedWalletData,
-//       },
-//       { transaction }
-//     );
-//   } else {
-//     // Create a new record
-//     await models.walletData.create(
-//       {
-//         walletId: wallet.id,
-//         currency: "TON",
-//         chain: "TON",
-//         balance: 0,
-//         data: encryptedWalletData,
-//       },
-//       { transaction }
-//     );
-//   }
-// };
+  if (walletData) {
+    // Update the existing record
+    await walletData.update(
+      {
+        balance: 0,
+        data: encryptedWalletData,
+      },
+      { transaction }
+    );
+  } else {
+    // Create a new record
+    await models.walletData.create(
+      {
+        walletId: wallet.id,
+        currency: "TON",
+        chain: "TON",
+        balance: 0,
+        data: encryptedWalletData,
+      },
+      { transaction }
+    );
+  }
+};
 
 const handleError = (message, throwIt = true) => {
   console.error(message);
@@ -740,16 +740,16 @@ export const validateAddress = (toAddress: string, chain: string) => {
     if (!toAddress.startsWith("4") && !toAddress.startsWith("8")) {
       throw new Error(`Invalid Monero address: ${toAddress}`);
     }
-    // } else if (chain === "TON") {
-    //   try {
-    //     // Accept both raw and user-friendly TON addresses
-    //     const tonAddress = new TonWeb.utils.Address(toAddress);
-    //     if (!tonAddress || !tonAddress.toString()) {
-    //       throw new Error(`Invalid TON address: ${toAddress}`);
-    //     }
-    //   } catch (error) {
-    //     throw new Error(`Invalid TON address: ${toAddress}`);
-    //   }
+  } else if (chain === "TON") {
+    try {
+      // Accept both raw and user-friendly TON addresses
+      const tonAddress = new TonWeb.utils.Address(toAddress);
+      if (!tonAddress || !tonAddress.toString()) {
+        throw new Error(`Invalid TON address: ${toAddress}`);
+      }
+    } catch (error) {
+      throw new Error(`Invalid TON address: ${toAddress}`);
+    }
   } else {
     // Ethereum address validation (via ethers.js)
     if (!ethers.isAddress(toAddress)) {

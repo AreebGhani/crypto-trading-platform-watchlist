@@ -6,7 +6,7 @@ export type InputOtpProps = {
   valueLength: number;
   onChange: (value: string) => void;
   color?: "default" | "contrast" | "muted" | "mutedContrast";
-  shape?: "smooth" | "rounded" | "curved" | "full";
+  shape?: "smooth" | "rounded-sm" | "curved" | "full";
 };
 
 const InputOtp: FC<InputOtpProps> = ({
@@ -143,7 +143,7 @@ const InputOtp: FC<InputOtpProps> = ({
           autoComplete="one-time-code"
           pattern="\d{1}"
           maxLength={valueLength}
-          className={`flex w-16 flex-col items-center justify-center border py-5 text-center text-4xl text-muted-800 outline-none ring-primary-700 placeholder:text-muted-300 focus:ring-1 dark:text-muted-100 dark:placeholder:text-muted-700
+          className={`flex w-16 flex-col items-center justify-center border py-5 text-center text-4xl text-muted-800 outline-hidden ring-primary-700 placeholder:text-muted-300 focus:ring-1 dark:text-muted-100 dark:placeholder:text-muted-700
           ${
             color === "default"
               ? "hover:border-muted-300 dark:hover:border-muted-600 border-muted-200 bg-white focus:bg-muted-50 dark:border-muted-700 dark:bg-muted-800 dark:focus:bg-muted-900"
@@ -164,7 +164,7 @@ const InputOtp: FC<InputOtpProps> = ({
               ? "hover:border-muted-300 dark:hover:border-muted-700 border-muted-200 bg-muted-100 focus:bg-muted-100 dark:border-muted-800 dark:bg-muted-900 dark:focus:bg-muted-900"
               : ""
           }
-          ${shape === "rounded" ? "rounded-md" : ""}
+          ${shape === "rounded-sm" ? "rounded-md" : ""}
           ${shape === "smooth" ? "rounded-lg" : ""}
           ${shape === "curved" ? "rounded-xl" : ""}
           ${shape === "full" ? "rounded-full" : ""}

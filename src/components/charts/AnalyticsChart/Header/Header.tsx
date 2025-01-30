@@ -1,7 +1,7 @@
 import IconBox from "@/components/elements/base/iconbox/IconBox";
 import { HeaderProps } from "./Header.types";
 import Breadcrumb from "@/components/elements/base/breadcrumb/Breadcrumb";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import Link from "next/link";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
 import { Icon } from "@iconify/react";
@@ -34,7 +34,7 @@ const HeaderBase = ({ modelName, postTitle }: HeaderProps) => {
           }
           color="muted"
           variant={"pastel"}
-          shape={"rounded"}
+          shape={"rounded-sm"}
           size={"md"}
           rotating={!isHovered}
           onMouseOver={() => setIsHovered(true)}
@@ -47,7 +47,7 @@ const HeaderBase = ({ modelName, postTitle }: HeaderProps) => {
           <Breadcrumb separator="slash" items={breadcrumbItems} />
         </h2>
       </div>
-      <AnimatedTooltip content={t("Records")}>
+      <Tooltip content={t("Records")}>
         <Link href={router.asPath.replace("analysis", "")} passHref>
           <IconButton
             variant="pastel"
@@ -58,7 +58,7 @@ const HeaderBase = ({ modelName, postTitle }: HeaderProps) => {
             <Icon icon="solar:database-bold-duotone" className="h-6 w-6" />
           </IconButton>
         </Link>
-      </AnimatedTooltip>
+      </Tooltip>
     </div>
   );
 };

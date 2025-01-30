@@ -12,11 +12,11 @@ import { Icon } from "@iconify/react";
 import { Lottie } from "@/components/elements/base/lottie";
 import { useDashboardStore } from "@/stores/dashboard";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 
 const TwoFactorBase = () => {
   const { t } = useTranslation();
-  const { profile, updateProfile2FA, setIsFetched } =
+  const { profile, updateProfile2FA, setIsFetched, settings } =
     useDashboardStore() as any;
   const router = useRouter();
   const [otp, setOtp] = useState("");
@@ -91,9 +91,30 @@ const TwoFactorBase = () => {
     setIsSubmitting(false);
   };
 
+  // Map methodType to Lottie config keys
+  const getLottieKeyForType = (methodType: string) => {
+    switch (methodType) {
+      case "APP":
+        return "appVerificationLottie";
+      case "SMS":
+        return "mobileVerificationLottie";
+      case "EMAIL":
+        return "emailVerificationLottie";
+      default:
+        return "";
+    }
+  };
+
   const renderCard = (methodType, path, text, handleClick) => {
     const enabledType = profile?.twoFactor?.type || "";
     const status = profile?.twoFactor?.enabled || false;
+
+    const lottieKey = getLottieKeyForType(methodType);
+    const isLottieEnabled =
+      settings?.lottieAnimationStatus === "true" &&
+      settings?.[`${lottieKey}Enabled`] === "true";
+    const lottieFile = settings?.[`${lottieKey}File`];
+
     return (
       <Card
         shape="smooth"
@@ -116,7 +137,7 @@ const TwoFactorBase = () => {
       >
         {enabledType === methodType && (
           <div className="absolute top-0 right-0 mt-2 mr-2">
-            <AnimatedTooltip
+            <Tooltip
               content={status ? t("Disable 2FA") : t("Enable 2FA")}
             >
               <IconButton
@@ -133,15 +154,26 @@ const TwoFactorBase = () => {
                   className="w-4 h-4"
                 />
               </IconButton>
-            </AnimatedTooltip>
+            </Tooltip>
           </div>
         )}
-        <Lottie
-          category="otp"
-          path={path}
-          classNames="mx-auto max-w-[160px]"
-          max={path === "mobile-verfication" ? 2 : undefined}
-        />
+
+        {/* Conditional logic to render Lottie or fallback image */}
+        {isLottieEnabled ? (
+          <Lottie
+            category="otp"
+            path={path}
+            classNames="mx-auto max-w-[160px]"
+            max={path === "mobile-verfication" ? 2 : undefined}
+          />
+        ) : lottieFile ? (
+          <img
+            src={lottieFile}
+            alt={`${methodType} Verification`}
+            className="mx-auto max-w-[160px] object-contain p-5"
+          />
+        ) : null}
+
         <p className="text-center text-sm text-muted-800 dark:text-muted-200 mb-4">
           {t(text)}
         </p>
@@ -198,10 +230,10 @@ const TwoFactorBase = () => {
 
   return (
     <>
-      <div className="flex flex-grow items-center px-6 py-12 md:px-12">
+      <div className="flex grow items-center px-6 py-12 md:px-12">
         <div className="container">
           <div className="columns flex items-center">
-            <div className="flex-shrink flex-grow md:p-3">
+            <div className="shrink grow md:p-3">
               <div className="mx-auto -mt-10 mb-6 max-w-[420px] text-center font-sans">
                 <h1 className="mb-2 text-center font-sans text-3xl font-light leading-tight text-muted-800 dark:text-muted-100">
                   {t("Enable Two-Factor Authentication")}

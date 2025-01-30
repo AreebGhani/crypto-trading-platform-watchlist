@@ -2,6 +2,23 @@ import * as Sequelize from "sequelize";
 import { DataTypes, Model } from "sequelize";
 import ecosystemMasterWallet from "./ecosystemMasterWallet";
 
+// Interface for attributes
+export interface ecosystemCustodialWalletAttributes {
+  id: string;
+  masterWalletId: string;
+  address: string;
+  chain: string;
+  network: string;
+  status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
+  createdAt?: Date;
+  deletedAt?: Date;
+  updatedAt?: Date;
+}
+
+// Interface for creation attributes
+export interface ecosystemCustodialWalletCreationAttributes
+  extends Partial<ecosystemCustodialWalletAttributes> {}
+
 export default class ecosystemCustodialWallet
   extends Model<
     ecosystemCustodialWalletAttributes,
@@ -24,7 +41,7 @@ export default class ecosystemCustodialWallet
   getMasterWallet!: Sequelize.BelongsToGetAssociationMixin<ecosystemMasterWallet>;
   setMasterWallet!: Sequelize.BelongsToSetAssociationMixin<
     ecosystemMasterWallet,
-    ecosystemMasterWalletId
+    string
   >;
   createMasterWallet!: Sequelize.BelongsToCreateAssociationMixin<ecosystemMasterWallet>;
 
@@ -129,3 +146,5 @@ export default class ecosystemCustodialWallet
     });
   }
 }
+
+export { ecosystemCustodialWallet as ecosystemCustodialWallet };

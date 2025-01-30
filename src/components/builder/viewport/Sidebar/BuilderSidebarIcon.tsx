@@ -2,7 +2,7 @@ import React, { type FC } from "react";
 import { Icon } from "@iconify/react";
 import type { IconifyIcon } from "@iconify/react";
 import useBuilderStore from "@/stores/admin/builder";
-import DarkToolTip from "@/components/elements/base/tooltips/DarkTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 
 interface SidebarIconProps {
   icon: string | IconifyIcon;
@@ -19,7 +19,7 @@ const BuilderSidebarIcon: FC<SidebarIconProps> = ({ icon, name }) => {
       }`}
       onClick={() => (sidebar === name ? setSidebar("") : setSidebar(name))}
     >
-      <DarkToolTip content={name} position="end">
+      <Tooltip content={name} position="end">
         <div
           className={`side-icon-inner mask mask-blob flex h-[35px] w-[35px] items-center justify-center transition-colors duration-300 ${
             sidebar === name
@@ -36,7 +36,7 @@ const BuilderSidebarIcon: FC<SidebarIconProps> = ({ icon, name }) => {
             }`}
           />
         </div>
-      </DarkToolTip>
+      </Tooltip>
     </li>
   );
 };

@@ -167,7 +167,7 @@ const EcommerceProductEdit: React.FC = () => {
             <Button
               onClick={() => router.push(`/admin/ext/ecommerce/product`)}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="danger"
             >
@@ -176,7 +176,7 @@ const EcommerceProductEdit: React.FC = () => {
             <Button
               onClick={handleSubmit}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="success"
             >

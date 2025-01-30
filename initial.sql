@@ -268,6 +268,7 @@ CREATE TABLE `deposit_method` (
 
 CREATE TABLE `ecommerce_category` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `slug` varchar(191) NOT NULL,
   `name` varchar(191) NOT NULL,
   `description` varchar(191) NOT NULL,
   `image` varchar(191) DEFAULT NULL,
@@ -335,8 +336,10 @@ CREATE TABLE `ecommerce_order_item` (
 
 CREATE TABLE `ecommerce_product` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `slug` varchar(191) NOT NULL,
   `name` varchar(191) NOT NULL,
-  `description` varchar(191) NOT NULL,
+  `description` longtext NOT NULL,
+  `shortDescription` varchar(191) DEFAULT NULL,
   `type` enum('DOWNLOADABLE','PHYSICAL') NOT NULL,
   `price` double NOT NULL,
   `categoryId` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,

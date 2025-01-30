@@ -7,7 +7,7 @@ import ButtonDialog from "../shared/ButtonDialog";
 import HashtagDialog from "../shared/HashtagDialog";
 import SvgDialog from "../shared/SvgDialog";
 import useBuilderStore from "@/stores/admin/builder";
-import DarkToolTip from "@/components/elements/base/tooltips/DarkTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import { Icon } from "@iconify/react";
 
 interface ContainerProps {
@@ -125,92 +125,92 @@ const EditorElement: React.FC<ContainerProps> = ({ render }) => {
                 lineHeight: "12px",
               }}
             >
-              <h2 className="flex-1 mr-4 bg-muted-100 p-1 rounded-sm">
+              <h2 className="flex-1 mr-4 bg-muted-100 p-1 rounded-xs">
                 {name}
               </h2>
               {moveable && (
-                <DarkToolTip content="Move" position="bottom">
+                <Tooltip content="Move" position="bottom">
                   <a
-                    className="cursor-move flex items-center hover:bg-muted-200 rounded p-1 bg-muted-100/40 transition-colors duration-200"
+                    className="cursor-move flex items-center hover:bg-muted-200 rounded-sm p-1 bg-muted-100/40 transition-colors duration-200"
                     ref={(e) => {
                       if (e) drag(e);
                     }}
                   >
                     <Icon icon="mdi:cursor-move" className="h-4 w-4" />
                   </a>
-                </DarkToolTip>
+                </Tooltip>
               )}
               {isRootChild && (
-                <DarkToolTip content="Hashtag" position="bottom">
+                <Tooltip content="Hashtag" position="bottom">
                   <a
-                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded p-1 bg-muted-100/40 transition-colors duration-200"
+                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded-sm p-1 bg-muted-100/40 transition-colors duration-200"
                     onMouseDown={(e) => handleMouseDown(e, setOpenHash)}
                   >
                     <Icon icon="mdi:hashtag" className="h-4 w-4" />
                   </a>
-                </DarkToolTip>
+                </Tooltip>
               )}
               {showFocus && (
-                <DarkToolTip content="Parent" position="bottom">
+                <Tooltip content="Parent" position="bottom">
                   <a
-                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded p-1 bg-muted-100/40 transition-colors duration-200"
+                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded-sm p-1 bg-muted-100/40 transition-colors duration-200"
                     onClick={() => {
                       actions.selectNode(data.parent ?? undefined);
                     }}
                   >
                     <Icon icon="mdi:arrow-up" className="h-4 w-4" />
                   </a>
-                </DarkToolTip>
+                </Tooltip>
               )}
               {dom?.nodeName === "IMG" && (
-                <DarkToolTip content="Image" position="bottom">
+                <Tooltip content="Image" position="bottom">
                   <a
-                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded p-1 bg-muted-100/40 transition-colors duration-200"
+                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded-sm p-1 bg-muted-100/40 transition-colors duration-200"
                     onMouseDown={(e) => handleMouseDown(e, setOpenImage)}
                   >
                     <Icon icon="mdi:image" className="h-4 w-4" />
                   </a>
-                </DarkToolTip>
+                </Tooltip>
               )}
               {dom?.nodeName === "svg" && (
-                <DarkToolTip content="SVG" position="bottom">
+                <Tooltip content="SVG" position="bottom">
                   <a
-                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded p-1 bg-muted-100/40 transition-colors duration-200"
+                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded-sm p-1 bg-muted-100/40 transition-colors duration-200"
                     onMouseDown={(e) => handleMouseDown(e, setOpenSvg)}
                   >
                     <Icon icon="mdi:image" className="h-4 w-4" />
                   </a>
-                </DarkToolTip>
+                </Tooltip>
               )}
               {dom?.nodeName === "A" && (
-                <DarkToolTip content="Link" position="bottom">
+                <Tooltip content="Link" position="bottom">
                   <a
-                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded p-1 bg-muted-100/40 transition-colors duration-200"
+                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded-sm p-1 bg-muted-100/40 transition-colors duration-200"
                     onMouseDown={(e) => handleMouseDown(e, setOpenLink)}
                   >
                     <Icon icon="mdi:link" className="h-4 w-4" />
                   </a>
-                </DarkToolTip>
+                </Tooltip>
               )}
               {dom?.nodeName === "BUTTON" && (
-                <DarkToolTip content="Button" position="bottom">
+                <Tooltip content="Button" position="bottom">
                   <a
-                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded p-1 bg-muted-100/40 transition-colors duration-200"
+                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded-sm p-1 bg-muted-100/40 transition-colors duration-200"
                     onMouseDown={(e) => handleMouseDown(e, setOpenButton)}
                   >
                     <Icon icon="dashicons:button" className="h-4 w-4" />
                   </a>
-                </DarkToolTip>
+                </Tooltip>
               )}
               {deletable && (
-                <DarkToolTip content="Delete" position="bottom">
+                <Tooltip content="Delete" position="bottom">
                   <a
-                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded p-1 bg-muted-100/40 transition-colors duration-200"
+                    className="cursor-pointer flex items-center hover:bg-muted-200 rounded-sm p-1 bg-muted-100/40 transition-colors duration-200"
                     onMouseDown={handleDelete}
                   >
                     <Icon icon="mdi:trash-can-outline" className="h-4 w-4" />
                   </a>
-                </DarkToolTip>
+                </Tooltip>
               )}
               <LinkDialog
                 open={openLink}

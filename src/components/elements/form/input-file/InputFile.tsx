@@ -7,7 +7,7 @@ import Progress from "@/components/elements/base/progress/Progress";
 import { useDataTable } from "@/stores/datatable";
 import { MashImage } from "@/components/elements/MashImage";
 import Message from "../../base/message/Message";
-import ToolTip from "../../base/tooltips/Tooltip";
+import { Tooltip } from "../../base/tooltips/Tooltip";
 import { useTranslation } from "next-i18next";
 interface InputFileProps {
   id: string;
@@ -16,7 +16,7 @@ interface InputFileProps {
   allowMultiple?: boolean;
   label?: string;
   labelAlt?: string;
-  shape?: "straight" | "rounded" | "smooth" | "curved" | "full";
+  shape?: "straight" | "rounded-sm" | "smooth" | "curved" | "full";
   color?:
     | "default"
     | "contrast"
@@ -154,7 +154,7 @@ export default function InputFile(props: InputFileProps) {
         ? "border border-muted-200 dark:border-muted-800"
         : ""
     }
-    ${shape === "rounded" ? "rounded-md" : ""}
+    ${shape === "rounded-sm" ? "rounded-md" : ""}
     ${shape === "smooth" ? "rounded-lg" : ""}
     ${shape === "curved" ? "rounded-xl" : ""}
     ${shape === "full" ? "rounded-xl" : ""}
@@ -226,7 +226,7 @@ export default function InputFile(props: InputFileProps) {
             >
               <div
                 className={`w-full relative border-2 border-dashed border-muted-300 bg-muted-50 p-5 dark:border-muted-700 dark:bg-muted-800
-                ${shape === "rounded" ? "rounded-md" : ""}
+                ${shape === "rounded-sm" ? "rounded-md" : ""}
                 ${shape === "smooth" ? "rounded-lg" : ""}
                 ${shape === "curved" ? "rounded-xl" : ""}
                 ${shape === "full" ? "rounded-xl" : ""}
@@ -265,7 +265,7 @@ export default function InputFile(props: InputFileProps) {
                     <label
                       htmlFor={id}
                       className={`mx-auto flex w-40 cursor-pointer items-center justify-center bg-primary-500 px-3 py-2 text-sm text-center font-normal text-white transition-colors duration-300 hover:bg-primary-400 active:bg-primary-500
-                      ${shape === "rounded" ? "rounded-md" : ""}
+                      ${shape === "rounded-sm" ? "rounded-md" : ""}
                       ${shape === "smooth" ? "rounded-lg" : ""}
                       ${shape === "curved" ? "rounded-xl" : ""}
                       ${shape === "full" ? "rounded-full" : ""}
@@ -285,7 +285,7 @@ export default function InputFile(props: InputFileProps) {
               {previews.length > 0 && (
                 <div
                   className={`relative border-2 border-dashed border-muted-300 bg-muted-50 p-5 dark:border-muted-700 dark:bg-muted-800
-              ${shape === "rounded" ? "rounded-md" : ""}
+              ${shape === "rounded-sm" ? "rounded-md" : ""}
               ${shape === "smooth" ? "rounded-lg" : ""}
               ${shape === "curved" ? "rounded-xl" : ""}
               ${shape === "full" ? "rounded-xl" : ""}
@@ -295,7 +295,7 @@ export default function InputFile(props: InputFileProps) {
                     <div
                       key={index}
                       className={`relative flex flex-col items-center justify-center w-32 h-32 bg-muted-50 dark:bg-muted-800 rounded-md
-          ${shape === "rounded" ? "rounded-md" : ""}
+          ${shape === "rounded-sm" ? "rounded-md" : ""}
           ${shape === "smooth" ? "rounded-lg" : ""}
           ${shape === "curved" ? "rounded-xl" : ""}
           ${shape === "full" ? "rounded-xl" : ""}
@@ -311,7 +311,7 @@ export default function InputFile(props: InputFileProps) {
                       )}
                       {preview !== previewPlaceholder && (
                         <span className="absolute -top-2 -right-2">
-                          <ToolTip content={t("Remove file")} position="top">
+                          <Tooltip content={t("Remove file")} position="top">
                             <button
                               className=" bg-white rounded-full shadow-md transition-colors duration-300 hover:bg-danger-500 text-danger-500 hover:text-white"
                               onClick={() => {
@@ -326,7 +326,7 @@ export default function InputFile(props: InputFileProps) {
                                 className="w-6 h-6 "
                               />
                             </button>
-                          </ToolTip>
+                          </Tooltip>
                         </span>
                       )}
                     </div>

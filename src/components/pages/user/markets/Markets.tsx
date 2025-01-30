@@ -1,31 +1,31 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
-import { Icon } from "@iconify/react";
-import Avatar from "@/components/elements/base/avatar/Avatar";
-import Input from "@/components/elements/form/input/Input";
-import Select from "@/components/elements/form/select/Select";
-import HeadCell from "./HeadCell";
-import IconButton from "@/components/elements/base/button-icon/IconButton";
-import Link from "next/link";
+import React, { memo, useCallback, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
-import { useDashboardStore } from "@/stores/dashboard";
 import { useTranslation } from "next-i18next";
-import useMarketStore from "@/stores/trade/market";
 import { debounce } from "lodash";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import { formatLargeNumber } from "@/utils/market";
+import { shallow } from "zustand/shallow";
+
+import { useDashboardStore } from "@/stores/dashboard";
+import useMarketStore from "@/stores/trade/market";
 import useWebSocketStore from "@/stores/trade/ws";
 import $fetch from "@/utils/api";
+import { formatLargeNumber } from "@/utils/market";
+
+import MarketsToolbar from "./MarketsToolbar";
+import MarketsTable from "./MarketsTable";
+import MarketsPagination from "./MarketsPagination";
 
 const MarketsBase = () => {
   const { t } = useTranslation();
+  const router = useRouter();
+
+  const { isDark, hasExtension, extensions } = useDashboardStore();
   const {
     marketData,
     fetchData,
-    setSearchQuery,
+    setSearchQuery: setStoreSearchQuery,
     getPrecisionBySymbol,
     setWithEco,
-  } = useMarketStore();
+  } = useMarketStore((state) => state, shallow);
 
   const {
     createConnection,
@@ -35,18 +35,18 @@ const MarketsBase = () => {
     removeMessageHandler,
   } = useWebSocketStore();
 
+  const [baseItems, setBaseItems] = useState<any[]>([]); // Base data including ticker updates
   const [items, setItems] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [pages, setPages] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(25);
-  const [sorted, setSorted] = useState<{
-    field: string;
-    rule: "asc" | "desc";
-  }>({
-    field: "",
-    rule: "asc",
-  });
-
+  const [sorted, setSorted] = useState<{ field: string; rule: "asc" | "desc" }>(
+    {
+      field: "",
+      rule: "asc",
+    }
+  );
   const [pagination, setPagination] = useState({
     total: 0,
     lastPage: 0,
@@ -55,135 +55,109 @@ const MarketsBase = () => {
     to: 25,
   });
 
-  const router = useRouter();
-  const { isDark, hasExtension, extensions } = useDashboardStore();
-  const debouncedFetchData = debounce(fetchData, 100);
   const [tickersFetched, setTickersFetched] = useState(false);
   const [tickersConnected, setTickersConnected] = useState(false);
   const [ecoTickersConnected, setEcoTickersConnected] = useState(false);
 
-  useEffect(() => {
-    setItems(marketData);
-    updatePagination(marketData.length, perPage, currentPage);
-  }, [marketData, perPage, currentPage]);
-
-  const updatePagination = (
-    totalItems: number,
-    itemsPerPage: number,
-    currentPage: number
-  ) => {
-    const lastPage = Math.ceil(totalItems / itemsPerPage);
-    const from = (currentPage - 1) * itemsPerPage + 1;
-    const to = Math.min(currentPage * itemsPerPage, totalItems);
-
-    setPagination({
-      total: totalItems,
-      lastPage,
-      currentPage,
-      from,
-      to,
-    });
-
-    setPages(calculatePages(totalItems, itemsPerPage));
-  };
-
-  const calculatePages = (
-    totalItems: number,
-    itemsPerPage: number
-  ): number[] => {
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-    return Array.from({ length: totalPages }, (_, i) => i + 1);
-  };
-
-  const changePage = useCallback(
-    (page: number) => {
-      if (page >= 1 && page <= pagination.lastPage) {
-        setCurrentPage(page);
-        updatePagination(items.length, perPage, page);
-      }
-    },
-    [pagination.lastPage, perPage, items.length]
+  const debouncedFetchData = useMemo(
+    () => debounce(fetchData, 100),
+    [fetchData]
   );
 
-  const changePerPage = (newPerPage: number) => {
-    setPerPage(newPerPage);
-    setCurrentPage(1); // Reset to first page when changing items per page
-    updatePagination(items.length, newPerPage, 1);
-  };
+  const parseToNumber = useCallback((value: any) => {
+    const parsedValue = typeof value === "number" ? value : parseFloat(value);
+    return isNaN(parsedValue) ? 0 : parsedValue;
+  }, []);
 
-  const updateItem = (existingItem, update) => {
-    const precision = getPrecisionBySymbol(existingItem.symbol);
+  const updateItem = useCallback(
+    (existingItem, update) => {
+      const precision = getPrecisionBySymbol(existingItem.symbol) || {
+        price: 8,
+        amount: 8,
+      };
 
-    const parseToNumber = (value) => {
-      const parsedValue = typeof value === "number" ? value : parseFloat(value);
-      return isNaN(parsedValue) ? 0 : parsedValue;
-    };
+      return {
+        ...existingItem,
+        price:
+          update.last !== undefined
+            ? parseToNumber(update.last).toFixed(precision.price)
+            : parseToNumber(existingItem.price || 0).toFixed(precision.price),
+        change:
+          update.change !== undefined
+            ? parseToNumber(update.change).toFixed(2)
+            : parseToNumber(existingItem.change || 0).toFixed(2),
+        baseVolume:
+          update.baseVolume !== undefined
+            ? formatLargeNumber(update.baseVolume, precision.amount)
+            : formatLargeNumber(existingItem.baseVolume || 0, precision.amount),
+        quoteVolume:
+          update.quoteVolume !== undefined
+            ? formatLargeNumber(update.quoteVolume, precision.price)
+            : formatLargeNumber(existingItem.quoteVolume || 0, precision.price),
+        high: update.high !== undefined ? update.high : existingItem.high,
+        low: update.low !== undefined ? update.low : existingItem.low,
+        percentage:
+          update.percentage !== undefined
+            ? update.percentage
+            : existingItem.percentage,
+      };
+    },
+    [getPrecisionBySymbol, parseToNumber]
+  );
 
-    return {
-      ...existingItem,
-      price:
-        update.last !== undefined
-          ? parseToNumber(update.last).toFixed(precision.price)
-          : parseToNumber(existingItem.price).toFixed(precision.price),
-      change:
-        update.change !== undefined
-          ? parseToNumber(update.change).toFixed(2)
-          : parseToNumber(existingItem.change).toFixed(2),
-      baseVolume:
-        update.baseVolume !== undefined
-          ? formatLargeNumber(update.baseVolume, precision.amount)
-          : formatLargeNumber(existingItem.baseVolume, precision.amount),
-      quoteVolume:
-        update.quoteVolume !== undefined
-          ? formatLargeNumber(update.quoteVolume, precision.price)
-          : formatLargeNumber(existingItem.quoteVolume, precision.price),
-      high: update.high !== undefined ? update.high : existingItem.high,
-      low: update.low !== undefined ? update.low : existingItem.low,
-      percentage:
-        update.percentage !== undefined
-          ? update.percentage
-          : existingItem.percentage,
-    };
-  };
+  // Initialize baseItems from marketData
+  useEffect(() => {
+    setBaseItems(marketData);
+  }, [marketData]);
 
-  const updateItems = (newData: any) => {
-    setItems((prevItems) => {
-      const updatedItems = prevItems.map((item) => {
-        const update = newData[item.symbol];
-        return update ? updateItem(item, update) : item;
+  // Apply ticker updates to baseItems, not items
+  const updateItemsFromTickers = useCallback(
+    (newData: any) => {
+      setBaseItems((prevBaseItems) => {
+        let updated = false;
+        const nextBase = prevBaseItems.map((item) => {
+          const dataUpdate = newData[item.symbol];
+          if (dataUpdate) {
+            const updatedItem = updateItem(item, dataUpdate);
+            if (JSON.stringify(updatedItem) !== JSON.stringify(item)) {
+              updated = true;
+              return updatedItem;
+            }
+          }
+          return item;
+        });
+        return updated ? nextBase : prevBaseItems;
       });
+    },
+    [updateItem]
+  );
 
-      return updatedItems;
-    });
-  };
-
-  const fetchTickers = async () => {
+  const fetchTickers = useCallback(async () => {
     const { data, error } = await $fetch({
       url: "/api/exchange/ticker",
       silent: true,
     });
-
-    if (!error) {
-      updateItems(data);
+    if (!error && data) {
+      updateItemsFromTickers(data);
     }
-
     setTickersFetched(true);
-  };
+  }, [updateItemsFromTickers]);
 
-  const debouncedFetchTickers = debounce(fetchTickers, 100);
+  const debouncedFetchTickers = useMemo(
+    () => debounce(fetchTickers, 100),
+    [fetchTickers]
+  );
 
+  // Fetch initial data and tickers
   useEffect(() => {
     if (router.isReady && extensions) {
       setWithEco(hasExtension("ecosystem"));
       debouncedFetchData();
       debouncedFetchTickers();
-
-      return () => {
-        setTickersFetched(false);
-      };
     }
   }, [router.isReady, extensions]);
 
+  // Initialize WebSocket connections for tickers
   useEffect(() => {
     if (tickersFetched) {
       createConnection("tickersConnection", `/api/exchange/ticker`, {
@@ -209,16 +183,20 @@ const MarketsBase = () => {
         }
       };
     }
-  }, [tickersFetched]);
+  }, [tickersFetched, createConnection, subscribe, unsubscribe, hasExtension]);
 
-  const handleTickerMessage = (message) => {
-    const { data } = message;
-    if (!data) return;
-    updateItems(data);
-  };
+  const handleTickerMessage = useCallback(
+    (message) => {
+      const { data } = message;
+      if (data) updateItemsFromTickers(data);
+    },
+    [updateItemsFromTickers]
+  );
 
-  const messageFilter = (message) =>
-    message.stream && message.stream === "tickers";
+  const messageFilter = useCallback(
+    (message) => message.stream === "tickers",
+    []
+  );
 
   useEffect(() => {
     if (tickersConnected) {
@@ -227,12 +205,17 @@ const MarketsBase = () => {
         handleTickerMessage,
         messageFilter
       );
-
       return () => {
         removeMessageHandler("tickersConnection", handleTickerMessage);
       };
     }
-  }, [tickersConnected]);
+  }, [
+    tickersConnected,
+    addMessageHandler,
+    removeMessageHandler,
+    handleTickerMessage,
+    messageFilter,
+  ]);
 
   useEffect(() => {
     if (ecoTickersConnected) {
@@ -241,324 +224,150 @@ const MarketsBase = () => {
         handleTickerMessage,
         messageFilter
       );
-
       return () => {
         removeMessageHandler("ecoTickersConnection", handleTickerMessage);
       };
     }
-  }, [ecoTickersConnected]);
+  }, [
+    ecoTickersConnected,
+    addMessageHandler,
+    removeMessageHandler,
+    handleTickerMessage,
+    messageFilter,
+  ]);
 
-  function compareOnKey(key: string, rule: "asc" | "desc") {
-    return function (a: any, b: any) {
+  const compareOnKey = useCallback((key: string, rule: "asc" | "desc") => {
+    return (a: any, b: any) => {
       const valueA = a[key] ?? null;
       const valueB = b[key] ?? null;
 
-      // Handle string comparison
       if (typeof valueA === "string" && typeof valueB === "string") {
         return rule === "asc"
           ? valueA.localeCompare(valueB)
           : valueB.localeCompare(valueA);
       }
-
-      // Handle numeric comparison
       if (typeof valueA === "number" && typeof valueB === "number") {
         return rule === "asc" ? valueA - valueB : valueB - valueA;
       }
-
-      // Handle arrays (based on length)
-      if (Array.isArray(valueA) && Array.isArray(valueB)) {
-        return rule === "asc"
-          ? valueA.length - valueB.length
-          : valueB.length - valueA.length;
-      }
-
-      // Fallback for other types
       return 0;
     };
-  }
+  }, []);
 
-  function sort(field: string, rule: "asc" | "desc") {
-    const sortedItems = [...items].sort(compareOnKey(field, rule));
+  // Derive items from baseItems, searchQuery, and sorted
+  useEffect(() => {
+    let newItems = [...baseItems];
+
+    // Filter by search
+    if (searchQuery) {
+      newItems = newItems.filter((item) =>
+        item.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Sort if needed
+    if (sorted.field) {
+      newItems.sort(compareOnKey(sorted.field, sorted.rule));
+    }
+
+    setItems(newItems);
+  }, [baseItems, searchQuery, sorted, compareOnKey]);
+
+  const updatePagination = useCallback(
+    (totalItems: number, itemsPerPage: number, page: number) => {
+      const lastPage = Math.ceil(totalItems / itemsPerPage);
+      const from = (page - 1) * itemsPerPage + 1;
+      const to = Math.min(page * itemsPerPage, totalItems);
+
+      setPagination((prev) => {
+        if (
+          prev.total === totalItems &&
+          prev.lastPage === lastPage &&
+          prev.currentPage === page &&
+          prev.from === from &&
+          prev.to === to
+        ) {
+          return prev;
+        }
+        return { total: totalItems, lastPage, currentPage: page, from, to };
+      });
+
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      const newPages = Array.from({ length: totalPages }, (_, i) => i + 1);
+      setPages((prev) =>
+        JSON.stringify(prev) === JSON.stringify(newPages) ? prev : newPages
+      );
+    },
+    []
+  );
+
+  useEffect(() => {
+    updatePagination(items.length, perPage, currentPage);
+  }, [items.length, perPage, currentPage, updatePagination]);
+
+  const changePage = useCallback(
+    (page: number) => {
+      if (page >= 1 && page <= pagination.lastPage && page !== currentPage) {
+        setCurrentPage(page);
+      }
+    },
+    [pagination.lastPage, currentPage]
+  );
+
+  const changePerPage = useCallback(
+    (newPerPage: number) => {
+      if (newPerPage !== perPage) {
+        setPerPage(newPerPage);
+        setCurrentPage(1);
+      }
+    },
+    [perPage]
+  );
+
+  const sortData = useCallback((field: string, rule: "asc" | "desc") => {
     setSorted({ field, rule });
-    setItems(sortedItems);
-
-    // Reset to the first page after sorting
     setCurrentPage(1);
-    updatePagination(sortedItems.length, perPage, 1);
-  }
+  }, []);
 
   const search = useCallback(
     (query: string) => {
       setSearchQuery(query);
-      const filteredData = marketData.filter((item) =>
-        item.symbol.toLowerCase().includes(query.toLowerCase())
-      );
-      setItems(filteredData);
-      updatePagination(filteredData.length, perPage, 1);
+      setStoreSearchQuery(query); // keep store in sync if needed
+      setCurrentPage(1);
     },
-    [marketData, setSearchQuery, perPage]
+    [setStoreSearchQuery]
   );
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    search(value);
-  };
+  const handleNavigation = useCallback(
+    (symbol: string) => {
+      router.push(`/trade/${symbol.replace("/", "_")}`);
+    },
+    [router]
+  );
 
   return (
     <main id="datatable">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center">
-          <h2 className="font-sans text-2xl font-light text-muted-700 dark:text-muted-200">
-            {t("Markets Overview")}
-          </h2>
-        </div>
-        <div className="flex items-center justify-end gap-3">
-          <div className="hidden w-full md:block md:w-auto">
-            <Input
-              icon="lucide:search"
-              color="contrast"
-              placeholder={t("Search...")}
-              onChange={handleSearchChange}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="flex w-full flex-col overflow-x-auto lg:overflow-x-visible ltablet:overflow-x-visible">
-        <table className="border border-muted-200 bg-white font-sans dark:border-muted-800 dark:bg-muted-950">
-          <thead className="border-b border-fade-grey-2 dark:border-muted-800">
-            <tr className=" divide-x divide-muted-200 dark:divide-muted-800">
-              <th className="w-[30%] p-4">
-                <HeadCell
-                  label={t("Name")}
-                  sortFn={sort}
-                  sortField="symbol"
-                  sorted={sorted}
-                />
-              </th>
-              <th className="w-[20%] p-4">
-                <HeadCell
-                  label={t("Price")}
-                  sortFn={sort}
-                  sortField="price"
-                  sorted={sorted}
-                />
-              </th>
-              <th className="w-[20%] p-4">
-                <HeadCell
-                  label={t("Change")}
-                  sortFn={sort}
-                  sortField="change"
-                  sorted={sorted}
-                />
-              </th>
-              <th className="w-[25%] p-4">
-                <HeadCell
-                  label={t("24h Volume")}
-                  sortFn={sort}
-                  sortField="baseVolume"
-                  sorted={sorted}
-                />
-              </th>
-              <th className="w-[5%] text-end"></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {items
-              .slice(
-                (pagination.currentPage - 1) * perPage,
-                pagination.currentPage * perPage
-              )
-              .map((item, i) => (
-                <tr
-                  key={i}
-                  className={`border-b border-muted-200 transition-colors duration-300 last:border-none 
-              hover:bg-muted-200/40 dark:border-muted-800 dark:hover:bg-muted-900/60 cursor-pointer`}
-                  onClick={() =>
-                    router.push(`/trade/${item.symbol.replace("/", "_")}`)
-                  }
-                >
-                  <td className="px-4 py-3 align-middle">
-                    <div className="flex items-center gap-2">
-                      <Avatar
-                        size="xxs"
-                        src={
-                          item.icon ||
-                          `/img/crypto/${item.currency.toLowerCase()}.webp`
-                        }
-                      />
-                      <span className="line-clamp-1 text-md text-muted-700 dark:text-muted-200">
-                        {item.symbol}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 align-middle">
-                    <span className="line-clamp-1 text-md text-muted-700 dark:text-muted-200">
-                      {item.price || (
-                        <Skeleton
-                          width={40}
-                          height={10}
-                          baseColor={isDark ? "#27272a" : "#f7fafc"}
-                          highlightColor={isDark ? "#3a3a3e" : "#edf2f7"}
-                        />
-                      )}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 align-middle">
-                    <span
-                      className={`line-clamp-1 text-md text-${
-                        item.change >= 0
-                          ? item.change === 0
-                            ? "muted"
-                            : "success"
-                          : "danger"
-                      }-500`}
-                    >
-                      {item.change ? (
-                        `${item.change}%`
-                      ) : (
-                        <Skeleton
-                          width={40}
-                          height={10}
-                          baseColor={isDark ? "#27272a" : "#f7fafc"}
-                          highlightColor={isDark ? "#3a3a3e" : "#edf2f7"}
-                        />
-                      )}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 align-middle">
-                    <div>
-                      <span className="line-clamp-1 text-md text-muted-700 dark:text-muted-200">
-                        {item.baseVolume || (
-                          <Skeleton
-                            width={40}
-                            height={10}
-                            baseColor={isDark ? "#27272a" : "#f7fafc"}
-                            highlightColor={isDark ? "#3a3a3e" : "#edf2f7"}
-                          />
-                        )}{" "}
-                        <span className=" text-muted-400 text-xs">
-                          ({item.currency})
-                        </span>
-                      </span>
-                      <span className="line-clamp-1 text-md text-muted-700 dark:text-muted-200">
-                        {item.quoteVolume || (
-                          <Skeleton
-                            width={40}
-                            height={10}
-                            baseColor={isDark ? "#27272a" : "#f7fafc"}
-                            highlightColor={isDark ? "#3a3a3e" : "#edf2f7"}
-                          />
-                        )}{" "}
-                        <span className=" text-muted-400 text-xs">
-                          ({item.pair})
-                        </span>
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 align-middle text-end">
-                    <Link href={`/trade/${item.symbol.replace("/", "_")}`}>
-                      <IconButton color="contrast" variant="pastel" size="sm">
-                        <Icon icon="akar-icons:arrow-right" width={16} />
-                      </IconButton>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            {pagination.total === 0 && (
-              <tr>
-                <td colSpan={5} className="py-3 text-center">
-                  <div className="py-32">
-                    <Icon
-                      icon="arcticons:samsung-finder"
-                      className="mx-auto h-20 w-20 text-muted-400"
-                    />
-                    <h3 className="mb-2 font-sans text-xl text-muted-700 dark:text-muted-200">
-                      {t("Nothing found")}
-                    </h3>
-                    <p className="mx-auto max-w-[280px] font-sans text-md text-muted-400">
-                      {t(
-                        "Sorry, looks like we couldn't find any matching records. Try different search terms."
-                      )}
-                    </p>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between">
-        <div className="flex items-center">
-          <div className="hidden items-center gap-2 rounded-xl border border-muted-200 bg-white py-1 pe-3 ps-1 dark:border-muted-800 dark:bg-muted-950 md:flex">
-            <Select
-              color="contrast"
-              value={perPage.toString()}
-              onChange={(e) => changePerPage(+e.target.value)}
-              options={["25", "50", "100", "250", "500"]}
-            />
-            <p className="whitespace-nowrap font-sans text-md text-muted-400">
-              {t("Per page")}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center justify-end divide-x divide-muted-300 dark:divide-muted-800">
-          <div className="flex items-center px-6">
-            <button
-              type="button"
-              onClick={() => changePage(1)}
-              className="cursor-pointer text-md text-muted-400 underline-offset-4 hover:text-primary-500 hover:underline"
-            >
-              <span>{t("First")}</span>
-            </button>
-            <span className="cursor-pointer px-2 text-md text-muted-400">
-              ·
-            </span>
-            <button
-              type="button"
-              onClick={() => changePage(pagination.lastPage)}
-              className="cursor-pointer text-md text-muted-400 underline-offset-4 hover:text-primary-500 hover:underline"
-            >
-              <span>{t("Last")}</span>
-            </button>
-          </div>
-          <div className="flex items-center justify-end ps-6">
-            <div className="flex items-center gap-1 rounded-full border border-muted-200 bg-white p-1 dark:border-muted-800 dark:bg-muted-950">
-              <button
-                type="button"
-                onClick={() => changePage(currentPage - 1)}
-                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-none bg-transparent p-0 text-muted-500 transition-all duration-300 hover:bg-muted-100 hover:text-muted-600 dark:hover:bg-muted-800 dark:hover:text-muted-100"
-              >
-                <Icon width={16} height={16} icon="lucide:chevron-left" />
-              </button>
-              {pages.map((page, i) => (
-                <button
-                  type="button"
-                  key={i}
-                  className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-none  p-0 transition-all duration-300 ${
-                    currentPage == page
-                      ? "bg-primary-500 text-white shadow-lg shadow-primary-500/20"
-                      : "bg-transparent text-muted-500 hover:bg-muted-100 hover:text-muted-600 dark:hover:bg-muted-800 dark:hover:text-muted-100"
-                  }`}
-                  onClick={() => changePage(page)}
-                >
-                  <span className="text-[.9rem]">{page}</span>
-                </button>
-              ))}
-              <button
-                onClick={() => changePage(currentPage + 1)}
-                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-none bg-transparent p-0 text-muted-500 transition-all duration-300 hover:bg-muted-100 hover:text-muted-600 dark:hover:bg-muted-800 dark:hover:text-muted-100"
-              >
-                <Icon width={16} height={16} icon="lucide:chevron-right" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <MarketsToolbar t={t} onSearch={search} />
+      <MarketsTable
+        t={t}
+        items={items}
+        pagination={pagination}
+        perPage={perPage}
+        sorted={sorted}
+        sort={sortData}
+        isDark={isDark}
+        handleNavigation={handleNavigation}
+      />
+      <MarketsPagination
+        t={t}
+        pagination={pagination}
+        pages={pages}
+        currentPage={currentPage}
+        perPage={perPage}
+        changePage={changePage}
+        changePerPage={changePerPage}
+      />
     </main>
   );
 };
-const Markets = memo(MarketsBase);
-export default Markets;
+
+export default memo(MarketsBase);

@@ -43,19 +43,19 @@ const TopBarBase = ({
               <i
                 className={`absolute block h-0.5 w-5 bg-muted-400 transition-all duration-200 ease-in-out ${
                   sidebarOpened || isSidebarOpenedMobile
-                    ? "start-1/2 top-3 -ms-2.5 -mt-0.5 rotate-45"
+                    ? "left-1/2 top-3 -ms-2.5 -mt-0.5 rotate-45"
                     : "top=[5.4px] ms-2.5"
                 } `}
               ></i>
               <i
                 className={`absolute top-[9.2px] -ms-2.5 -mt-px block bg-muted-400 transition-all duration-200 ease-in-out ${
                   sidebarOpened || isSidebarOpenedMobile
-                    ? "invisible start-[70%] h-[2.4px] w-px"
-                    : "start-1/2 h-px w-5"
+                    ? "invisible left-[70%] h-[2.4px] w-px"
+                    : "left-1/2 h-px w-5"
                 } `}
               ></i>
               <i
-                className={`absolute start-1/2 block h-0.5 w-5 bg-muted-400 transition-all duration-200 ease-in-out ${
+                className={`absolute left-1/2 block h-0.5 w-5 bg-muted-400 transition-all duration-200 ease-in-out ${
                   sidebarOpened || isSidebarOpenedMobile
                     ? "top-3 -ms-2.5 -mt-0.5 rotate-[135deg]"
                     : "top-3.5 ms-2.5 mt-0.5 "

@@ -5,20 +5,45 @@ import { Response } from "./Response";
 import { makeUuid } from "@b/utils/passwords";
 import { getRecord, getRecords } from "@b/utils/query";
 import { logError } from "@b/utils/logger";
+import { routeCache } from "./Routes";
 
 const clients = new Map();
 
 export async function handleWsMethod(app, routePath, entryPath) {
+  let handler, metadata, onClose;
+  const cached = routeCache.get(entryPath);
+  if (cached && cached.handler && cached.metadata) {
+    handler = cached.handler;
+    metadata = cached.metadata;
+    onClose = cached.onClose;
+  } else {
+    const handlerModule = await import(entryPath);
+    handler = handlerModule.default;
+    if (!handler) {
+      throw new Error(`Handler not found for ${entryPath}`);
+    }
+
+    metadata = handlerModule.metadata;
+    if (!metadata) {
+      throw new Error(`Metadata not found for ${entryPath}`);
+    }
+
+    onClose = handlerModule.onClose;
+
+    routeCache.set(entryPath, { handler, metadata, onClose });
+  }
+
+  if (typeof handler !== "function") {
+    throw new Error(`Handler is not a function for ${entryPath}`);
+  }
+
   app.ws(routePath, {
     upgrade: async (response, request, context) => {
       const res = new Response(response);
       const req = new Request(response, request);
-      let metadata;
-
       req.params = parseParams(routePath, req.url);
+
       try {
-        const handlerModule = await import(entryPath);
-        metadata = handlerModule.metadata;
         if (!metadata) {
           throw new Error(`Metadata not found for ${entryPath}`);
         }
@@ -85,12 +110,9 @@ export async function handleWsMethod(app, routePath, entryPath) {
         return;
       }
       const clientId = ws.user.id;
-      // Initialize client with empty subscriptions set
       addClient(ws.path, clientId, ws, undefined);
     },
     message: async (ws, message, isBinary) => {
-      const handlerModule = await import(entryPath);
-      const handler = handlerModule.default;
       const preparedMessage = Buffer.from(message).toString("utf-8");
       try {
         const parsedMessage = JSON.parse(preparedMessage);
@@ -110,8 +132,11 @@ export async function handleWsMethod(app, routePath, entryPath) {
         console.error(`Failed to parse message: ${error}`);
       }
     },
-    close: (ws) => {
+    close: async (ws) => {
       removeClient(ws.path, ws.user.id);
+      if (typeof onClose === "function") {
+        await onClose(ws, ws.path, ws.user.id);
+      }
     },
   });
 }
@@ -152,6 +177,9 @@ export const removeSubscription = (route, clientId, subscription) => {
     clientDetails.subscriptions.delete(subscription);
     if (clientDetails.subscriptions.size === 0) {
       clients.get(route).delete(clientId);
+      if (clients.get(route).size === 0) {
+        clients.delete(route);
+      }
     }
   }
 };

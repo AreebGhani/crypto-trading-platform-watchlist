@@ -44,7 +44,7 @@ const RangeSlider: FC<RangeSliderProps> = ({
     `}
     >
       {legend ? (
-        <span className="relative start-2 top-0.5 font-sans text-sm leading-none text-muted-500 dark:text-muted-400">
+        <span className="relative left-2 top-0.5 font-sans text-sm leading-none text-muted-500 dark:text-muted-400">
           <span className="pe-1">
             {valuePrefix}
             {min}
@@ -65,30 +65,30 @@ const RangeSlider: FC<RangeSliderProps> = ({
         marks={steps}
         orientation={orientation}
         invert={invert}
-        markClassName={`-top-1 start-1 h-3 w-3 border-2 bg-muted-100 dark:bg-muted-900 rounded-sm rotate-45 cursor-pointer
+        markClassName={`-top-1 left-1 h-3 w-3 border-2 bg-muted-100 dark:bg-muted-900 rounded-sm rotate-45 cursor-pointer
           ${
             color === "primary"
-              ? "border-primary-500 hover:bg-muted-400 hover:dark:bg-muted-500 hover:border-muted-200 hover:dark:border-muted-950"
+              ? "border-primary-500 hover:bg-muted-400 dark:hover:bg-muted-500 hover:border-muted-200 dark:hover:border-muted-950"
               : ""
           }
           ${
             color === "info"
-              ? "border-info-500 hover:bg-muted-400 hover:dark:bg-muted-500 hover:border-muted-200 hover:dark:border-muted-950"
+              ? "border-info-500 hover:bg-muted-400 dark:hover:bg-muted-500 hover:border-muted-200 dark:hover:border-muted-950"
               : ""
           }
           ${
             color === "success"
-              ? "border-success-500 hover:bg-muted-400 hover:dark:bg-muted-500 hover:border-muted-200 hover:dark:border-muted-950"
+              ? "border-success-500 hover:bg-muted-400 dark:hover:bg-muted-500 hover:border-muted-200 dark:hover:border-muted-950"
               : ""
           }
           ${
             color === "warning"
-              ? "border-warning-500 hover:bg-muted-400 hover:dark:bg-muted-500 hover:border-muted-200 hover:dark:border-muted-950"
+              ? "border-warning-500 hover:bg-muted-400 dark:hover:bg-muted-500 hover:border-muted-200 dark:hover:border-muted-950"
               : ""
           }
           ${
             color === "danger"
-              ? "border-danger-500 hover:bg-muted-400 hover:dark:bg-muted-500 hover:border-muted-200 hover:dark:border-muted-950"
+              ? "border-danger-500 hover:bg-muted-400 dark:hover:bg-muted-500 hover:border-muted-200 dark:hover:border-muted-950"
               : ""
           }
         `}
@@ -100,7 +100,7 @@ const RangeSlider: FC<RangeSliderProps> = ({
           ${color === "success" ? "odd:border-success-500" : ""}
           ${color === "warning" ? "odd:border-warning-500" : ""}
           ${color === "danger" ? "odd:border-danger-500" : ""}
-          ${orientation === "vertical" ? "border-s-4 start-1" : "border-t-4"}
+          ${orientation === "vertical" ? "border-s-4 left-1" : "border-t-4"}
         `}
         renderThumb={(props, state) => {
           const { key, ...restProps } = props; // Destructure key and remove it from restProps
@@ -115,7 +115,7 @@ const RangeSlider: FC<RangeSliderProps> = ({
 
           return (
             <div
-              className={`absolute -top-1 start-0 rounded-sm rotate-45
+              className={`absolute -top-1 left-0 rounded-sm rotate-45
                 ${color === "primary" ? "border-primary-500" : ""}
                 ${color === "info" ? "border-info-500" : ""}
                 ${color === "success" ? "border-success-500" : ""}
@@ -128,7 +128,7 @@ const RangeSlider: FC<RangeSliderProps> = ({
             >
               <div
                 tabIndex={0}
-                className={`absolute -end-3 bottom-0 top-0.5 my-auto ${thumbClass} cursor-pointer rounded-sm rotate-45 ring-offset-2 ring-offset-white dark:ring-offset-muted-950
+                className={`absolute -right-3 bottom-0 top-0.5 my-auto ${thumbClass} cursor-pointer rounded-sm rotate-45 ring-offset-2 ring-offset-white dark:ring-offset-muted-950
                   ${
                     color === "primary" ? "bg-primary-500 ring-primary-500" : ""
                   }
@@ -149,8 +149,8 @@ const RangeSlider: FC<RangeSliderProps> = ({
               >
                 {tooltip ? (
                   <div className="relative h-full w-full opacity-0 transition-opacity duration-200 -rotate-45">
-                    <div className="absolute start-[0.11rem] top-[-1.22rem] h-3 w-3 translate-y-2 -rotate-45 bg-muted-900 transition-all duration-300 ease-in-out dark:bg-muted-700"></div>
-                    <div className="absolute -top-12 start-[-0.4rem] flex h-8 w-8 translate-y-2 items-center justify-center rounded-full bg-muted-900 text-center font-sans text-[0.52rem] font-medium text-white transition-all duration-300 ease-in-out dark:bg-muted-700">
+                    <div className="absolute left-[0.11rem] top-[-1.22rem] h-3 w-3 translate-y-2 -rotate-45 bg-muted-900 transition-all duration-300 ease-in-out dark:bg-muted-700"></div>
+                    <div className="absolute -top-12 left-[-0.4rem] flex h-8 w-8 translate-y-2 items-center justify-center rounded-full bg-muted-900 text-center font-sans text-[0.52rem] font-medium text-white transition-all duration-300 ease-in-out dark:bg-muted-700">
                       <span className="select-none leading-none">
                         {state.valueNow}
                       </span>
@@ -168,7 +168,7 @@ const RangeSlider: FC<RangeSliderProps> = ({
         <span className="relative top-0.5 font-sans text-sm leading-none text-muted-500 dark:text-muted-400">
           <span
             className={`relative ${
-              orientation === "horizontal" ? "pe-1" : "start-2 pe-3"
+              orientation === "horizontal" ? "pe-1" : "left-2 pe-3"
             }`}
           >
             {valuePrefix}

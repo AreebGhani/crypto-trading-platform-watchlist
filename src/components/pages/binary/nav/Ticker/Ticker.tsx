@@ -8,7 +8,7 @@ const TickerBase = ({}: TickerProps) => {
   return (
     priceChangeData[`${market?.symbol}`] && (
       <div className="flex items-center gap-2">
-        <Card className="p-[1px] px-3 flex flex-col text-xs" shape={"rounded"}>
+        <Card className="p-[1px] px-3 flex flex-col text-xs" shape={"rounded-sm"}>
           <span className="text-muted-500 dark:text-muted-400">
             {market?.symbol}
           </span>

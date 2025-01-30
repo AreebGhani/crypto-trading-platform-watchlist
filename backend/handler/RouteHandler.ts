@@ -43,25 +43,40 @@ export class RouteHandler {
     }
   }
 
+  private runSafe(
+    fn: (res: Response, req: Request, next: VoidFunction) => void,
+    res: Response,
+    req: Request,
+    next: VoidFunction
+  ) {
+    try {
+      fn(res, req, next);
+    } catch (err) {
+      logger(
+        "error",
+        "route",
+        __filename,
+        `Error in middleware/handler: ${err.message}`
+      );
+      this.errorHandler(err, res, req);
+    }
+  }
+
   private applyMiddleware(res: Response, req: Request, done: VoidFunction) {
     if (this.middlewares.length === 0) return done();
 
     let index = 0;
 
     const next = () => {
+      index++;
       if (index < this.middlewares.length) {
-        this.middlewares[index](res, req, () => {
-          index++;
-          if (index < this.middlewares.length) {
-            next();
-          } else {
-            done();
-          }
-        });
+        this.runSafe(this.middlewares[index], res, req, next);
+      } else {
+        done();
       }
     };
 
-    next();
+    this.runSafe(this.middlewares[index], res, req, next);
   }
 
   private applyHandler(
@@ -74,11 +89,11 @@ export class RouteHandler {
     const next = () => {
       index++;
       if (index < handlers.length) {
-        handlers[index](res, req, next);
+        this.runSafe(handlers[index], res, req, next);
       }
     };
 
-    handlers[index](res, req, next);
+    this.runSafe(handlers[index], res, req, next);
   }
 
   public processRoute(
@@ -90,7 +105,6 @@ export class RouteHandler {
     const res = new Response(response);
 
     const route = this.findRoutes(req.url, req.method);
-
     if (route) {
       req._setRegexparam(route.keys, route.regExp);
       req.extractPathParameters();
@@ -101,9 +115,9 @@ export class RouteHandler {
         if (route) {
           this.applyHandler(res, req, route.handler);
         } else {
-          this.notFoundHandler(res, req);
+          this.runSafe(this.notFoundHandler, res, req, () => {});
         }
-        markResponseSent(); // Mark the response as sent after handling the route
+        markResponseSent();
       });
     } catch (err) {
       logger(
@@ -113,7 +127,7 @@ export class RouteHandler {
         `Error processing route: ${err.message}`
       );
       this.errorHandler(err, res, req);
-      markResponseSent(); // Mark the response as sent in case of an error
+      markResponseSent();
     }
   }
 }

@@ -2,8 +2,7 @@ import { memo } from "react";
 import { LottieProps } from "./Lottie.types";
 import { DotLottiePlayer } from "@dotlottie/react-player";
 import "@dotlottie/react-player/dist/index.css";
-
-const lottieStatus = process.env.NEXT_PUBLIC_ANIMATED_IMAGES_STATUS !== "false";
+import { useDashboardStore } from "@/stores/dashboard";
 
 const LottieBase = ({
   category,
@@ -13,6 +12,7 @@ const LottieBase = ({
   classNames,
   max,
 }: LottieProps) => {
+  const { settings } = useDashboardStore();
   const styles = {
     height,
     width,
@@ -22,7 +22,7 @@ const LottieBase = ({
     max ? `-${Math.floor(Math.random() * max) + 1}` : ""
   }.lottie`;
 
-  if (!lottieStatus) return null;
+  if (settings?.lottieAnimationStatus !== "true") return null;
 
   return (
     <div>

@@ -9,7 +9,7 @@ import IconButton from "@/components/elements/base/button-icon/IconButton";
 import { useRouter } from "next/router";
 import { useDashboardStore } from "@/stores/dashboard";
 import { useTranslation } from "next-i18next";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 
 const defaultUserPath = process.env.NEXT_PUBLIC_DEFAULT_USER_PATH || "/user";
 
@@ -67,7 +67,7 @@ const WalletLogin = () => {
   return (
     <div className="flex gap-2 mb-5 w-full">
       {isConnected && address ? (
-        <AnimatedTooltip content={t("Disconnect Wallet")}>
+        <Tooltip content={t("Disconnect Wallet")}>
           <IconButton
             onClick={() => {
               handleDisconnect();
@@ -79,7 +79,7 @@ const WalletLogin = () => {
           >
             <Icon icon="hugeicons:wifi-disconnected-01" className="w-6 h-6" />
           </IconButton>
-        </AnimatedTooltip>
+        </Tooltip>
       ) : (
         <div className="flex gap-2 w-full">
           {uniqueConnectors.map((connector) => (

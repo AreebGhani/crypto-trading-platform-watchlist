@@ -132,7 +132,7 @@ const SearchResultsBase = ({ searchTerm, id }: SearchResultsProps) => {
   return (
     <div
       id={`${id}-static-results`}
-      className={`slimscroll absolute start-0 top-12 z-[5] max-h-[285px] w-full overflow-y-auto rounded-lg border border-muted-200 bg-white p-2 shadow-lg shadow-muted-300/30 transition-all duration-300 dark:border-muted-800 dark:bg-muted-900 dark:shadow-muted-800/30 ${
+      className={`slimscroll absolute left-0 top-12 z-5 max-h-[285px] w-full overflow-y-auto rounded-lg border border-muted-200 bg-white p-2 shadow-lg shadow-muted-300/30 transition-all duration-300 dark:border-muted-800 dark:bg-muted-900 dark:shadow-muted-800/30 ${
         searchTerm.length > 0
           ? "pointer-events-auto translate-y-0 opacity-100"
           : "pointer-events-none translate-y-[5px] opacity-0"

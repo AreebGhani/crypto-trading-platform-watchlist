@@ -8,10 +8,12 @@ import {
 import { Response } from "./Response";
 import { Request } from "./Request";
 import { MashServer } from "..";
-import logger from "@b/utils/logger";
+import logger, { logError } from "@b/utils/logger";
 import { models } from "@b/db";
 
 const isDemo = process.env.NEXT_PUBLIC_DEMO_STATUS === "true" || false;
+const isMaintenance =
+  process.env.NEXT_PUBLIC_MAINTENANCE_STATUS === "true" || false;
 const AUTH_PAGES = ["/logout"];
 
 const PERMISSION_MAP = {
@@ -387,5 +389,34 @@ export async function rolesGate(
       `Roles Gate Error: ${error.message}`
     );
     res.handleError(500, error.message);
+  }
+}
+
+export async function siteMaintenanceAccessGate(app, res, req, next) {
+  if (!isMaintenance) return next();
+
+  try {
+    const user = req.getUser();
+    if (!user) return res.handleError(401, "Authentication Required");
+
+    // Check if user role has "Access Admin Dashboard" permission or is Super Admin
+    const userRole = app.getRole(user.role);
+    const hasAccessAdmin =
+      userRole &&
+      (userRole.name === "Super Admin" ||
+        (userRole.permissions &&
+          userRole.permissions.includes("Access Admin Dashboard")));
+
+    if (!hasAccessAdmin) {
+      return res.handleError(
+        403,
+        "Forbidden - You do not have permission to access this until maintenance is over"
+      );
+    }
+
+    next();
+  } catch (error) {
+    logError("middleware", error, __filename);
+    return res.handleError(500, error.message);
   }
 }

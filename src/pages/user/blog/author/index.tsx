@@ -108,7 +108,7 @@ const Action = () => {
                   as="h3"
                   size="xs"
                   weight="medium"
-                  className="text-muted-400 mb-2 !text-[0.65rem] uppercase"
+                  className="text-muted-400 mb-2 text-[0.65rem]! uppercase"
                 >
                   {t("Note from Editorial Team")}
                 </Heading>

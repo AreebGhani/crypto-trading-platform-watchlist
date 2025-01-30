@@ -1,3 +1,4 @@
+// Orderbook.jsx
 import React, { memo, useEffect, useRef, useState } from "react";
 import { OrderbookHeader } from "@/components/pages/trade/orderbook/OrderbookHeader";
 import { OrderBookTableHeader } from "@/components/pages/trade/orderbook/OrderBookTableHeader";
@@ -33,25 +34,17 @@ const OrderbookBase = () => {
   const { market } = useMarketStore();
   const askRefs = useRef<Array<HTMLDivElement | null>>([]);
   const bidRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const [hoveredType, setHoveredType] = useState<"ask" | "bid" | null>();
+  const [hoveredType, setHoveredType] = useState<"ask" | "bid" | null>(null);
   const [visible, setVisible] = useState({ asks: true, bids: true });
   const [tickSize, setTickSize] = useState(0.01);
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState({
-    ask: null,
-    bid: null,
+    ask: null as number | null,
+    bid: null as number | null,
   });
   const [orderBook, setOrderBook] = useState<{
-    asks: {
-      price: number;
-      amount: number;
-      total: number;
-    }[];
-    bids: {
-      price: number;
-      amount: number;
-      total: number;
-    }[];
+    asks: { price: number; amount: number; total: number }[];
+    bids: { price: number; amount: number; total: number }[];
     maxAskTotal: number;
     maxBidTotal: number;
     askPercentage: string;
@@ -70,6 +63,10 @@ const OrderbookBase = () => {
     bestPrices: { bestAsk: 0, bestBid: 0 },
   });
   const [cardPosition, setCardPosition] = useState({ top: 0, left: 0 });
+
+  const subscribedRef = useRef(false);
+  const previousSymbolRef = useRef<string | undefined>(undefined);
+  const previousTickSizeRef = useRef<number | undefined>(undefined);
 
   const handleRowHover = (index: number, type: "ask" | "bid") => {
     setHoveredIndex((prev) => ({
@@ -109,13 +106,12 @@ const OrderbookBase = () => {
 
   const handleOrderbookMessage = (message: any) => {
     if (message && message.data) {
+      // Forward the raw orderbook data to the worker
       orderBookWorker?.postMessage(message.data);
     }
   };
 
   useEffect(() => {
-    let isSubscribed = false;
-
     const setupOrderbook = () => {
       if (market?.symbol) {
         const { isEco } = market;
@@ -127,12 +123,18 @@ const OrderbookBase = () => {
           symbol: market.symbol,
         };
 
-        if (isEco && ecoTradesConnection?.isConnected) {
+        const symbolChanged = previousSymbolRef.current !== market.symbol;
+        const tickSizeChanged = previousTickSizeRef.current !== tickSize;
+
+        if (
+          ((isEco && ecoTradesConnection?.isConnected) ||
+            (!isEco && tradesConnection?.isConnected)) &&
+          (!subscribedRef.current || symbolChanged || tickSizeChanged)
+        ) {
           subscribe(connectionKey, "orderbook", subscribePayload);
-          isSubscribed = true;
-        } else if (tradesConnection?.isConnected) {
-          subscribe(connectionKey, "orderbook", subscribePayload);
-          isSubscribed = true;
+          subscribedRef.current = true;
+          previousSymbolRef.current = market.symbol;
+          previousTickSizeRef.current = tickSize;
         }
 
         const messageFilter = (message: any) =>
@@ -142,7 +144,7 @@ const OrderbookBase = () => {
     };
 
     const cleanupOrderbook = () => {
-      if (isSubscribed && market) {
+      if (subscribedRef.current && market) {
         const { isEco } = market;
         const connectionKey = isEco
           ? "ecoTradesConnection"
@@ -153,10 +155,9 @@ const OrderbookBase = () => {
         };
         unsubscribe(connectionKey, "orderbook", unsubscribePayload);
         removeMessageHandler(connectionKey, handleOrderbookMessage);
-        isSubscribed = false;
+        subscribedRef.current = false;
       }
 
-      // Clear the orderbook
       setOrderBook({
         asks: [],
         bids: [],
@@ -178,92 +179,95 @@ const OrderbookBase = () => {
     tradesConnection?.isConnected,
     ecoTradesConnection?.isConnected,
     tickSize,
+    subscribe,
+    unsubscribe,
+    addMessageHandler,
+    removeMessageHandler,
   ]);
 
   return (
-    <>
-      <div className="relative w-full flex flex-col text-xs overflow-hidden z-5 min-w-[220px] ">
-        <OrderbookHeader
-          visible={visible}
-          setVisible={setVisible}
-          askPercentage={orderBook.askPercentage}
-          bidPercentage={orderBook.bidPercentage}
-        />
-        <OrderBookTableHeader />
-        <div className="flex flex-row md:flex-col">
-          <div className="hidden md:block order-2 ">
-            <BestPrices {...orderBook.bestPrices} />
-          </div>
-          {visible.asks && (
-            <div className="min-h-[45vh] max-h-[45vh] overflow-hidden w-full order-1 flex flex-col-reverse flex-grow">
-              {orderBook.asks.length > 0 ? (
-                orderBook.asks.map((ask, index) => (
-                  <OrderBookRow
-                    key={index}
-                    index={index}
-                    {...ask}
-                    type="ask"
-                    maxTotal={orderBook.maxAskTotal}
-                    onRowHover={handleRowHover}
-                    onRowLeave={handleRowLeave}
-                    isSelected={
-                      hoveredIndex.ask !== null && index <= hoveredIndex.ask
-                    }
-                    rowRef={(el) => (askRefs.current[index] = el)}
-                    lastHoveredIndex={hoveredIndex.ask}
-                  />
-                ))
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <span className="text-muted-400 dark:text-muted-500">
-                    {t("No Asks")}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-          {visible.bids && (
-            <div className="min-h-[45vh] max-h-[45vh] overflow-hidden w-full order-3 flex flex-col flex-grow">
-              {orderBook.bids.length > 0 ? (
-                orderBook.bids.map((bid, index) => (
-                  <OrderBookRow
-                    key={index}
-                    index={index}
-                    {...bid}
-                    type="bid"
-                    maxTotal={orderBook.maxBidTotal}
-                    onRowHover={handleRowHover}
-                    onRowLeave={handleRowLeave}
-                    isSelected={
-                      hoveredIndex.bid !== null && index <= hoveredIndex.bid
-                    }
-                    rowRef={(el) => (bidRefs.current[index] = el)}
-                    lastHoveredIndex={hoveredIndex.bid}
-                  />
-                ))
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <span className="text-muted-400 dark:text-muted-500">
-                    {t("No Bids")}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
+    <div className="relative w-full flex flex-col text-xs overflow-hidden z-5 min-w-[220px]">
+      <OrderbookHeader
+        visible={visible}
+        setVisible={setVisible}
+        askPercentage={orderBook.askPercentage}
+        bidPercentage={orderBook.bidPercentage}
+      />
+      <OrderBookTableHeader />
+      <div className="flex flex-row md:flex-col">
+        <div className="hidden md:block order-2 ">
+          <BestPrices {...orderBook.bestPrices} />
         </div>
-        {isHovered && (
-          <DisplayTotals
-            currency={market?.currency}
-            pair={market?.pair}
-            orderBook={orderBook}
-            hoveredIndex={hoveredIndex}
-            hoveredType={hoveredType}
-            cardPosition={cardPosition}
-            isHovered={isHovered}
-          />
+        {visible.asks && (
+          <div className="min-h-[45vh] max-h-[45vh] overflow-hidden w-full order-1 flex flex-col-reverse">
+            {orderBook.asks.length > 0 ? (
+              orderBook.asks.map((ask, index) => (
+                <OrderBookRow
+                  key={index}
+                  index={index}
+                  {...ask}
+                  type="ask"
+                  maxTotal={orderBook.maxAskTotal}
+                  onRowHover={handleRowHover}
+                  onRowLeave={handleRowLeave}
+                  isSelected={
+                    hoveredIndex.ask !== null && index <= hoveredIndex.ask
+                  }
+                  rowRef={(el) => (askRefs.current[index] = el)}
+                  lastHoveredIndex={hoveredIndex.ask}
+                />
+              ))
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <span className="text-muted-400 dark:text-muted-500">
+                  {t("No Asks")}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+        {visible.bids && (
+          <div className="min-h-[45vh] max-h-[45vh] overflow-hidden w-full order-3 flex flex-col">
+            {orderBook.bids.length > 0 ? (
+              orderBook.bids.map((bid, index) => (
+                <OrderBookRow
+                  key={index}
+                  index={index}
+                  {...bid}
+                  type="bid"
+                  maxTotal={orderBook.maxBidTotal}
+                  onRowHover={handleRowHover}
+                  onRowLeave={handleRowLeave}
+                  isSelected={
+                    hoveredIndex.bid !== null && index <= hoveredIndex.bid
+                  }
+                  rowRef={(el) => (bidRefs.current[index] = el)}
+                  lastHoveredIndex={hoveredIndex.bid}
+                />
+              ))
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <span className="text-muted-400 dark:text-muted-500">
+                  {t("No Bids")}
+                </span>
+              </div>
+            )}
+          </div>
         )}
       </div>
-    </>
+      {isHovered && (
+        <DisplayTotals
+          currency={market?.currency}
+          pair={market?.pair}
+          orderBook={orderBook}
+          hoveredIndex={hoveredIndex}
+          hoveredType={hoveredType}
+          cardPosition={cardPosition}
+          isHovered={isHovered}
+        />
+      )}
+    </div>
   );
 };
+
 export const Orderbook = memo(OrderbookBase);

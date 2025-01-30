@@ -26,7 +26,6 @@ const BinaryNavBase: React.FC = () => {
   const { profile } = useDashboardStore();
   const { market, fetchData, setPriceChangeData, getPrecisionBySymbol } =
     useMarketStore();
-  const [marketReady, setMarketReady] = useState(false);
   const {
     createConnection,
     removeConnection,
@@ -34,7 +33,6 @@ const BinaryNavBase: React.FC = () => {
     removeMessageHandler,
     subscribe,
     unsubscribe,
-    isConnectionOpen,
   } = useWebSocketStore();
   const router = useRouter();
   const [currency, setCurrency] = useState<string | null>(null);
@@ -70,6 +68,7 @@ const BinaryNavBase: React.FC = () => {
       const update = message[symbol];
       if (update.last !== undefined && update.change !== undefined) {
         const precision = getPrecisionBySymbol(symbol);
+
         setPriceChangeData(
           symbol,
           update.last.toFixed(precision.price),
@@ -174,7 +173,7 @@ const BinaryNavBase: React.FC = () => {
     <div className="h-full max-h-[120px] p-2 flex justify-between items-center">
       <div className="flex items-center gap-2">
         <Link
-          className="relative hidden sm:flex flex-shrink-0 flex-grow-0 items-center rounded-[.52rem] px-3 py-2 no-underline transition-all duration-300"
+          className="relative hidden sm:flex shrink-0 grow-0 items-center rounded-[.52rem] px-3 py-2 no-underline transition-all duration-300"
           href="/"
         >
           <LogoText
@@ -182,7 +181,7 @@ const BinaryNavBase: React.FC = () => {
           />
         </Link>
         <Link href={"/user"}>
-          <IconButton shape="rounded" color="muted">
+          <IconButton shape="rounded-sm" color="muted">
             <Icon icon="line-md:chevron-left" className="h-5 w-5" />
           </IconButton>
         </Link>
@@ -197,7 +196,7 @@ const BinaryNavBase: React.FC = () => {
           toggleClassNames="border-muted-200 dark:border-transparent shadow-lg shadow-muted-300/30 dark:shadow-muted-800/30 dark:hover:bg-muted-900 border dark:hover:border-muted-800 rounded-full"
           width={300}
           shape="straight"
-          toggleShape="rounded"
+          toggleShape="rounded-sm"
         >
           <div className="w-full h-full min-h-[40vh] min-w-[300px]">
             <div className="flex w-full h-[40vh] gap-2">
@@ -217,10 +216,10 @@ const BinaryNavBase: React.FC = () => {
       </div>
       <div className="flex items-center gap-2">
         <Card
-          className={`p-[7px] ms-2 px-3 text-sm sm:text-lg flex gap-2 ${
+          className={`p-[7px] ms-2 px-3 me-0 sm:me-2 text-sm sm:text-md flex gap-2 ${
             isPractice ? "text-warning-500" : "text-success-500"
           }`}
-          shape={"rounded"}
+          shape={"rounded-sm"}
         >
           {balance?.toFixed(getPrecision("price")) || 0}
           <span className="hidden sm:block">{pair}</span>
@@ -234,7 +233,7 @@ const BinaryNavBase: React.FC = () => {
             }
             color="success"
             size="md"
-            shape={"rounded"}
+            shape={"rounded-sm"}
           >
             {t("Deposit")}
           </ButtonLink>
@@ -244,7 +243,7 @@ const BinaryNavBase: React.FC = () => {
             onClick={handleResetBalance}
             color="primary"
             size="md"
-            shape={"rounded"}
+            shape={"rounded-sm"}
           >
             {t("Reload")}
           </Button>

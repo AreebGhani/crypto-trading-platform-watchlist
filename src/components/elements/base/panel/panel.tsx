@@ -99,7 +99,7 @@ const PanelBase = ({
 
   const backdropStyle = useMemo(() => {
     return {
-      backdropFilter: `blur(${backdropBlur}px)`,
+      backdropFilter: `blur-sm(${backdropBlur}px)`,
     };
   }, [backdropBlur]);
 

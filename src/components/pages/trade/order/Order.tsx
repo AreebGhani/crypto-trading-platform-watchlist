@@ -100,7 +100,7 @@ const OrderBase = ({}: OrderProps) => {
       </div>
       <div className="w-full flex p-4 flex-col h-full">
         {mainTab === "SPOT" && (
-          <div className="flex gap-2 p-1 border border-muted-200 dark:border-muted-800 rounded-sm">
+          <div className="flex gap-2 p-1 border border-muted-200 dark:border-muted-800 rounded-xs">
             <Popover placement="top">
               <PopoverTrigger>
                 <button
@@ -128,7 +128,7 @@ const OrderBase = ({}: OrderProps) => {
                     )}
                   </PopoverDescription>
                 </div>
-                <PopoverClose className="absolute end-4 top-4 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-muted-400 transition-colors duration-300 hover:bg-muted-100 hover:text-muted-800 dark:hover:bg-muted-700 dark:hover:text-muted-100" />
+                <PopoverClose className="absolute right-4 top-4 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-muted-400 transition-colors duration-300 hover:bg-muted-100 hover:text-muted-800 dark:hover:bg-muted-700 dark:hover:text-muted-100" />
               </PopoverContent>
             </Popover>
 
@@ -159,7 +159,7 @@ const OrderBase = ({}: OrderProps) => {
                     )}
                   </PopoverDescription>
                 </div>
-                <PopoverClose className="absolute end-4 top-4 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-muted-400 transition-colors duration-300 hover:bg-muted-100 hover:text-muted-800 dark:hover:bg-muted-700 dark:hover:text-muted-100" />
+                <PopoverClose className="absolute right-4 top-4 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-muted-400 transition-colors duration-300 hover:bg-muted-100 hover:text-muted-800 dark:hover:bg-muted-700 dark:hover:text-muted-100" />
               </PopoverContent>
             </Popover>
             <button

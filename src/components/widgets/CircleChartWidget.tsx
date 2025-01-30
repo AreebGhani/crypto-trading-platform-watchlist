@@ -57,7 +57,7 @@ const CircleChartWidget: FC<CircleChartProps> = ({
           r="15.91549431"
         />
       </svg>
-      <div className="absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         {children}
       </div>
     </div>

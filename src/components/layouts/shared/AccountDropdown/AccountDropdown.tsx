@@ -17,7 +17,7 @@ const AccountDropdownBase = () => {
     return (
       <>
         <Link href="/login">
-          <Button color="primary" shape="rounded" variant="outlined">
+          <Button color="primary" shape="rounded-sm" variant="outlined">
             <Icon
               icon="material-symbols-light:login-outline"
               className="h-5 w-5 me-1"
@@ -26,7 +26,7 @@ const AccountDropdownBase = () => {
           </Button>
         </Link>
         <Link href="/register">
-          <Button shape="rounded" variant="outlined" color="muted">
+          <Button shape="rounded-sm" variant="outlined" color="muted">
             <Icon icon="bx:bxs-user-plus" className="h-5 w-5 me-1" />
             {t("Register")}
           </Button>

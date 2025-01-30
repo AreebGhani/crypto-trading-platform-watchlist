@@ -201,6 +201,7 @@ type ColumnConfigType = {
   maxLength?: number;
   getValue?: (item: any) => string | number | boolean | ReactNode;
   getSubValue?: (item: any) => string | number | boolean | ReactNode;
+  renderCell?: (item: any) => ReactNode;
   getImage?: (item: any) => string | boolean | ReactNode;
   imageWidth?: number;
   imageHeight?: number;

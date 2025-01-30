@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon } from "@iconify/react";
-import DarkToolTip from "@/components/elements/base/tooltips/DarkTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
 
 const ResponsiveIconButton = ({
@@ -9,10 +9,10 @@ const ResponsiveIconButton = ({
   hasClasses,
   onClick,
 }) => (
-  <DarkToolTip content={breakpoint.toUpperCase()} position="bottom">
+  <Tooltip content={breakpoint.toUpperCase()} position="bottom">
     <div className="relative">
       <IconButton
-        shape="rounded-sm"
+        shape="rounded-xs"
         size="xs"
         color={isActive ? "primary" : "muted"}
         variant="outlined"
@@ -37,7 +37,7 @@ const ResponsiveIconButton = ({
         <span className="absolute top-0 -right-[2px] h-[5px] w-[5px] bg-warning-500 rounded-full" />
       )}
     </div>
-  </DarkToolTip>
+  </Tooltip>
 );
 
 export default ResponsiveIconButton;

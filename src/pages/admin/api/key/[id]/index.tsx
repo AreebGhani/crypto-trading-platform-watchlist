@@ -152,7 +152,7 @@ const ApiKeyEdit: React.FC = () => {
             <Button
               onClick={() => router.push(`/admin/api/key`)}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="danger"
             >
@@ -161,7 +161,7 @@ const ApiKeyEdit: React.FC = () => {
             <Button
               onClick={handleSubmit}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="success"
             >

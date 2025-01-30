@@ -8,7 +8,7 @@ import {
   serverErrorResponse,
   unauthorizedResponse,
 } from "@b/utils/query";
-import { baseBinaryOrderSchema } from "../utils";
+import { baseBinaryOrderSchema, getBinaryOrder } from "../utils";
 
 export const metadata: OperationObject = {
   summary: "Show Binary Order",
@@ -65,21 +65,3 @@ export default async (data: Handler) => {
 
   return binaryOrder;
 };
-
-export async function getBinaryOrder(
-  userId: string,
-  id: string
-): Promise<BinaryOrder> {
-  const response = await models.binaryOrder.findOne({
-    where: {
-      id,
-      userId,
-    },
-  });
-
-  if (!response) {
-    throw new Error(`Binary order with ID ${id} not found`);
-  }
-
-  return response.get({ plain: true }) as unknown as BinaryOrder;
-}

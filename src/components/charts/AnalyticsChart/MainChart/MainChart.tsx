@@ -6,8 +6,15 @@ import { ApexOptions } from "apexcharts";
 import { themeColors } from "@/components/charts/chart-colors";
 import dynamic from "next/dynamic";
 import { useTranslation } from "next-i18next";
+import React from "react";
+
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-const MainChartBase = ({
+
+function safeNumber(val: any): number {
+  return typeof val === "number" && !isNaN(val) ? val : 0;
+}
+
+export const MainChart = ({
   availableFilters,
   filters,
   handleFilterChange,
@@ -18,56 +25,67 @@ const MainChartBase = ({
   timeframes,
 }: MainChartProps) => {
   const { t } = useTranslation();
+  const safeData = Array.isArray(data) ? data : [];
+
+  // If no data, show a fallback and do NOT render the chart
+  if (safeData.length === 0) return null;
+
+  const seriesData = safeData.map((item) => safeNumber(item.count));
+  const categories = safeData.map((_, idx) => idx + 1);
+
+  const selectedFilterColor =
+    availableFilters["status"]?.find((item) => item.value === filters["status"])
+      ?.color || color;
+
+  const chartColor = themeColors[selectedFilterColor] || themeColors.primary;
+
   const chartOptions: ApexOptions = {
     series: [
       {
         name: "Count",
-        data: data.map((item) => item.count),
+        data: seriesData,
       },
     ],
     chart: {
       height: 300,
       type: "area",
-      zoom: {
-        enabled: false,
-      },
-      toolbar: {
-        show: false,
-      },
+      zoom: { enabled: false },
+      toolbar: { show: false },
     },
-    colors: [
-      themeColors[
-        availableFilters["status"]?.find(
-          (item) => item.value === filters["status"]
-        )?.color || color
-      ],
-    ],
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      width: [2, 2, 2],
-      curve: "smooth",
-    },
-    fill: {
-      type: "gradient",
-    },
+    colors: [chartColor],
+    dataLabels: { enabled: false },
+    stroke: { width: 2, curve: "smooth" },
+    fill: { type: "gradient" },
     grid: {
-      row: {
-        colors: ["transparent", "transparent"],
-        opacity: 0.5,
-      },
+      row: { colors: ["transparent", "transparent"], opacity: 0.5 },
     },
     tooltip: {
       x: {
-        formatter: (val) => data[val - 1]?.date || "", // Display date directly
+        formatter: (val, { dataPointIndex }) => {
+          if (
+            typeof dataPointIndex !== "number" ||
+            dataPointIndex < 0 ||
+            dataPointIndex >= safeData.length
+          ) {
+            return "";
+          }
+          const point = safeData[dataPointIndex];
+          return point?.date || "";
+        },
       },
     },
     xaxis: {
-      categories: data.map((item, idx) => idx + 1), // Maintain numerical labeling
+      categories,
+    },
+    yaxis: {
+      labels: {
+        formatter: (val) => (isNaN(Number(val)) ? "0" : String(val)),
+      },
     },
   };
+
   const { series, ...options } = chartOptions;
+
   return (
     <Card shape="smooth" color="contrast" className="p-4">
       <div className="px-4 flex justify-between items-center flex-col md:flex-row gap-5">
@@ -93,12 +111,12 @@ const MainChartBase = ({
           <span className="font-sans text-xs font-medium text-muted-500 dark:text-muted-400">
             {t("Timeframe")}
           </span>
-          <div className="flex gap-2 ">
+          <div className="flex gap-2">
             {timeframes.map(({ value, label }) => (
               <Button
                 key={value}
                 variant="outlined"
-                shape={"rounded"}
+                shape={"rounded-sm"}
                 color={timeframe.value === value ? "primary" : "muted"}
                 onClick={() => setTimeframe({ value, label })}
               >
@@ -113,9 +131,7 @@ const MainChartBase = ({
         series={series}
         options={options}
         height={options.chart?.height}
-        width={options.chart?.width}
       />
     </Card>
   );
 };
-export const MainChart = MainChartBase;

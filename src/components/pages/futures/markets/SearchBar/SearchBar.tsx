@@ -13,7 +13,7 @@ const SearchBarBase = () => {
       placeholder={t("Search pairs...")}
       onChange={(e) => setSearchQuery(e.target.value)}
       warning
-      shape={"rounded-sm"}
+      shape={"rounded-xs"}
     />
   );
 };

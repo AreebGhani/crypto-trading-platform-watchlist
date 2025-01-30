@@ -38,7 +38,7 @@ const IconButton: FC<IconButtonProps> = ({
           size,
           shadow,
           className: `shrink-0 ${
-            loading ? "pointer-events-none relative !text-transparent" : ""
+            loading ? "pointer-events-none relative text-transparent!" : ""
           } ${classes}`,
         })}
         {...props}
@@ -46,7 +46,7 @@ const IconButton: FC<IconButtonProps> = ({
         {children}
         {loading ? (
           <Loader
-            classNames="absolute top-1/2 start-1/2 -translate-y-1/2 -translate-x-1/2"
+            classNames="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
             size={20}
             thickness={4}
           />

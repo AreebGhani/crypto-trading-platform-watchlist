@@ -20,55 +20,50 @@ const TradesBase = () => {
     ecoTradesConnection,
   } = useWebSocketStore();
 
+  const handleTradesMessage = (message: any) => {
+    const { data } = message;
+    if (!data) return;
+    const newTrades = data.map((trade: any) => ({
+      id: trade.id,
+      price: trade.price,
+      amount: trade.amount,
+      time: formatDate(new Date(trade.datetime || trade.timestamp), "HH:mm:ss"),
+      side: trade.side.toLowerCase(),
+    }));
+    // Avoid duplicates
+    setTrades((prevTrades) => {
+      const uniqueTrades = newTrades.filter(
+        (newTrade) => !prevTrades.some((trade: any) => trade.id === newTrade.id)
+      );
+      return [...uniqueTrades, ...prevTrades.slice(0, 49)];
+    });
+  };
+
   useEffect(() => {
-    if (market?.currency && market?.pair) {
-      const handleTradesMessage = (message: any) => {
-        const { data } = message;
-        if (!data) return;
-        const newTrades = data.map((trade: any) => ({
-          id: trade.id,
-          price: trade.price,
-          amount: trade.amount,
-          time: formatDate(
-            new Date(trade.datetime || trade.timestamp),
-            "HH:mm:ss"
-          ),
-          side: trade.side.toLowerCase(),
-        }));
-        // Avoid duplicates
-        setTrades((prevTrades) => {
-          const uniqueTrades = newTrades.filter(
-            (newTrade) =>
-              !prevTrades.some((trade: any) => trade.id === newTrade.id)
-          );
-          return [...uniqueTrades, ...prevTrades.slice(0, 49)];
-        });
-      };
+    if (!market?.currency || !market?.pair) return;
 
-      const messageFilter = (message: any) => message.stream === "trades";
-      const { isEco } = market;
-      const connectionKey = isEco ? "ecoTradesConnection" : "tradesConnection";
+    const { isEco } = market;
+    const connectionKey = isEco ? "ecoTradesConnection" : "tradesConnection";
 
-      if (isEco && ecoTradesConnection?.isConnected) {
-        addMessageHandler(connectionKey, handleTradesMessage, messageFilter);
-        subscribe(connectionKey, "trades", {
-          symbol: `${market?.currency}/${market?.pair}`,
-        });
-      } else if (tradesConnection?.isConnected) {
-        addMessageHandler(connectionKey, handleTradesMessage, messageFilter);
-        subscribe(connectionKey, "trades", {
-          symbol: `${market?.currency}/${market?.pair}`,
-        });
-      }
+    const isConnected = isEco
+      ? ecoTradesConnection?.isConnected
+      : tradesConnection?.isConnected;
+    if (!isConnected) return; // ensure websocket is open before subscribing
 
-      return () => {
-        unsubscribe(connectionKey, "trades", {
-          symbol: `${market?.currency}/${market?.pair}`,
-        });
-        removeMessageHandler(connectionKey, handleTradesMessage);
-        setTrades([]);
-      };
-    }
+    const messageFilter = (message: any) => message.stream === "trades";
+
+    addMessageHandler(connectionKey, handleTradesMessage, messageFilter);
+    subscribe(connectionKey, "trades", {
+      symbol: `${market?.currency}/${market?.pair}`,
+    });
+
+    return () => {
+      unsubscribe(connectionKey, "trades", {
+        symbol: `${market?.currency}/${market?.pair}`,
+      });
+      removeMessageHandler(connectionKey, handleTradesMessage);
+      setTrades([]);
+    };
   }, [
     market?.currency,
     market?.pair,

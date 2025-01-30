@@ -23,7 +23,7 @@ import Breadcrumb from "../breadcrumb/Breadcrumb";
 import { useRouter } from "next/router";
 import { capitalize } from "lodash";
 import IconBox from "../iconbox/IconBox";
-import { AnimatedTooltip } from "../tooltips/AnimatedTooltip";
+import { Tooltip } from "../tooltips/Tooltip";
 import IconButton from "../button-icon/IconButton";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
@@ -254,7 +254,7 @@ const DataTableBase = ({
         <div
           className={`mb-2 ${
             hasBreadcrumb && "min-h-16"
-          } py-2 gap-5 flex items-start justify-center md:justify-between w-full rounded-lg flex-col md:flex-row`}
+          } py-2 gap-5 flex items-center justify-center md:justify-between w-full rounded-lg flex-col md:flex-row`}
         >
           <div className="flex items-center gap-4">
             {hasRotatingBackButton && (
@@ -286,13 +286,14 @@ const DataTableBase = ({
             {navSlot}
             <NavActions navActionsSlot={navActionsSlot} />
             {hasAnalytics && (
-              <AnimatedTooltip content={t("Analytics")}>
+              <Tooltip content={t("Analytics")}>
                 <Link href={analysisPath}>
                   <IconButton
                     variant="pastel"
                     aria-label={t("Analytics")}
                     color="primary"
                     size={"lg"}
+                    shape={"rounded"}
                   >
                     <Icon
                       icon="solar:chart-2-bold-duotone"
@@ -300,7 +301,7 @@ const DataTableBase = ({
                     />
                   </IconButton>
                 </Link>
-              </AnimatedTooltip>
+              </Tooltip>
             )}
           </div>
         </div>
@@ -371,7 +372,7 @@ const DataTableBase = ({
             transition={{ duration: 0.3 }}
             className={
               paginationLocation === "floating"
-                ? "w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] fixed bottom-10 left-[5%] sm:left-[10%] md:left-[15%] lg:left-[20%] flex gap-4 items-start"
+                ? "w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] fixed bottom-5 left-[5%] sm:left-[10%] md:left-[15%] lg:left-[20%] flex gap-4 items-start"
                 : `${
                     fixedPagination && "absolute bottom-0"
                   } w-full flex gap-4 items-start ${
@@ -381,7 +382,7 @@ const DataTableBase = ({
           >
             {showDeletedAction && (
               <div
-                className={`"min-64 w-64 justify-between p-2 ${
+                className={`"min-64 w-64 justify-between p-1.5 ${
                   shape !== "straight" && shape
                 } bg-muted-50 dark:bg-muted-950 border border-muted-200 dark:border-muted-800`}
               >
@@ -389,7 +390,7 @@ const DataTableBase = ({
               </div>
             )}
             <div
-              className={`w-full flex flex-col md:flex-row md:items-center justify-between gap-4 p-2 ${
+              className={`w-full flex flex-col md:flex-row md:items-center justify-between gap-4 p-1.5 ${
                 shape !== "straight" &&
                 `border border-muted-200 dark:border-muted-800 ${shape}`
               } bg-muted-50 ${
@@ -402,6 +403,7 @@ const DataTableBase = ({
                 <Select
                   color="contrast"
                   name="pageSize"
+                  shape={"rounded-sm"}
                   value={pagination.perPage}
                   aria-label={t("Items per page")}
                   options={[
@@ -435,10 +437,11 @@ const DataTableBase = ({
                 />
               </div>
               <Pagination
-                buttonSize={"md"}
                 currentPage={pagination.currentPage}
                 totalCount={pagination.totalItems}
                 pageSize={pagination.perPage}
+                buttonShape={"rounded-sm"}
+                buttonSize={"md"}
                 onPageChange={(page) =>
                   pagination.currentPage !== page &&
                   setPagination({ currentPage: page })

@@ -170,14 +170,18 @@ export default async (data: Handler) => {
 
   if (transferType === "client") {
     const userPk = await models.user.findByPk(user.id);
-    await sendTransferEmails(
-      userPk,
-      toUser,
-      fromWallet,
-      toWallet,
-      parsedAmount,
-      transaction
-    );
+    try {
+      await sendTransferEmails(
+        userPk,
+        toUser,
+        fromWallet,
+        toWallet,
+        parsedAmount,
+        transaction
+      );
+    } catch (error) {
+      console.error("Failed to send transfer emails:", error);
+    }
   }
 
   return {
@@ -283,7 +287,6 @@ async function performTransaction(
     parsedAmount,
     walletTransferFeePercentage
   );
-
   const totalDeducted = parsedAmount;
   const targetReceiveAmount = parsedAmount - transferFeeAmount;
 
@@ -298,23 +301,44 @@ async function performTransaction(
       toType
     );
 
-    const transferStatus = requiresLedgerUpdate ? "PENDING" : "COMPLETED";
+    // Normalize transferType
+    const normalizedTransferType = (transferType || "").trim().toLowerCase();
 
-    if (!requiresLedgerUpdate) {
-      // For transfers that don't require private ledger updates
+    // Determine if we should force COMPLETED for certain conditions
+    let forceCompleted = false;
+
+    // If transfer is client-to-client, always completed
+    if (normalizedTransferType === "client") {
+      forceCompleted = true;
+    }
+
+    // If from ECO to FUTURES or FUTURES to ECO, also force completed
+    if (
+      (fromType === "ECO" && toType === "FUTURES") ||
+      (fromType === "FUTURES" && toType === "ECO")
+    ) {
+      forceCompleted = true;
+    }
+
+    const transferStatus = forceCompleted
+      ? "COMPLETED"
+      : requiresLedgerUpdate
+        ? "PENDING"
+        : "COMPLETED";
+
+    if (transferStatus === "COMPLETED") {
       await handleCompleteTransfer({
         fromWallet,
         toWallet,
         parsedAmount,
         targetReceiveAmount,
-        transferType,
+        transferType: normalizedTransferType,
         fromType,
         fromCurrency,
         currencyData,
         t,
       });
     } else {
-      // For transfers that require private ledger updates
       await handlePendingTransfer({
         fromWallet,
         toWallet,
@@ -342,7 +366,7 @@ async function performTransaction(
     );
 
     const toTransfer = await createTransferTransaction(
-      transferType === "client" ? clientId! : userId,
+      normalizedTransferType === "client" ? clientId! : userId,
       toWallet.id,
       "INCOMING_TRANSFER",
       targetReceiveAmount,
@@ -472,6 +496,7 @@ async function handleNonClientTransfer({
   currencyData,
   t,
 }: any) {
+  // ECO -> ECO: Deduct and add between two ECO wallets
   if (fromWallet.type === "ECO" && toWallet.type === "ECO") {
     const deductionDetails = await deductFromEcoWallet(
       fromWallet,
@@ -479,10 +504,26 @@ async function handleNonClientTransfer({
       fromCurrency,
       t
     );
-
     await addToEcoWallet(toWallet, deductionDetails, fromCurrency, t);
   }
 
+  // ECO -> FUTURES: Deduct from ECO ledger only
+  else if (fromWallet.type === "ECO" && toWallet.type === "FUTURES") {
+    await deductFromEcoWallet(fromWallet, parsedAmount, fromCurrency, t);
+    // No addition to FUTURES ledger since FUTURES doesn't have a chain ledger
+  }
+
+  // FUTURES -> ECO: Add the entire received amount to ECO ledger
+  else if (fromWallet.type === "FUTURES" && toWallet.type === "ECO") {
+    // Since we have no chain details from FUTURES, we fabricate a chain entry
+    const additionDetails = [{ chain: "main", amount: targetReceiveAmount }];
+    await addToEcoWallet(toWallet, additionDetails, fromCurrency, t);
+  }
+
+  // For all other types (FIAT <-> SPOT, etc.) no special ledger handling needed
+  // They simply rely on standard logic, if any.
+
+  // Update wallet balances after handling ledger updates if needed
   await updateWalletBalances(
     fromWallet,
     toWallet,
@@ -510,13 +551,10 @@ async function deductFromEcoWallet(
         remainingAmount
       );
 
-      // Deduct the transferable amount from the sender's address balance
       addresses[chain].balance -= transferableAmount;
 
-      // Record the deduction details
       deductionDetails.push({ chain, amount: transferableAmount });
 
-      // Update the private ledger for the wallet
       await updatePrivateLedger(
         wallet.id,
         0,
@@ -536,7 +574,6 @@ async function deductFromEcoWallet(
       "Insufficient chain balance to complete the transfer"
     );
 
-  // Update the wallet with the new addresses and balance
   await wallet.update(
     {
       address: JSON.stringify(addresses),
@@ -544,7 +581,6 @@ async function deductFromEcoWallet(
     { transaction: t }
   );
 
-  // Return the deduction details for use in the addition function
   return deductionDetails;
 }
 
@@ -559,23 +595,19 @@ async function addToEcoWallet(
   for (const detail of deductionDetails) {
     const { chain, amount } = detail;
 
-    // Initialize chain if it doesn't exist
     if (!addresses[chain]) {
       addresses[chain] = {
-        address: null, // Set to null or assign a valid address if available
-        network: null, // Set to null or assign the appropriate network
+        address: null,
+        network: null,
         balance: 0,
       };
     }
 
-    // Update the recipient's balance for that chain
     addresses[chain].balance += amount;
 
-    // Update the private ledger for the wallet
     await updatePrivateLedger(wallet.id, 0, currency, chain, amount);
   }
 
-  // Update the wallet with the new addresses and balance
   await wallet.update(
     {
       address: JSON.stringify(addresses),
@@ -638,7 +670,6 @@ export async function processInternalTransfer(
   chain: string,
   amount: number
 ) {
-  // Fetch sender's wallet
   const fromWallet = await models.wallet.findOne({
     where: {
       userId: fromUserId,
@@ -651,7 +682,6 @@ export async function processInternalTransfer(
     throw createError({ statusCode: 404, message: "Sender wallet not found" });
   }
 
-  // Fetch or create recipient's wallet
   let toWallet = await models.wallet.findOne({
     where: {
       userId: toUserId,
@@ -675,24 +705,17 @@ export async function processInternalTransfer(
     throw createError(400, "Insufficient balance.");
   }
 
-  // Retrieve transfer fee percentage from settings
-
   const cacheManager = CacheManager.getInstance();
   const settings = await cacheManager.getSettings();
   const walletTransferFeePercentage =
     settings.get("walletTransferFeePercentage") || 0;
 
-  // Calculate the transfer fee
   const transferFeeAmount = (parsedAmount * walletTransferFeePercentage) / 100;
-
-  // Net amount that the recipient will receive after fee deduction
   const targetReceiveAmount = parsedAmount - transferFeeAmount;
 
   const transaction = await sequelize.transaction(async (t) => {
-    // Handle private ledger updates if necessary
     let precision = 8;
     if (fromWallet.type === "ECO" && toWallet.type === "ECO") {
-      // Handle private ledger updates only for ECO to ECO transfers
       const deductionDetails = await deductFromEcoWallet(
         fromWallet,
         parsedAmount,
@@ -718,13 +741,12 @@ export async function processInternalTransfer(
       t
     );
 
-    // Create transaction records for both sender and recipient
     const outgoingTransfer = await createTransferTransaction(
       fromUserId,
       fromWallet.id,
       "OUTGOING_TRANSFER",
       parsedAmount,
-      transferFeeAmount, // Record the fee in the outgoing transaction
+      transferFeeAmount,
       currency,
       currency,
       fromWallet.id,
@@ -738,8 +760,8 @@ export async function processInternalTransfer(
       toUserId,
       toWallet.id,
       "INCOMING_TRANSFER",
-      targetReceiveAmount, // Amount received after fee deduction
-      0, // No fee for incoming transfer
+      targetReceiveAmount,
+      0,
       currency,
       currency,
       fromWallet.id,
@@ -749,7 +771,6 @@ export async function processInternalTransfer(
       t
     );
 
-    // Record admin profit only if a fee was charged
     if (transferFeeAmount > 0) {
       await recordAdminProfit({
         userId: fromUserId,
@@ -762,11 +783,9 @@ export async function processInternalTransfer(
       });
     }
 
-    // Return the original structure expected by your function
     return { outgoingTransfer, incomingTransfer };
   });
 
-  // Return the same structure as the original implementation
   const userWallet = await models.wallet.findOne({
     where: { userId: fromUserId, currency, type: "ECO" },
   });

@@ -29,6 +29,7 @@ interface Props {
 
 const ProductPage: React.FC<Props> = ({ product, error }) => {
   const { t } = useTranslation();
+
   const router = useRouter();
   const [amount, setAmount] = useState(1);
   const [discount, setDiscount] = useState<any>(null);
@@ -41,8 +42,19 @@ const ProductPage: React.FC<Props> = ({ product, error }) => {
     wishlistFetched,
   } = useEcommerceStore();
   const { wallet, fetchWallet } = useWalletStore();
-
   const [mainTab, setMainTab] = useState("DESCRIPTION");
+
+  const [showShippingModal, setShowShippingModal] = useState(false);
+  const [shippingAddress, setShippingAddress] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    street: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+  });
 
   const tabs = [
     { value: "DESCRIPTION", label: "Description" },
@@ -50,20 +62,34 @@ const ProductPage: React.FC<Props> = ({ product, error }) => {
   ];
 
   useEffect(() => {
-    if (router.isReady && !wishlistFetched) {
+    if (!error && router.isReady && !wishlistFetched) {
       fetchWishlist();
     }
-  }, [router.isReady, wishlistFetched]);
+  }, [error, router.isReady, wishlistFetched]);
 
   const fetchWalletData = async () => {
     await fetchWallet(product.walletType, product.currency);
   };
 
   useEffect(() => {
-    if (!wallet) {
+    if (!error && !wallet) {
       fetchWalletData();
     }
-  }, [wallet]);
+  }, [error, wallet]);
+
+  if (error) {
+    return (
+      <Layout title={t("Error")}>
+        <div className="text-center my-16">
+          <h2 className="text-xl text-danger-500">{t("Error")}</h2>
+          <p className="text-muted mb-5">{t(error)}</p>
+          <Link href="/store">
+            <Button>{t("Go back to store")}</Button>
+          </Link>
+        </div>
+      </Layout>
+    );
+  }
 
   const handleDiscount = async (code: string) => {
     const { data, error } = await $fetch({
@@ -77,18 +103,6 @@ const ProductPage: React.FC<Props> = ({ product, error }) => {
   };
 
   const debouncedDiscount = debounce(handleDiscount, 500);
-
-  const [showShippingModal, setShowShippingModal] = useState(false);
-  const [shippingAddress, setShippingAddress] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    street: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-  });
 
   const handlePurchase = async () => {
     if (
@@ -135,20 +149,6 @@ const ProductPage: React.FC<Props> = ({ product, error }) => {
     }
   };
 
-  if (error) {
-    return (
-      <Layout title={t("Error")}>
-        <div className="text-center my-16">
-          <h2 className="text-xl text-danger-500">{t("Error")}</h2>
-          <p className="text-muted mb-5">{t(error)}</p>
-          <Link href="/store">
-            <Button>{t("Go back to store")}</Button>
-          </Link>
-        </div>
-      </Layout>
-    );
-  }
-
   return (
     <Layout title={`${product.name}`} color="muted">
       <main>
@@ -159,7 +159,7 @@ const ProductPage: React.FC<Props> = ({ product, error }) => {
               {t("Details")}
             </span>
           </h2>
-          <BackButton href={`/store/${product.category.slug}`} />
+          <BackButton href={`/store`} />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-6">
           <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-5">
@@ -295,7 +295,7 @@ const ProductPage: React.FC<Props> = ({ product, error }) => {
                 <div className="pb-5 px-5">
                   <Button
                     type="button"
-                    shape="rounded"
+                    shape="rounded-sm"
                     color="primary"
                     className="w-full mt-4"
                     onClick={() => handlePurchase()}
@@ -336,25 +336,22 @@ const ProductPage: React.FC<Props> = ({ product, error }) => {
 
 export async function getServerSideProps(context: any) {
   const { productName } = context.params;
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const baseUrl = `${protocol}://${context.req.headers.host}`;
-
   try {
-    const response = await $serverFetch({
-      url: `${baseUrl}/api/ext/ecommerce/product/${productName}`,
+    const { data, error } = await $serverFetch(context, {
+      url: `/api/ext/ecommerce/product/${productName}`,
     });
 
-    if (!response.data) {
+    if (error) {
       return {
         props: {
-          error: "Product not found",
+          error: error,
         },
       };
     }
 
     return {
       props: {
-        product: response.data,
+        product: data,
       },
     };
   } catch (error) {

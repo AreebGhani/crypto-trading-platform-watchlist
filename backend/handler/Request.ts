@@ -78,12 +78,17 @@ export class Request {
   private parseCookies(): Record<string, string> {
     const cookiesHeader = this.headers["cookie"] || "";
     const cookies: Record<string, string> = {};
-    cookiesHeader.split(";").forEach((cookie) => {
-      const parts = cookie.split("=");
-      if (parts.length === 2) {
-        cookies[parts[0].trim()] = parts[1].trim();
-      }
-    });
+    cookiesHeader
+      .split(";")
+      .map((c) => c.trim())
+      .forEach((cookie) => {
+        const eqIndex = cookie.indexOf("=");
+        if (eqIndex > -1) {
+          const name = cookie.substring(0, eqIndex).trim();
+          const val = cookie.substring(eqIndex + 1).trim();
+          cookies[name] = val;
+        }
+      });
     return cookies;
   }
 
@@ -137,37 +142,40 @@ export class Request {
   private async readRequestBody(): Promise<string> {
     const bodyData: string[] = [];
     return new Promise((resolve, reject) => {
+      let hadData = false;
       this.res.onData((ab: ArrayBuffer, isLast: boolean) => {
+        hadData = true;
         const chunk = Buffer.from(ab).toString();
         bodyData.push(chunk);
-
         if (isLast) {
           resolve(bodyData.join(""));
         }
       });
 
       this.res.onAborted(() => {
-        reject(new Error("Request aborted"));
+        if (!hadData) {
+          resolve("");
+        } else {
+          reject(new Error("Request aborted"));
+        }
       });
     });
   }
 
   private processBodyContent(contentType: string, bodyContent: string): any {
-    if (
-      contentType.includes("application/json") &&
-      bodyContent.trim() !== "" &&
-      typeof bodyContent === "string"
-    ) {
+    const trimmedBody = bodyContent.trim();
+    if (contentType.includes("application/json") && trimmedBody !== "") {
       try {
-        return JSON.parse(bodyContent);
+        return JSON.parse(trimmedBody);
       } catch (error) {
         throw new Error(`Invalid JSON: ${error.message}`);
       }
     } else if (contentType.includes("application/x-www-form-urlencoded")) {
-      return Object.fromEntries(new URLSearchParams(bodyContent));
+      return Object.fromEntries(new URLSearchParams(trimmedBody));
     }
 
-    return bodyContent.trim() ? bodyContent : {};
+    // Handle unknown content-type gracefully
+    return trimmedBody || {};
   }
 
   private validateParameters(): void {

@@ -4,7 +4,7 @@ import type { IconifyIcon } from "@iconify/react";
 import { useRouter } from "next/router";
 import { useDashboardStore } from "@/stores/dashboard";
 import Link from "next/link";
-import ToolTip from "@/components/elements/base/tooltips/Tooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import { t } from "i18next";
 
 interface SidebarIconProps {
@@ -117,7 +117,7 @@ const SidebarIcon: FC<SidebarIconProps> = ({
       }`}
       onClick={() => openSidebar(name)}
     >
-      <ToolTip content={t(name)} position="end">
+      <Tooltip content={t(name)} position="end">
         {hasSubMenu ? (
           iconElement
         ) : (
@@ -125,7 +125,7 @@ const SidebarIcon: FC<SidebarIconProps> = ({
             {iconElement}
           </Link>
         )}
-      </ToolTip>
+      </Tooltip>
     </li>
   );
 };

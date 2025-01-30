@@ -41,7 +41,7 @@ const KYCTemplates = () => {
                 variant={"pastel"}
                 icon={"mdi:plus"}
                 color={"success"}
-                shape="rounded"
+                shape="rounded-sm"
                 className="cursor-pointer"
               />
             </Link>

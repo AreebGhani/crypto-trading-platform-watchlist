@@ -96,6 +96,7 @@ export default async (data: Handler) => {
           slug: "frontend",
           content: "{}",
           status: "PUBLISHED",
+          order: 0,
         });
       }
 

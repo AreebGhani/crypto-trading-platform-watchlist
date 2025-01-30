@@ -19,10 +19,6 @@ export class CustomError extends Error {
     this.statusCode = statusCode;
     this.message = message;
 
-    // Log the error when it's created
-    logError("CustomError", this, __filename);
-
-    // This ensures that the CustomError is an instance of Error, which is important for proper error handling
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }

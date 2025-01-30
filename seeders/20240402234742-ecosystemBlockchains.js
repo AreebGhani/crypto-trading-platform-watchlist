@@ -43,15 +43,15 @@ const predefinedEcosystemBlockchains = [
     image: "/img/crypto/mo.webp",
   },
   // ton
-  // {
-  //   productId: "AC6A4332",
-  //   chain: "TON",
-  //   name: "TON Blockchain for Ecosystem Addon",
-  //   description:
-  //     "Integrate TON blockchain into your ecosystem for seamless trading and deposits and withdrawals.",
-  //   link: "",
-  //   image: "/img/blockchains/ton.png",
-  // },
+  {
+    productId: "AC6A4332",
+    chain: "TON",
+    name: "TON Blockchain for Ecosystem Addon",
+    description:
+      "Integrate TON blockchain into your ecosystem for seamless trading and deposits and withdrawals.",
+    link: "",
+    image: "/img/blockchains/ton.png",
+  },
 ];
 
 /** @type {import('sequelize-cli').Migration} */

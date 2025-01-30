@@ -1,8 +1,7 @@
-// /api/admin/roles/store.post.ts
-
 import { roleStoreSchema, cacheRoles, baseRoleSchema } from "./utils";
 import { models } from "@b/db";
 import { storeRecordResponses } from "@b/utils/query";
+import { createError } from "@b/utils/error";
 
 export const metadata: OperationObject = {
   summary: "Stores or updates a role",
@@ -25,9 +24,32 @@ export const metadata: OperationObject = {
   permission: "Access Role Management",
 };
 
-export default async (data) => {
-  const { body } = data;
+export default async (data: Handler) => {
+  const { body, user } = data;
   const { name, permissions } = body;
+
+  // Ensure the request is made by a Super Admin
+  if (!user?.id) {
+    throw createError({
+      statusCode: 401,
+      message: "Unauthorized",
+    });
+  }
+
+  const authenticatedUser = await models.user.findByPk(user.id, {
+    include: [{ model: models.role, as: "role" }],
+  });
+
+  if (
+    !authenticatedUser ||
+    !authenticatedUser.role ||
+    authenticatedUser.role.name !== "Super Admin"
+  ) {
+    throw createError({
+      statusCode: 403,
+      message: "Forbidden - Only Super Admins can create new roles",
+    });
+  }
 
   try {
     // Create a new role
@@ -37,21 +59,16 @@ export default async (data) => {
     const permissionIds = permissions.map((permission) => permission.id);
     await role.setPermissions(permissionIds);
 
-    // Optionally, refetch the created role with its permissions
+    // Refetch the created role with its permissions
     const newRole = await models.role.findByPk(role.id, {
-      include: [
-        {
-          model: models.permission,
-          as: "permissions",
-        },
-      ],
+      include: [{ model: models.permission, as: "permissions" }],
     });
 
     // Update the cache for roles
     await cacheRoles();
 
     return { message: "Role created successfully", role: newRole };
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.message);
   }
 };

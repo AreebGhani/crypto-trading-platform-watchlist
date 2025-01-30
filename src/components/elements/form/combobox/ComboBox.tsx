@@ -120,15 +120,15 @@ const ComboBox: FC<ComboBoxProps> = ({
                 ${size === "sm" && !selected?.image ? "px-2" : ""}
                 ${size === "md" && !selected?.image ? "px-3" : ""}
                 ${size === "lg" && !selected?.image ? "px-4" : ""}
-                ${error ? "!border-danger-500" : ""}
+                ${error ? "border-danger-500!" : ""}
                 ${
                   disabled
-                    ? "!pointer-events-none !cursor-not-allowed !opacity-50"
+                    ? "pointer-events-none! cursor-not-allowed! opacity-50!"
                     : ""
                 }
                 ${
                   loading
-                    ? "pointer-events-none !text-transparent !shadow-none placeholder:!text-transparent !select-none"
+                    ? "pointer-events-none text-transparent! shadow-none! placeholder:text-transparent! select-none!"
                     : ""
                 }
               `,
@@ -144,7 +144,7 @@ const ComboBox: FC<ComboBoxProps> = ({
               {...props}
             />
             <div
-              className={`absolute start-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
+              className={`absolute left-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
                 ${size === "sm" ? "h-8 w-8" : ""} 
                 ${size === "md" ? "h-10 w-10" : ""} 
                 ${size === "lg" ? "h-12 w-12" : ""}`}
@@ -156,7 +156,7 @@ const ComboBox: FC<ComboBoxProps> = ({
                     ${size === "sm" ? "h-3 w-3" : ""} 
                     ${size === "md" ? "h-4 w-4" : ""} 
                     ${size === "lg" ? "h-5 w-5" : ""}
-                    ${error ? "!text-danger-500" : ""}
+                    ${error ? "text-danger-500!" : ""}
                   `}
                 />
               ) : (
@@ -174,7 +174,7 @@ const ComboBox: FC<ComboBoxProps> = ({
             </div>
             {!!loading ? (
               <div
-                className={`absolute end-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
+                className={`absolute right-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
                   ${size === "sm" ? "h-8 w-8" : ""} 
                   ${size === "md" ? "h-10 w-10" : ""} 
                   ${size === "lg" ? "h-12 w-12" : ""}`}
@@ -195,13 +195,13 @@ const ComboBox: FC<ComboBoxProps> = ({
               ""
             )}
             <Combobox.Button
-              className={`peer:focus-visible:[&>svg]:rotate-180 absolute end-0 top-0 flex items-center justify-center
+              className={`peer:focus-visible:[&>svg]:rotate-180 absolute right-0 top-0 flex items-center justify-center
                 ${size === "sm" ? "h-8 w-8" : ""} 
                 ${size === "md" ? "h-10 w-10" : ""} 
                 ${size === "lg" ? "h-12 w-12" : ""}
                 ${
                   loading
-                    ? "!pointer-events-none !text-transparent !opacity-0 !select-none"
+                    ? "pointer-events-none! text-transparent! opacity-0! select-none!"
                     : ""
                 }
               `}
@@ -221,10 +221,10 @@ const ComboBox: FC<ComboBoxProps> = ({
             afterLeave={() => setQuery("")}
           >
             <Combobox.Options
-              className={`max-h-[300px] slimscroll absolute z-30 mt-1 w-full overflow-auto border !p-2 text-base shadow-lg shadow-muted-300/30 ring-1 ring-primary-500 ring-opacity-5 focus:outline-none dark:shadow-muted-800/20 sm:text-sm
-                ${shape === "rounded" ? "rounded-md" : ""}
+              className={`max-h-[300px] slimscroll absolute z-30 mt-1 w-full overflow-auto border !p-2 text-base shadow-lg shadow-muted-300/30 ring-1 ring-primary-500 ring-opacity-5 focus:outline-hidden dark:shadow-muted-800/20 sm:text-sm
+                ${shape === "rounded-sm" ? "rounded-md" : ""}
                 ${shape === "smooth" ? "rounded-lg" : ""}
-                ${shape === "rounded" ? "rounded-md" : ""}
+                ${shape === "rounded-sm" ? "rounded-md" : ""}
                 ${shape === "curved" ? "rounded-xl" : ""}
                 ${shape === "full" ? "rounded-xl" : ""}
                 ${
@@ -266,9 +266,9 @@ const ComboBox: FC<ComboBoxProps> = ({
                           ? "bg-primary-500/10 text-primary-700 dark:bg-primary-500/20"
                           : "text-muted-600 dark:text-muted-400"
                       }
-                      ${shape === "rounded" ? "rounded-md" : ""}
+                      ${shape === "rounded-sm" ? "rounded-md" : ""}
                       ${shape === "smooth" ? "rounded-lg" : ""}
-                      ${shape === "rounded" ? "rounded-md" : ""}
+                      ${shape === "rounded-sm" ? "rounded-md" : ""}
                       ${shape === "curved" ? "rounded-xl" : ""}
                       ${shape === "full" ? "rounded-xl" : ""}
                     `}

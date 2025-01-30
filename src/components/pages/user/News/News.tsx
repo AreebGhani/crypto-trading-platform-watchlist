@@ -57,7 +57,7 @@ const NewsBase = ({}: NewsProps) => {
               <img
                 src={article.imageurl}
                 alt={article.source}
-                className="w-full h-full object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-t-none"
+                className="w-full h-full object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none"
               />
             </div>
             <div className="p-4 sm:py-4 flex-1">

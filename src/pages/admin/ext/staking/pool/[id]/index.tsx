@@ -170,7 +170,7 @@ const StakingPoolEdit: React.FC = () => {
             <Button
               onClick={() => router.push(`/admin/ext/staking/pool`)}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="danger"
             >
@@ -179,7 +179,7 @@ const StakingPoolEdit: React.FC = () => {
             <Button
               onClick={handleSubmit}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="success"
             >

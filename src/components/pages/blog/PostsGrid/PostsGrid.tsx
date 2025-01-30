@@ -41,7 +41,7 @@ const PostsGridBase = ({ posts }: { posts: BlogPost[] }) => {
                     fill
                   />
                   <Tag
-                    shape="rounded"
+                    shape="rounded-sm"
                     color="muted"
                     variant="solid"
                     className="ms-1 absolute top-2 left-2"
@@ -57,7 +57,7 @@ const PostsGridBase = ({ posts }: { posts: BlogPost[] }) => {
                   <Link key={post.id} href={`/blog/post/${post.slug}`}>
                     <Card
                       color={"contrast"}
-                      className={`relative w-full h-full p-2 hover:shadow-lg cursor-pointer ${className}`}
+                      className={`relative w-full h-full p-2 hover:shadow-lg cursor-pointer ${className} hover:border-primary-500 transition-all duration-300 dark:hover:border-primary-400`}
                     >
                       {header}
                       <div className="p-2">

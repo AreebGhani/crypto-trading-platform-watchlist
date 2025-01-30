@@ -7,6 +7,7 @@ import { emailQueue } from "@b/utils/emails";
 import { handleEvmWithdrawal } from "./withdraw";
 import TronService from "@b/blockchains/tron";
 import MoneroService from "@b/blockchains/xmr";
+import TonService from "@b/blockchains/ton";
 
 class WithdrawalQueue {
   private static instance: WithdrawalQueue;
@@ -152,16 +153,15 @@ class WithdrawalQueue {
         transaction.amount,
         metadata.toAddress
       );
+    } else if (metadata.chain === "TON") {
+      const tonService = await TonService.getInstance();
 
-      // } else if (metadata.chain === "TON") {
-      //   const tonService = await TonService.getInstance();
-
-      //   await tonService.handleTonWithdrawal(
-      //     transactionId,
-      //     transaction.walletId,
-      //     transaction.amount,
-      //     metadata.toAddress
-      //   );
+      await tonService.handleTonWithdrawal(
+        transaction.id,
+        transaction.walletId,
+        transaction.amount,
+        metadata.toAddress
+      );
     } else {
       await handleEvmWithdrawal(
         transaction.id,

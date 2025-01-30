@@ -15,18 +15,37 @@ const WalletLogin = dynamic(
 );
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID;
 
-const SideImage = () => (
-  <div className="hidden h-screen w-full md:w-1/2 lg:flex xl:w-2/3 max-w-3xl mx-auto items-center justify-center bg-muted-50 dark:bg-muted-950">
-    <Lottie category="cryptocurrency-3" path="mining" />
-  </div>
-);
+const SideImage = () => {
+  const { settings } = useDashboardStore() as any;
+
+  const isLoginLottieEnabled =
+    settings?.lottieAnimationStatus === "true" &&
+    settings?.loginLottieEnabled === "true";
+
+  const loginLottieFile = settings?.loginLottieFile;
+
+  return (
+    <div className="hidden h-screen w-full md:w-1/2 lg:flex xl:w-2/3 max-w-3xl mx-auto items-center justify-center bg-muted-50 dark:bg-muted-950">
+      {isLoginLottieEnabled ? (
+        <Lottie category="cryptocurrency-3" path="mining" />
+      ) : loginLottieFile ? (
+        <img
+          src={loginLottieFile}
+          alt="Login Illustration"
+          className="max-h-[80vh] object-contain"
+        />
+      ) : null}
+    </div>
+  );
+};
 
 export default function Login() {
   const { t } = useTranslation();
   const router = useRouter();
   const { script, setVerificationCode, handleVerificationSubmit } =
     useLoginStore();
-  const { fetchProfile } = useDashboardStore();
+  const { fetchProfile, extensions } = useDashboardStore();
+  const hasWalletConnect = extensions.includes("wallet_connect");
 
   const { token } = router.query as { token: string };
 
@@ -78,7 +97,7 @@ export default function Login() {
         <div className="relative flex h-screen w-full items-center justify-center bg-white px-6 dark:bg-muted-900 md:mx-auto md:w-1/2 md:max-w-md lg:max-w-full lg:px-16 xl:w-1/3 xl:px-12">
           <HeaderSection />
           <div className="mx-auto w-full max-w-sm px-4">
-            {projectId && (
+            {hasWalletConnect && projectId && (
               <WagmiProviderWrapper>
                 <WalletLogin />
               </WagmiProviderWrapper>

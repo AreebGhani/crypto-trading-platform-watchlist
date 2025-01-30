@@ -139,7 +139,7 @@ export const ItemCard = ({
         y: -20,
       }}
       key={item.title}
-      className="group/item h-96 w-[30rem] relative flex-shrink-0"
+      className="group/item h-96 w-[30rem] relative shrink-0"
     >
       <Link href={item.link} className="block group-hover/item:shadow-2xl ">
         <MashImage

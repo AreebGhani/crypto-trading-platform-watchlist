@@ -4,13 +4,7 @@ import ListBox from "@/components/elements/form/listbox/Listbox";
 import Input from "@/components/elements/form/input/Input";
 import Button from "@/components/elements/base/button/Button";
 import { useTranslation } from "next-i18next";
-const looseToNumber = (value: any) => {
-  if (typeof value === "string" && value.endsWith(".")) {
-    return value;
-  }
-  const n = Number.parseFloat(value);
-  return Number.isNaN(n) ? value : n;
-};
+
 const NewInvestmentBase = ({
   plan,
   duration,
@@ -21,6 +15,16 @@ const NewInvestmentBase = ({
   isLoading,
 }) => {
   const { t } = useTranslation();
+  const looseToNumber = (value: any) => {
+    if (
+      typeof value === "string" &&
+      (value === "" || value === "." || value.endsWith("."))
+    ) {
+      return value; // Allow incomplete decimal inputs
+    }
+    const n = Number.parseFloat(value);
+    return Number.isNaN(n) ? value : n;
+  };
   return (
     <div className="flex flex-col gap-4">
       <div className="text-sm">
@@ -78,6 +82,8 @@ const NewInvestmentBase = ({
             placeholder={t("Ex: 2600")}
             value={amount}
             onChange={(e) => setAmount(looseToNumber(e.target.value))}
+            type="number"
+            step="any"
           />
         </div>
       </div>
@@ -92,10 +98,11 @@ const NewInvestmentBase = ({
           }
           loading={isLoading}
           disabled={
-            !amount ||
-            (plan ? amount < plan.minAmount : false) ||
-            (plan ? amount > plan?.maxAmount : false) ||
-            !duration.value
+            !amount || // Ensure the amount is provided
+            isNaN(amount) || // Avoid invalid numbers
+            (plan ? amount < plan.minAmount : false) || // Check min limit
+            (plan ? amount > plan?.maxAmount : false) || // Check max limit
+            !duration.value // Ensure duration is selected
           }
           onClick={invest}
         >

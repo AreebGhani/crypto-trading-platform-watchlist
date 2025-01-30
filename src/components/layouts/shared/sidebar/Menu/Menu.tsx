@@ -40,7 +40,7 @@ const MenuBase = ({
   function generateNavClassNames() {
     // Define base classes
     const baseClasses = [
-      "fixed start-0 top-0 z-[11] h-full overflow-hidden transition-all duration-300 dark:border-muted-800 dark:bg-muted-900",
+      "fixed left-0 top-0 z-11 h-full overflow-hidden transition-all duration-300 dark:border-muted-800 dark:bg-muted-900",
     ];
 
     // Conditional classes based on the provided states
@@ -51,7 +51,7 @@ const MenuBase = ({
       collapse ? "" : "border-muted-200",
       sideblock ? "text-muted-500 dark:text-muted-400" : "",
       collapse ? "" : "md:w-[250px]",
-      collapse ? "" : sideblock ? "lg:w-[280px]" : "lg:start-20",
+      collapse ? "" : sideblock ? "lg:w-[280px]" : "lg:left-20",
       !collapse
         ? sideblock
           ? ""
@@ -75,10 +75,10 @@ const MenuBase = ({
           : "-translate-x-[101%]"
         : float
         ? isSidebarOpenedMobile
-          ? "is-menu-sidebar-translated-mobile start-20 translate-x-0"
+          ? "is-menu-sidebar-translated-mobile left-20 translate-x-0"
           : "-translate-x-[130%]"
         : isSidebarOpenedMobile
-        ? "start-20 translate-x-0"
+        ? "left-20 translate-x-0"
         : "-translate-x-[101%]",
     ];
 
@@ -116,7 +116,7 @@ const MenuBase = ({
   return (
     <nav className={navClassNames}>
       {collapse && (
-        <div className="absolute inset-0 z-[1] block overflow-hidden opacity-20">
+        <div className="absolute inset-0 z-1 block overflow-hidden opacity-20">
           <MashImage
             src="/img/sidebar-bg.webp"
             // fill
@@ -130,7 +130,7 @@ const MenuBase = ({
       <div
         className={
           collapse || sideblock
-            ? "relative z-[2] flex h-full flex-col"
+            ? "relative z-2 flex h-full flex-col"
             : "h-full"
         }
       >

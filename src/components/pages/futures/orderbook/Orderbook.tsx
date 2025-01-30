@@ -165,7 +165,7 @@ const OrderbookBase = () => {
             <BestPrices {...orderBook.bestPrices} />
           </div>
           {visible.asks && (
-            <div className="min-h-[45vh] max-h-[45vh] overflow-hidden w-full order-1 flex flex-col-reverse flex-grow">
+            <div className="min-h-[45vh] max-h-[45vh] overflow-hidden w-full order-1 flex flex-col-reverse grow">
               {orderBook.asks.length > 0 ? (
                 orderBook.asks.map((ask, index) => (
                   <OrderBookRow
@@ -193,7 +193,7 @@ const OrderbookBase = () => {
             </div>
           )}
           {visible.bids && (
-            <div className="min-h-[45vh] max-h-[45vh] overflow-hidden w-full order-3 flex flex-col flex-grow">
+            <div className="min-h-[45vh] max-h-[45vh] overflow-hidden w-full order-3 flex flex-col grow">
               {orderBook.bids.length > 0 ? (
                 orderBook.bids.map((bid, index) => (
                   <OrderBookRow

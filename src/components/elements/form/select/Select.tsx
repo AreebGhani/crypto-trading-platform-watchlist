@@ -74,7 +74,7 @@ const Select: FC<SelectProps> = ({
       <div className="relative">
         <div
           ref={inputRef}
-          className={`group relative inline-block w-full after:pointer-events-none after:absolute after:end-[.9em] after:top-1/2 after:z-[4] after:block after:h-[.5em] after:w-[.5em] after:rounded-[2px] after:border-b-[2.4px] after:border-s-[2.4px] after:border-muted-400 after:transition-all after:duration-300 after:content-[''] after:[transform:scale(0.8)_rotate(-45deg)] focus-within:after:[transform:scale(0.8)_rotate(-225deg)]
+          className={`group relative inline-block w-full after:pointer-events-none after:absolute after:right-[.9em] after:top-1/2 after:z-4 after:block after:h-[.5em] after:w-[.5em] after:rounded-[2px] after:border-b-[2.4px] after:border-s-[2.4px] after:border-muted-400 after:transition-all after:duration-300 after:content-[''] after:[transform:scale(0.8)_rotate(-45deg)] focus-within:after:[transform:scale(0.8)_rotate(-225deg)]
             ${
               size === "sm"
                 ? "after:-mt-[.366em] focus-within:after:top-[60%]"
@@ -90,7 +90,7 @@ const Select: FC<SelectProps> = ({
                 ? "after:-mt-[.366em] focus-within:after:top-[60%]"
                 : ""
             }
-            ${loading ? "after:!border-transparent pointer-events-none" : ""}
+            ${loading ? "after:border-transparent! pointer-events-none" : ""}
         `}
         >
           <select
@@ -102,14 +102,14 @@ const Select: FC<SelectProps> = ({
               shape,
               className: `peer 
                 ${classes}
-                ${size === "sm" && icon ? "ps-8 !py-1" : ""}
+                ${size === "sm" && icon ? "ps-8 py-1!" : ""}
                 ${size === "md" && icon ? "ps-10" : ""}
                 ${size === "lg" && icon ? "ps-12" : ""}
-                ${size === "sm" && !icon ? "ps-2 !py-1" : ""}
+                ${size === "sm" && !icon ? "ps-2 py-1!" : ""}
                 ${size === "md" && !icon ? "ps-3" : ""}
                 ${size === "lg" && !icon ? "ps-4" : ""}
-                ${error ? "!border-danger-500" : ""}
-                ${loading ? "!text-transparent !shadow-none !select-none" : ""}
+                ${error ? "border-danger-500!" : ""}
+                ${loading ? "text-transparent! shadow-none! select-none!" : ""}
               `,
             })}
             {...props}
@@ -124,7 +124,7 @@ const Select: FC<SelectProps> = ({
 
         {!!icon ? (
           <div
-            className={`absolute start-0 top-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
+            className={`absolute left-0 top-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
             ${size === "sm" ? "h-8 w-8" : ""} 
             ${size === "md" ? "h-10 w-10" : ""} 
             ${size === "lg" ? "h-12 w-12" : ""}`}
@@ -135,7 +135,7 @@ const Select: FC<SelectProps> = ({
               ${size === "sm" ? "h-3 w-3" : ""} 
               ${size === "md" ? "h-4 w-4" : ""} 
               ${size === "lg" ? "h-5 w-5" : ""}
-              ${error ? "!text-danger-500" : ""}
+              ${error ? "text-danger-500!" : ""}
             `}
             />
           </div>
@@ -144,7 +144,7 @@ const Select: FC<SelectProps> = ({
         )}
         {!!loading ? (
           <div
-            className={`absolute end-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
+            className={`absolute right-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
             ${size === "sm" ? "h-8 w-8" : ""} 
             ${size === "md" ? "h-10 w-10" : ""} 
             ${size === "lg" ? "h-12 w-12" : ""}`}

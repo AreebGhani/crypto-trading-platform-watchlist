@@ -194,7 +194,7 @@ const PostEditor: React.FC = () => {
                 router.push(`/user/blog/author/${profile?.author?.id}`)
               }
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="danger"
             >
@@ -203,7 +203,7 @@ const PostEditor: React.FC = () => {
             <Button
               onClick={handleSubmit}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="success"
             >

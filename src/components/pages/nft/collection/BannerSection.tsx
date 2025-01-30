@@ -14,7 +14,7 @@ const BannerSection: React.FC = () => {
       }}
     >
       {/* Overlay Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-transparent"></div>
+      <div className="absolute inset-0 bg-linear-to-b from-black/80 to-transparent"></div>
 
       {/* Creator's Profile Image */}
       <ProfileImage avatar={collection?.creator?.avatar} />

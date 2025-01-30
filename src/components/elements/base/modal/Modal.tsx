@@ -39,7 +39,7 @@ const Modal: FC<ModalProps> = ({
 
   return (
     <motion.div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center ${classes?.wrapper}`}
+      className={`fixed inset-0 z-9999 flex items-center justify-center ${classes?.wrapper}`}
       initial="hidden"
       animate="visible"
       exit="exit"

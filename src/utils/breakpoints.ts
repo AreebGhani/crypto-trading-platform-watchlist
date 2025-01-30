@@ -29,7 +29,4 @@ export const breakpoints = {
   // Landscape small devices
   smdl: { raw: "(min-width: 640px) and (orientation: landscape)" },
   // High Resolution devices
-  hdpi: {
-    raw: "(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)",
-  },
 };

@@ -111,7 +111,7 @@ const TransferForm = ({
           {t("Enter the amount you want to transfer")}
         </p>
       </div>
-      <div className="mx-auto mb-4 w-full max-w-md rounded px-8 pb-8">
+      <div className="mx-auto mb-4 w-full max-w-md rounded-sm px-8 pb-8">
         <Input
           type="number"
           value={transferAmount}
@@ -126,7 +126,7 @@ const TransferForm = ({
           remainingBalance={transferDetails.remainingBalance}
           details={transferDetails}
         />
-        <div className="mx-auto !mt-8 max-w-sm">
+        <div className="mx-auto mt-8! max-w-sm">
           <div className="flex w-full gap-4 justify-center">
             <Button type="button" size="lg" onClick={onBack} disabled={loading}>
               <Icon icon="mdi:chevron-left" className="h-5 w-5" />

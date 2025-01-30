@@ -21,6 +21,7 @@ export const tagVariants = cva(
       },
       shape: {
         straight: "",
+        "rounded-xs": "rounded-xs",
         "rounded-sm": "rounded-sm",
         rounded: "rounded-md",
         smooth: "rounded-lg",

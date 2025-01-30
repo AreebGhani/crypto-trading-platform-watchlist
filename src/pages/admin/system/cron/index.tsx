@@ -72,7 +72,7 @@ const Log = () => {
         items={items}
         setItems={setItems}
         columnConfig={columnConfig}
-        shape="rounded"
+        shape="rounded-sm"
         size="sm"
         filterField="title"
         initialPerPage={20}
@@ -80,10 +80,10 @@ const Log = () => {
           <IconBox
             color="primary"
             onClick={() => runCron()}
-            shape={"rounded"}
+            shape={"rounded-sm"}
             size={"sm"}
             variant={"pastel"}
-            className="cursor-pointer hover:shadow transition-all duration-300 ease-in-out hover:shadow-muted-300/30 dark:hover:shadow-muted-800/20 hover:bg-primary-500 hover:text-muted-100"
+            className="cursor-pointer hover:shadow-sm transition-all duration-300 ease-in-out hover:shadow-muted-300/30 dark:hover:shadow-muted-800/20 hover:bg-primary-500 hover:text-muted-100"
             icon="lucide:play"
           />
         }

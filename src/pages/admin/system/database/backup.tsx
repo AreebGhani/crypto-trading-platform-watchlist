@@ -113,14 +113,14 @@ const DatabaseBackupDashboard: React.FC = () => {
               color="primary"
               onClick={() => setIsModalOpen(true)}
               className="ml-2"
-              shape={"rounded"}
+              shape={"rounded-sm"}
               variant={"outlined"}
             >
               {t("Create Backup")}
             </Button>
           </>
         }
-        shape="rounded"
+        shape="rounded-sm"
         size="sm"
         initialPerPage={20}
       />

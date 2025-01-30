@@ -7,7 +7,7 @@ const DownloadProductBase = ({ product }) => {
     <div className="pb-5 px-5">
       <Button
         type="button"
-        shape="rounded"
+        shape="rounded-sm"
         color="success"
         className="w-full mt-4"
         onClick={() => {

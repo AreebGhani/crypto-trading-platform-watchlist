@@ -23,6 +23,7 @@ export const cardVariants = cva("relative w-full transition-all duration-300", {
     shape: {
       straight: "",
       rounded: "rounded-md",
+      "rounded-xs": "rounded-xs",
       "rounded-sm": "rounded-sm",
       smooth: "rounded-lg",
       curved: "rounded-xl",

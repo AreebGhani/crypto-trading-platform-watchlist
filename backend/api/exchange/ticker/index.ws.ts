@@ -151,12 +151,14 @@ class TickerHandler {
     return symbolsInDB.filter((symbol) => errorMessage.includes(symbol));
   }
 
-  private processTickers(allTickers, symbolsInDB) {
+  private processTickers(provider, allTickers, symbolsInDB) {
     return symbolsInDB.reduce((acc, symbol) => {
       if (allTickers[symbol]) {
         acc[symbol] = {
           last: allTickers[symbol].last,
-          baseVolume: allTickers[symbol].baseVolume,
+          baseVolume:
+            allTickers[symbol].baseVolume ||
+            (provider === "xt" ? allTickers[symbol].info.q : undefined),
           quoteVolume: allTickers[symbol].quoteVolume,
           change: allTickers[symbol].percentage,
         };
@@ -232,7 +234,11 @@ class TickerHandler {
             }
           }
 
-          const filteredTickers = this.processTickers(allTickers, symbolsInDB);
+          const filteredTickers = this.processTickers(
+            provider,
+            allTickers,
+            symbolsInDB
+          );
 
           if (
             provider === "binance" ||

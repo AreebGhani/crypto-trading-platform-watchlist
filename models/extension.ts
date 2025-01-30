@@ -1,6 +1,21 @@
 import * as Sequelize from "sequelize";
 import { DataTypes, Model } from "sequelize";
 
+export interface extensionAttributes {
+  id: string;
+  productId: string;
+  name: string;
+  title?: string;
+  description?: string;
+  link?: string;
+  status?: boolean;
+  version?: string;
+  image?: string;
+}
+
+export interface extensionCreationAttributes
+  extends Partial<extensionAttributes> {}
+
 export default class extension
   extends Model<extensionAttributes, extensionCreationAttributes>
   implements extensionAttributes
@@ -108,5 +123,19 @@ export default class extension
       }
     );
   }
+public static has(name: string): boolean {
+    const ext = this.findOne({ 
+      where: { 
+        name: name,
+        status: true 
+      },
+      raw: true
+    });
+    
+    return ext !== null && ext !== undefined;
+  }
+	
   public static associate(models: any) {}
 }
+// Exporting with alias "extensions"
+export { extension as extensions };

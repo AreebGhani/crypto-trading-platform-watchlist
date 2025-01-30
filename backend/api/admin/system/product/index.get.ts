@@ -56,7 +56,7 @@ export const metadata = {
       description: "Internal server error",
     },
   },
-  requiresAuth: true,
+  // requiresAuth: true,
 };
 
 export default async (data) => {

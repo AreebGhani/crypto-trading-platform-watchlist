@@ -16,7 +16,7 @@ const FixedPanel = ({ title, name, children }) => {
 
   return (
     <div
-      className={`fixed end-0 top-0 z-[11] h-full w-[340px] border bg-white shadow-lg shadow-muted-300/30 transition-all duration-300 dark:border-muted-800 dark:bg-muted-900 dark:shadow-muted-800/30 ${
+      className={`fixed right-0 top-0 z-11 h-full w-[340px] border bg-white shadow-lg shadow-muted-300/30 transition-all duration-300 dark:border-muted-800 dark:bg-muted-900 dark:shadow-muted-800/30 ${
         isPanelOpened ? "translate-x-0" : "translate-x-full"
       }`}
     >

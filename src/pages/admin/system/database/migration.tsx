@@ -77,7 +77,7 @@ const DatabaseMigrationDashboard: React.FC = () => {
           color="primary"
           onClick={() => setIsModalOpen(true)}
           className="ml-2"
-          shape={"rounded"}
+          shape={"rounded-sm"}
           variant={"outlined"}
           animated={false}
         >
@@ -121,7 +121,7 @@ const DatabaseMigrationDashboard: React.FC = () => {
       </Modal>
 
       <div
-        className="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded shadow overflow-auto text-sm slimscroll h-[calc(100vh-200px)]"
+        className="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-sm shadow-sm overflow-auto text-sm slimscroll h-[calc(100vh-200px)]"
         ref={logRef}
       >
         {renderLogs()}

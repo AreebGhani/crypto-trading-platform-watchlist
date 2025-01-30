@@ -103,7 +103,7 @@ const AutoplaySlider: React.FC<AutoplaySliderProps> = ({
           <button
             onClick={toggleAutoplay}
             className={
-              "px-1 py-1 bg-white dark:bg-black text-black dark:text-white rounded-sm cursor-pointer text-xs"
+              "px-1 py-1 bg-white dark:bg-black text-black dark:text-white rounded-xs cursor-pointer text-xs"
             }
           >
             <Icon icon={isAutoplay ? "akar-icons:pause" : "akar-icons:play"} />

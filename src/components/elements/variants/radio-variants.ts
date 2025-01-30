@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const radioVariants = cva(
-  "relative start-[.4px] z-[2] h-2 w-2 scale-0 transition-transform delay-150 duration-300 peer-checked:scale-100",
+  "relative left-[.4px] z-2 h-2 w-2 scale-0 transition-transform delay-150 duration-300 peer-checked:scale-100",
   {
     variants: {
       color: {

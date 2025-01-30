@@ -3,13 +3,13 @@ import { MashImage } from "@/components/elements/MashImage";
 import { Icon } from "@iconify/react";
 import { LAYOUTS, useLayoutStore } from "@/stores/layout";
 import { useTranslation } from "next-i18next";
-import { AnimatedTooltip } from "../elements/base/tooltips/AnimatedTooltip";
-
-const switcherStatus = process.env.NEXT_PUBLIC_LAYOUT_SWITCHER !== "false";
+import { Tooltip } from "../elements/base/tooltips/Tooltip";
+import { useDashboardStore } from "@/stores/dashboard";
 
 const LayoutSwitcher = () => {
   const { t } = useTranslation();
   const { setActiveLayout, activeLayout } = useLayoutStore();
+  const { settings } = useDashboardStore();
   const [open, setOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -30,14 +30,13 @@ const LayoutSwitcher = () => {
     return null; // Prevent rendering on the server side
   }
 
-  if (!switcherStatus) return null;
+  if (settings?.layoutSwitcher !== "true") return null;
 
   return (
-    <div className="group/layouts">
-      <AnimatedTooltip
-        content={t("Layout")}
-        classNames="fixed bottom-5 end-5 z-[40]"
-      >
+    <div
+      className={`group/layouts fixed bottom-5 right-5  ${open ? "z-50" : "z-40"}`}
+    >
+      <Tooltip content={t("Layout")}>
         <button
           name="layoutSwitcherToggle"
           aria-label="Layout switcher"
@@ -54,9 +53,9 @@ const LayoutSwitcher = () => {
             className="h-6 w-6 shrink-0 text-muted-400 transition-colors duration-300 group-hover/layouts:text-primary-500"
           />
         </button>
-      </AnimatedTooltip>
+      </Tooltip>
       <div
-        className={`fixed bottom-5 end-5 z-[1000] h-[350px] sm:h-[200px] w-[480px] max-w-[90%] sm:max-w-[80%] overflow-hidden rounded-lg border border-muted-200 bg-white shadow-lg shadow-muted-300/30 transition-all duration-300 hover:border-primary-500 dark:border-muted-800 dark:bg-muted-950 dark:shadow-muted-800/30 dark:hover:border-primary-500 ${
+        className={`fixed bottom-5 right-5 z-1000 h-[350px] sm:h-[200px] w-[480px] max-w-[90%] sm:max-w-[80%] overflow-hidden rounded-lg border border-muted-200 bg-white shadow-lg shadow-muted-300/30 transition-all duration-300 hover:border-primary-500 dark:border-muted-800 dark:bg-muted-950 dark:shadow-muted-800/30 dark:hover:border-primary-500 ${
           open
             ? "pointer-events-auto translate-y-0 opacity-100"
             : "pointer-events-none translate-y-full opacity-0"
@@ -87,7 +86,7 @@ const LayoutSwitcher = () => {
               <input
                 type="radio"
                 name="layout"
-                className="absolute start-0 top-0 z-10 h-full w-full cursor-pointer opacity-0"
+                className="absolute left-0 top-0 z-10 h-full w-full cursor-pointer opacity-0"
                 value={layout}
                 aria-label={layout}
                 onChange={handleLayout}
@@ -101,7 +100,7 @@ const LayoutSwitcher = () => {
                     className={`block w-full dark:hidden transition-opacity duration-300 ${
                       activeLayout === layout
                         ? "opacity-100"
-                        : "opacity-50 group-hover/radio:opacity-80 group-hover/radio:bg-muted-200 dark:group-hover/radio:bg-muted-800 group-hover/radio:rounded-sm"
+                        : "opacity-50 group-hover/radio:opacity-80 group-hover/radio:bg-muted-200 dark:group-hover/radio:bg-muted-800 group-hover/radio:rounded-xs"
                     }`}
                     alt="Layout icon"
                   />
@@ -117,7 +116,7 @@ const LayoutSwitcher = () => {
                     alt="Layout icon"
                   />
                   <div
-                    className={`absolute end-0 top-0 z-10 h-7 w-7 items-center justify-center rounded-full border-4 border-white bg-success-500 dark:border-muted-950 ${
+                    className={`absolute right-0 top-0 z-10 h-7 w-7 items-center justify-center rounded-full border-4 border-white bg-success-500 dark:border-muted-950 ${
                       activeLayout === layout ? "flex" : "hidden"
                     }`}
                   >

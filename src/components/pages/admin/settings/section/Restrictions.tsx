@@ -7,6 +7,13 @@ import Link from "next/link";
 
 const restrictionFields = [
   {
+    name: "kycStatus",
+    label: "Enable KYC",
+    placeholder: "Enable or disable",
+    description: "Toggle KYC verification for user accounts.",
+    type: "switch",
+  },
+  {
     name: "tradeRestrictions",
     label: "Trade Restrictions",
     placeholder: "Select an option",

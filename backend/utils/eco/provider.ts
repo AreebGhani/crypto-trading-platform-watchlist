@@ -65,8 +65,7 @@ export async function isProviderHealthy(provider: any): Promise<boolean> {
   try {
     const blockNumber = await provider.getBlockNumber();
     return blockNumber > 0;
-  } catch (error) {
-    logError("is_provider_healthy", error, __filename);
+  } catch {
     return false;
   }
 }

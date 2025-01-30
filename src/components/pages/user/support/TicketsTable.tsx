@@ -78,11 +78,11 @@ const TicketsTable: FC<TicketsTableProps> = ({ title = "Recent Tickets" }) => {
             <Button
               color="primary"
               size="sm"
-              className="!h-9 !min-w-[64px] !rounded-e-none"
+              className="h-9! min-w-[64px]! rounded-e-none!"
             >
               {t("All")}
             </Button>
-            <Button size="sm" className="!h-9 !min-w-[64px] !rounded-s-none">
+            <Button size="sm" className="h-9! min-w-[64px]! rounded-s-none!">
               {t("Open")}
             </Button>
           </div>

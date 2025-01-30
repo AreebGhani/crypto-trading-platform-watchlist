@@ -51,10 +51,10 @@ const Textarea: FC<TextAreaProps> = ({
             className: ` 
               ${classes}
               ${!resize ? "resize-none" : ""}
-              ${error ? "!border-danger-500" : ""}
+              ${error ? "border-danger-500!" : ""}
               ${
                 loading
-                  ? "pointer-events-none !text-transparent !shadow-none placeholder:!text-transparent !select-none"
+                  ? "pointer-events-none text-transparent! shadow-none! placeholder:text-transparent! select-none!"
                   : ""
               }
               ${focusClass}
@@ -64,7 +64,7 @@ const Textarea: FC<TextAreaProps> = ({
         ></textarea>
         {!!loading ? (
           <div
-            className={`absolute end-0 top-0 z-0 flex h-10 w-10 items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
+            className={`absolute right-0 top-0 z-0 flex h-10 w-10 items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
           `}
           >
             <Loader

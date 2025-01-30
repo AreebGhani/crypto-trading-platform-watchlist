@@ -13,6 +13,8 @@ const siteUrl = dev
   : process.env.NEXT_PUBLIC_SITE_URL;
 const isFrontendEnabled = process.env.NEXT_PUBLIC_FRONTEND === "true";
 const defaultUserPath = process.env.NEXT_PUBLIC_DEFAULT_USER_PATH || "/user";
+const isMaintenance =
+  process.env.NEXT_PUBLIC_MAINTENANCE_STATUS === "true" || false;
 
 if (!tokenSecret) {
   throw new Error("APP_ACCESS_TOKEN_SECRET is not set");
@@ -41,15 +43,6 @@ async function fetchRolesAndPermissions(request: NextRequest) {
       Accept: "application/json",
       "Content-Type": "application/json",
     };
-
-    if (!dev) {
-      headers["User-Agent"] =
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
-      headers["CF-Connecting-IP"] =
-        request.headers.get("x-forwarded-for") ||
-        request.headers.get("cf-connecting-ip") ||
-        "";
-    }
 
     const response = await fetch(apiUrl, { headers });
 
@@ -121,7 +114,7 @@ async function verifyToken(
       }
     );
     return result;
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === "ERR_JWT_EXPIRED") {
       console.warn("Token expired:", error.message);
     } else {
@@ -133,7 +126,7 @@ async function verifyToken(
 
 async function refreshToken(request: NextRequest) {
   try {
-    const response = await fetch(request.nextUrl.origin + "/api/auth/session", {
+    const response = await fetch(`${siteUrl}/api/auth/session`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -167,7 +160,7 @@ async function refreshToken(request: NextRequest) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Fetch roles and permissions immediately to initialize rolesCache
+  // Fetch roles and permissions if not done yet
   if (!rolesCache || Object.keys(rolesCache).length === 0) {
     await fetchRolesAndPermissions(request);
   }
@@ -205,6 +198,8 @@ export async function middleware(request: NextRequest) {
         if (verifiedToken) {
           payload = verifiedToken.payload;
           isTokenValid = true;
+
+          // Set the new token in cookies
           const response = NextResponse.next();
           response.cookies.set("accessToken", accessToken, {
             httpOnly: true,
@@ -218,6 +213,32 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  if (isMaintenance && pathname !== "/login") {
+    if (!isTokenValid) {
+      const url = new URL(request.nextUrl);
+      url.pathname = "/maintenance";
+      return NextResponse.redirect(url.toString());
+    } else {
+      if (!payload || !payload.sub || !payload.sub.role) {
+        const url = new URL(request.nextUrl);
+        url.pathname = "/maintenance";
+        return NextResponse.redirect(url.toString());
+      }
+      const roleId = payload.sub.role;
+      const userRole = rolesCache?.[roleId];
+      if (
+        !userRole ||
+        (userRole.name !== "Super Admin" &&
+          !userRole.permissions.includes("Access Admin Dashboard"))
+      ) {
+        const url = new URL(request.nextUrl);
+        url.pathname = "/maintenance";
+        return NextResponse.redirect(url.toString());
+      }
+    }
+  }
+
+  // If the user is authenticated and tries to access auth pages, redirect to default path
   if (isTokenValid && AUTH_PAGES.includes(pathname)) {
     const returnUrl =
       request.nextUrl.searchParams.get("return") || defaultUserPath;
@@ -227,6 +248,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url.toString());
   }
 
+  // Redirect unauthenticated users trying to access restricted pages
   if (
     !isTokenValid &&
     (pathname.startsWith("/user") || pathname.startsWith("/admin"))
@@ -260,6 +282,6 @@ export const config = {
     "/register",
     "/forgot",
     "/reset",
-    "/uploads/:path*", // Add uploads path to the matcher
+    "/uploads/:path*",
   ],
 };

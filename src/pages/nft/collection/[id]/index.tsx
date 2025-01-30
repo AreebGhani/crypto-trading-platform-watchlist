@@ -71,12 +71,10 @@ export default CollectionPage;
 // Server-side data fetching
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params as { id: string };
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const baseUrl = `${protocol}://${context.req.headers.host}`;
 
   try {
-    const collectionResponse = await $serverFetch({
-      url: `${baseUrl}/api/ext/nft/collection/${id}`,
+    const collectionResponse = await $serverFetch(context, {
+      url: `/api/ext/nft/collection/${id}`,
     });
 
     return {

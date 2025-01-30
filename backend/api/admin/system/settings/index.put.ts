@@ -21,7 +21,6 @@ export const metadata = {
       },
     },
   },
-  permission: "Access System Settings Management",
   responses: {
     200: {
       description: "Settings updated successfully",
@@ -47,6 +46,7 @@ export const metadata = {
       description: "Internal server error",
     },
   },
+  permission: "Access System Settings Management",
   requiresAuth: true,
 };
 

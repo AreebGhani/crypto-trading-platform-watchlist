@@ -4,6 +4,34 @@ import forexAccountSignal from "./forexAccountSignal";
 import forexSignal from "./forexSignal";
 import user from "./user";
 
+// =============================
+// Interfaces for Type Definitions
+// =============================
+
+// Attributes for forexAccount
+export interface forexAccountAttributes {
+  id: string;
+  userId?: string;
+  accountId?: string;
+  password?: string;
+  broker?: string;
+  mt?: number;
+  balance: number;
+  leverage?: number;
+  type: "DEMO" | "LIVE";
+  status?: boolean;
+  createdAt?: Date;
+  deletedAt?: Date;
+  updatedAt?: Date;
+}
+
+// Creation Attributes (Optional Fields)
+export interface forexAccountCreationAttributes
+  extends Partial<forexAccountAttributes> {}
+
+// =============================
+// Model Definition
+// =============================
 export default class forexAccount
   extends Model<forexAccountAttributes, forexAccountCreationAttributes>
   implements forexAccountAttributes
@@ -14,7 +42,7 @@ export default class forexAccount
   password?: string;
   broker?: string;
   mt?: number;
-  balance: number;
+  balance!: number;
   leverage?: number;
   type!: "DEMO" | "LIVE";
   status?: boolean;
@@ -22,78 +50,27 @@ export default class forexAccount
   deletedAt?: Date;
   updatedAt?: Date;
 
-  // forexAccount hasMany forexAccountSignal via forexAccountId
-  forexAccountSignals!: forexAccountSignal[];
-  getForexAccountSignals!: Sequelize.HasManyGetAssociationsMixin<forexAccountSignal>;
-  setForexAccountSignals!: Sequelize.HasManySetAssociationsMixin<
-    forexAccountSignal,
-    forexAccountSignalId
-  >;
-  addForexAccountSignal!: Sequelize.HasManyAddAssociationMixin<
-    forexAccountSignal,
-    forexAccountSignalId
-  >;
-  addForexAccountSignals!: Sequelize.HasManyAddAssociationsMixin<
-    forexAccountSignal,
-    forexAccountSignalId
-  >;
-  createForexAccountSignal!: Sequelize.HasManyCreateAssociationMixin<forexAccountSignal>;
-  removeForexAccountSignal!: Sequelize.HasManyRemoveAssociationMixin<
-    forexAccountSignal,
-    forexAccountSignalId
-  >;
-  removeForexAccountSignals!: Sequelize.HasManyRemoveAssociationsMixin<
-    forexAccountSignal,
-    forexAccountSignalId
-  >;
-  hasForexAccountSignal!: Sequelize.HasManyHasAssociationMixin<
-    forexAccountSignal,
-    forexAccountSignalId
-  >;
-  hasForexAccountSignals!: Sequelize.HasManyHasAssociationsMixin<
-    forexAccountSignal,
-    forexAccountSignalId
-  >;
-  countForexAccountSignals!: Sequelize.HasManyCountAssociationsMixin;
-  // forexAccount belongsToMany forexSignal via forexAccountId and forexSignalId
-  forexSignalIdForexSignals!: forexSignal[];
-  getForexSignalIdForexSignals!: Sequelize.BelongsToManyGetAssociationsMixin<forexSignal>;
-  setForexSignalIdForexSignals!: Sequelize.BelongsToManySetAssociationsMixin<
-    forexSignal,
-    forexSignalId
-  >;
-  addForexSignalIdForexSignal!: Sequelize.BelongsToManyAddAssociationMixin<
-    forexSignal,
-    forexSignalId
-  >;
-  addForexSignalIdForexSignals!: Sequelize.BelongsToManyAddAssociationsMixin<
-    forexSignal,
-    forexSignalId
-  >;
-  createForexSignalIdForexSignal!: Sequelize.BelongsToManyCreateAssociationMixin<forexSignal>;
-  removeForexSignalIdForexSignal!: Sequelize.BelongsToManyRemoveAssociationMixin<
-    forexSignal,
-    forexSignalId
-  >;
-  removeForexSignalIdForexSignals!: Sequelize.BelongsToManyRemoveAssociationsMixin<
-    forexSignal,
-    forexSignalId
-  >;
-  hasForexSignalIdForexSignal!: Sequelize.BelongsToManyHasAssociationMixin<
-    forexSignal,
-    forexSignalId
-  >;
-  hasForexSignalIdForexSignals!: Sequelize.BelongsToManyHasAssociationsMixin<
-    forexSignal,
-    forexSignalId
-  >;
-  countForexSignalIdForexSignals!: Sequelize.BelongsToManyCountAssociationsMixin;
-  // forexAccount belongsTo user via userId
-  user!: user;
-  getUser!: Sequelize.BelongsToGetAssociationMixin<user>;
-  setUser!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
-  createUser!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // =============================
+  // Association Methods
+  // =============================
 
+  public forexAccountSignals!: forexAccountSignal[];
+  public getForexAccountSignals!: Sequelize.HasManyGetAssociationsMixin<forexAccountSignal>;
+  public addForexAccountSignal!: Sequelize.HasManyAddAssociationMixin<forexAccountSignal, string>;
+  public removeForexAccountSignal!: Sequelize.HasManyRemoveAssociationMixin<forexAccountSignal, string>;
+
+  public forexSignals!: forexSignal[];
+  public getForexSignals!: Sequelize.BelongsToManyGetAssociationsMixin<forexSignal>;
+  public addForexSignal!: Sequelize.BelongsToManyAddAssociationMixin<forexSignal, string>;
+  public removeForexSignal!: Sequelize.BelongsToManyRemoveAssociationMixin<forexSignal, string>;
+
+  public user!: user;
+  public getUser!: Sequelize.BelongsToGetAssociationMixin<user>;
+  public setUser!: Sequelize.BelongsToSetAssociationMixin<user, string>;
+
+  // =============================
+  // Model Initialization
+  // =============================
   public static initModel(sequelize: Sequelize.Sequelize): typeof forexAccount {
     return forexAccount.init(
       {
@@ -200,21 +177,30 @@ export default class forexAccount
       }
     );
   }
+
+  // =============================
+  // Associations
+  // =============================
   public static associate(models: any) {
+    // forexAccount hasMany forexAccountSignal
     forexAccount.hasMany(models.forexAccountSignal, {
       as: "forexAccountSignals",
       foreignKey: "forexAccountId",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
+
+    // forexAccount belongsToMany forexSignal
     forexAccount.belongsToMany(models.forexSignal, {
-      as: "accountSignals",
+      as: "forexSignals",
       through: models.forexAccountSignal,
       foreignKey: "forexAccountId",
       otherKey: "forexSignalId",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
+
+    // forexAccount belongsTo user
     forexAccount.belongsTo(models.user, {
       as: "user",
       foreignKey: "userId",
@@ -223,3 +209,8 @@ export default class forexAccount
     });
   }
 }
+
+// =============================
+// Export with Alias
+// =============================
+export { forexAccount as forexAccount };

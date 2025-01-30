@@ -61,7 +61,7 @@ const Input: FC<InputProps> = ({
             ${size === "sm" ? "h-8" : ""}
             ${size === "md" ? "h-10" : ""}
             ${size === "lg" ? "h-12" : ""}
-            ${shape === "rounded" ? "rounded-s-md" : ""}
+            ${shape === "rounded-sm" ? "rounded-s-md" : ""}
             ${shape === "smooth" ? "rounded-s-lg" : ""}
             ${shape === "curved" ? "rounded-s-xl" : ""}
             ${shape === "full" ? "rounded-s-full" : ""}
@@ -86,11 +86,11 @@ const Input: FC<InputProps> = ({
       ${size === "sm" && !icon ? "px-2" : ""}
       ${size === "md" && !icon ? "px-3" : ""}
       ${size === "lg" && !icon ? "px-4" : ""}
-      ${error ? "!border-danger-500" : ""}
-      ${addon ? "!rounded-s-none" : ""}
+      ${error ? "border-danger-500!" : ""}
+      ${addon ? "rounded-s-none!" : ""}
       ${
         loading
-          ? "!text-transparent placeholder:!text-transparent !shadow-none pointer-events-none !select-none"
+          ? "text-transparent! placeholder:text-transparent! shadow-none! pointer-events-none select-none!"
           : ""
       }
       ring-1 ring-transparent focus:ring-${
@@ -103,7 +103,7 @@ const Input: FC<InputProps> = ({
 
         {!!icon ? (
           <div
-            className={`absolute start-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-${
+            className={`absolute left-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-${
               warning ? "warning" : "primary"
             }-500 dark:text-muted-500 
             ${size === "sm" ? "h-9 w-9" : ""} 
@@ -116,7 +116,7 @@ const Input: FC<InputProps> = ({
               ${size === "sm" ? "h-4 w-4" : ""} 
               ${size === "md" ? "h-[14px] w-[14px]" : ""} 
               ${size === "lg" ? "h-6 w-6" : ""}
-              ${error ? "!text-danger-500" : ""}
+              ${error ? "text-danger-500!" : ""}
             `}
             />
           </div>
@@ -125,7 +125,7 @@ const Input: FC<InputProps> = ({
         )}
         {!!loading ? (
           <div
-            className={`absolute end-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
+            className={`absolute right-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
             ${size === "sm" ? "h-9 w-9" : ""} 
             ${size === "md" ? "h-10 w-10" : ""} 
             ${size === "lg" ? "h-12 w-12" : ""}`}

@@ -10,7 +10,7 @@ const PercentageBarBase = ({ askPercentage, bidPercentage }) => {
           }}
           className="flex items-center justify-start text-left pl-1 text-white h-full bg-success-600 rounded-l-sm transition-all duration-300 ease-in-out"
         >
-          <span className="px-[4px] py bg-muted-100 dark:bg-muted-900 mr-2 cursor-default text-muted-800 dark:text-muted-200 rounded-sm">
+          <span className="px-[4px] py bg-muted-100 dark:bg-muted-900 mr-2 cursor-default text-muted-800 dark:text-muted-200 rounded-xs">
             B
           </span>
           <span className="text-sm z-1 cursor-default">{bidPercentage}%</span>
@@ -23,7 +23,7 @@ const PercentageBarBase = ({ askPercentage, bidPercentage }) => {
           className="flex items-center justify-end text-right pr-1 text-white h-full bg-danger-500 rounded-r-sm transition-all duration-300 ease-in-out"
         >
           <span className="text-sm z-1 cursor-default">{askPercentage}%</span>
-          <span className="px-[4px] py bg-muted-100 dark:bg-muted-900 ms-2 cursor-default text-muted-800 dark:text-muted-200 rounded-sm">
+          <span className="px-[4px] py bg-muted-100 dark:bg-muted-900 ms-2 cursor-default text-muted-800 dark:text-muted-200 rounded-xs">
             S
           </span>
         </div>

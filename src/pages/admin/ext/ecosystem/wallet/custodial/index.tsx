@@ -6,8 +6,8 @@ import { useTranslation } from "next-i18next";
 const api = "/api/admin/ext/ecosystem/wallet/custodial";
 const columnConfig: ColumnConfigType[] = [
   {
-    field: "masterWallet",
-    label: "Master Wallet",
+    field: "chain",
+    label: "Master Wallet Chain",
     type: "text",
     getValue: (item) => `${item.masterWallet?.chain}`,
     sortable: true,

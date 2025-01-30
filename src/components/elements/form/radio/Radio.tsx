@@ -29,14 +29,14 @@ const Radio: FC<RadioProps> = ({
           <input
             id={id}
             type="radio"
-            className={`peer absolute top-0 start-0 z-[3] h-full w-full cursor-pointer appearance-none ${classes}`}
+            className={`peer absolute top-0 left-0 z-3 h-full w-full cursor-pointer appearance-none ${classes}`}
             {...props}
           />
           <Icon
             icon="octicon:dot-fill-24"
             className={radioVariants({ color })}
           />
-          <span className="absolute top-0 start-0 z-[1] block h-full  w-full scale-0 rounded-full bg-white transition-transform duration-300 peer-checked:scale-[1.1] peer-checked:rounded-[.28rem] dark:bg-muted-900"></span>
+          <span className="absolute top-0 left-0 z-1 block h-full  w-full scale-0 rounded-full bg-white transition-transform duration-300 peer-checked:scale-[1.1] peer-checked:rounded-[.28rem] dark:bg-muted-900"></span>
         </span>
         <span className="ms-2 cursor-pointer text-[.72rem] text-muted-500 dark:text-muted-400">
           {label}

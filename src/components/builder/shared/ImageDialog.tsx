@@ -76,7 +76,7 @@ const Content: React.FC<ContentProps> = ({
         <div className="flex justify-center mb-4 items-end gap-2">
           <Input
             type="text"
-            shape="rounded"
+            shape="rounded-sm"
             label="URL"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
             placeholder="Eg. https://www.w3schools.com/html/pic_trulli.jpg"
@@ -87,7 +87,7 @@ const Content: React.FC<ContentProps> = ({
             onClick={onChange}
             variant="solid"
             color="primary"
-            shape="rounded"
+            shape="rounded-sm"
             disabled={text === ""}
           >
             Set

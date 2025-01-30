@@ -13,8 +13,8 @@ const OrderDeliveryDateBase = ({ shipping }) => {
         avatar={
           <IconBox
             icon="ph:truck-duotone"
-            className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-            iconClasses="!h-5 !w-5 text-success-500"
+            className="h-8! w-8! rounded-lg! bg-success-500/10"
+            iconClasses="h-5! w-5! text-success-500"
           />
         }
         title={t("Estimated Delivery")}

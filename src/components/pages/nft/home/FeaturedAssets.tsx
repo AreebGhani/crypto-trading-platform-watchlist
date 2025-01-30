@@ -21,17 +21,17 @@ const FeaturedNftAssets: React.FC = () => {
   };
 
   return (
-    <div className="w-full px-4 md:px-16 py-12 relative z-[9]">
+    <div className="w-full px-4 md:px-16 py-12 relative z-9">
       {/* Gradient Backgrounds */}
       <div className="absolute z-[-1] h-[400px] w-[700px] rounded-full opacity-50 blur-[80px] [transform:translate3d(0,0,0)] dark:opacity-100 right-[-400px] top-[-300px]">
-        <div className="h-full w-full bg-gradient-to-l from-purple-600 via-purple-500 to-transparent"></div>
+        <div className="h-full w-full bg-linear-to-l from-purple-600 via-purple-500 to-transparent"></div>
       </div>
 
       <div className="absolute z-[-1] h-[400px] w-[700px] rounded-full opacity-50 blur-[80px] [transform:translate3d(0,0,0)] dark:opacity-100 left-[-400px] top-[-500px] hidden md:block">
-        <div className="h-full w-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-transparent"></div>
+        <div className="h-full w-full bg-linear-to-r from-indigo-600 via-indigo-500 to-transparent"></div>
       </div>
       {/* Header Section */}
-      <div className="z-[9] flex flex-col lg:flex-row justify-between items-center gap-10 mb-10 bg-muted-50 dark:bg-black border border-muted-200 dark:border-muted-700 py-16 px-8 md:px-16 lg:px-24 rounded-xl">
+      <div className="z-9 flex flex-col lg:flex-row justify-between items-center gap-10 mb-10 bg-muted-50 dark:bg-black border border-muted-200 dark:border-muted-700 py-16 px-8 md:px-16 lg:px-24 rounded-xl">
         {/* Left Section */}
         <div className="w-full lg:w-1/3">
           <h2 className="text-3xl md:text-4xl font-bold text-muted-900 dark:text-muted-100">

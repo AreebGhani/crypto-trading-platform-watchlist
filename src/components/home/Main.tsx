@@ -321,11 +321,11 @@ const Main: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="slide-progress" role="progressbar">
-                <span className="slider__label sr-only"></span>
-              </div>
             </div>
           </div>
+        </div>
+        <div className="slide-progress" role="progressbar">
+          <span className="slider__label sr-only"></span>
         </div>
       </section>
 
@@ -925,11 +925,11 @@ const Main: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="slide-progress" role="progressbar">
-                <span className="slider__label sr-only"></span>
-              </div>
             </div>
           </div>
+        </div>
+        <div className="slide-progress" role="progressbar">
+          <span className="slider__label sr-only"></span>
         </div>
       </section>
     </main>

@@ -143,7 +143,7 @@ const InvestmentPlansDashboard = () => {
                 />
                 {plan.trending && (
                   <div className="absolute top-0 right-1">
-                    <Tag color="primary" className="rounded">
+                    <Tag color="primary" className="rounded-sm">
                       {t("Trending")}
                     </Tag>
                   </div>

@@ -67,7 +67,7 @@ const MenuItemBase = ({
 
   // IconWrapper class: Only applicable when collapsed
   const iconWrapperClass = collapse
-    ? "me-2.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-sm"
+    ? "me-2.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xs"
     : "";
 
   const iconClass = cn(
@@ -80,7 +80,7 @@ const MenuItemBase = ({
   const titleClass = cn(
     baseTextClass,
     collapse &&
-      "line-clamp-1 flex-grow overflow-hidden whitespace-nowrap text-start",
+      "line-clamp-1 grow overflow-hidden whitespace-nowrap text-start",
     activeStateClass()
   );
 

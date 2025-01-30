@@ -88,7 +88,7 @@ const DepositAddressBase = ({}) => {
         </p>
       </div>
 
-      <div className="mx-auto mb-4 w-full max-w-lg rounded px-8 pb-8">
+      <div className="mx-auto mb-4 w-full max-w-lg rounded-sm px-8 pb-8">
         <div className="flex flex-col items-center justify-center gap-5">
           <Typewriter className="hidden sm:flex flex-start text-muted-800 dark:text-muted-200">
             {depositAddress?.address}

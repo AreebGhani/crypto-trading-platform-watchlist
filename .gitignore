@@ -39,14 +39,16 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+next-env.d.ts
 
 *.log
 public/blockchains/ethereum/assets/CON/logo.webp
 public/blockchains/bsc/assets/CON/logo.webp
 
-# skip all zip files
+# skip all zip files and sql
 *.zip
 *.rar
+*.sql
 
 # skip public/uploads
 public/uploads/*

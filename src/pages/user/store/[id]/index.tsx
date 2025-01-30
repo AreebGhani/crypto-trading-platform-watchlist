@@ -178,7 +178,7 @@ const OrderReceipt = () => {
                 </div>
                 {!order.shipping && (
                   <div className="brand">
-                    <Tag color="warning" shape="rounded" variant="pastel">
+                    <Tag color="warning" shape="rounded-sm" variant="pastel">
                       {t("PENDING")}
                     </Tag>
                   </div>
@@ -243,8 +243,8 @@ const OrderReceipt = () => {
                       avatar={
                         <IconBox
                           icon="ph:envelope-duotone"
-                          className="!h-8 !w-8 !rounded-lg bg-info-500/10"
-                          iconClasses="!h-5 !w-5 text-info-500"
+                          className="h-8! w-8! rounded-lg! bg-info-500/10"
+                          iconClasses="h-5! w-5! text-info-500"
                         />
                       }
                       title={t("Support Email")}

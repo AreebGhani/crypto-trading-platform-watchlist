@@ -116,7 +116,7 @@ const FiatWithdrawAmountBase = () => {
           {t("Enter the amount you want to withdraw")}
         </p>
       </div>
-      <div className="mx-auto mb-4 w-full max-w-md space-y-5 rounded px-8 pb-8">
+      <div className="mx-auto mb-4 w-full max-w-md space-y-5 rounded-sm px-8 pb-8">
         <div>
           <Input
             type="number"
@@ -133,7 +133,7 @@ const FiatWithdrawAmountBase = () => {
         </div>
         {customFields && renderFormFields(customFields)}
 
-        <div className="mx-auto !mt-16 max-w-sm">
+        <div className="mx-auto mt-16! max-w-sm">
           <div className="flex w-full gap-4 justify-center">
             <Button
               type="button"

@@ -121,7 +121,7 @@ const IdentityVerification: React.FC = () => {
               {!profile?.kyc ||
               (level === 0 && profile?.kyc?.status !== "PENDING") ? (
                 <Card
-                  className="px-5 py-10 text-center border-muted-500 rounded"
+                  className="px-5 py-10 text-center border-muted-500 rounded-sm"
                   color={"contrast"}
                 >
                   <div className="flex flex-col justify-center items-center">
@@ -152,7 +152,7 @@ const IdentityVerification: React.FC = () => {
                 </Card>
               ) : profile?.kyc?.status === "PENDING" ? (
                 <Card
-                  className="px-5 py-10 text-center border-info rounded flex items-center"
+                  className="px-5 py-10 text-center border-info rounded-sm flex items-center"
                   color={"contrast"}
                 >
                   <div className="flex flex-col justify-center items-center">
@@ -174,7 +174,7 @@ const IdentityVerification: React.FC = () => {
                 </Card>
               ) : profile?.kyc?.status === "REJECTED" ? (
                 <Card
-                  className="px-5 py-10 text-center border-warning rounded"
+                  className="px-5 py-10 text-center border-warning rounded-sm"
                   color={"contrast"}
                 >
                   <div className="flex flex-col justify-center items-center">
@@ -200,7 +200,7 @@ const IdentityVerification: React.FC = () => {
                 </Card>
               ) : profile?.kyc?.status === "APPROVED" ? (
                 <Card
-                  className="px-5 py-10 text-center border-success rounded"
+                  className="px-5 py-10 text-center border-success rounded-sm"
                   color={"contrast"}
                 >
                   <div className="flex flex-col justify-center items-center">

@@ -9,7 +9,7 @@ import $fetch from "@/utils/api";
 import { BackButton } from "@/components/elements/base/button/BackButton";
 import Tag from "@/components/elements/base/tag/Tag";
 import Alert from "@/components/elements/base/alert/Alert";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import { useTranslation } from "next-i18next";
 
 const ExchangeProviderPage = () => {
@@ -123,7 +123,7 @@ const ExchangeProviderPage = () => {
               <Link
                 href={`/admin/finance/exchange/provider/${exchange?.productId}/license`}
               >
-                <Button color="primary" className="ml-2" shape={"rounded"}>
+                <Button color="primary" className="ml-2" shape={"rounded-sm"}>
                   {t("Activate License")}
                 </Button>
               </Link>
@@ -248,7 +248,7 @@ const CardLink = ({
   const { t } = useTranslation();
   if (disabled) {
     return (
-      <AnimatedTooltip
+      <Tooltip
         content={t("Please check your credentials before proceeding")}
       >
         <Card className="flex items-center p-4 cursor-not-allowed bg-muted-100 dark:bg-muted-800">
@@ -258,7 +258,7 @@ const CardLink = ({
           />
           <span className="text-muted-400 dark:text-muted-400">{label}</span>
         </Card>
-      </AnimatedTooltip>
+      </Tooltip>
     );
   } else {
     return (

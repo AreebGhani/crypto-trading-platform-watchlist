@@ -231,7 +231,7 @@ const ReferralTreeBase = ({ id, isAdmin = false }: Props) => {
               onClick={resetView}
               className="cursor-pointer"
               shadow={"contrast"}
-              shape={"rounded"}
+              shape={"rounded-sm"}
               size={"sm"}
               icon="fluent:resize-small-20-regular"
             />

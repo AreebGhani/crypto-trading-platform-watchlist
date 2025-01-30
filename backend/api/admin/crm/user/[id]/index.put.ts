@@ -48,12 +48,17 @@ export default async (data: Handler) => {
     profile,
   } = body;
 
-  if (!user) {
+  if (!user?.id) {
     throw createError({
       statusCode: 401,
       message: "Unauthorized",
     });
   }
+
+  const userPk = await models.user.findOne({
+    where: { id: user.id },
+    include: [{ model: models.role, as: "role" }],
+  });
 
   const existingUser = await models.user.findOne({
     where: { id },
@@ -65,23 +70,25 @@ export default async (data: Handler) => {
       message: "User not found",
     });
   }
-  if (existingUser.id === user.id && user.role.name !== "Super Admin") {
+
+  if (existingUser.id === userPk.id && userPk.role.name !== "Super Admin") {
     throw createError({
       statusCode: 400,
       message: "You cannot update your own account",
     });
   }
+
   await models.user.update(
     {
       firstName,
       lastName,
       email,
-      roleId: Number(roleId),
       avatar,
       phone,
       emailVerified,
       status,
       profile,
+      ...(userPk.role.name === "Super Admin" && { roleId }),
     },
     {
       where: { id },

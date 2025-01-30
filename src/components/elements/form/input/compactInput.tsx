@@ -60,7 +60,7 @@ const CompactInput: FC<CompactInputProps> = ({
             ${size === "sm" ? "h-8" : ""}
             ${size === "md" ? "h-10" : ""}
             ${size === "lg" ? "h-12" : ""}
-            ${shape === "rounded" ? "rounded-s-md" : ""}
+            ${shape === "rounded-sm" ? "rounded-s-md" : ""}
             ${shape === "smooth" ? "rounded-s-lg" : ""}
             ${shape === "curved" ? "rounded-s-xl" : ""}
             ${shape === "full" ? "rounded-s-full" : ""}
@@ -97,11 +97,11 @@ const CompactInput: FC<CompactInputProps> = ({
       ${size === "sm" && !postLabel ? "px-2" : ""}
       ${size === "md" && !postLabel ? "px-3" : ""}
       ${size === "lg" && !postLabel ? "px-4" : ""}
-      ${error ? "!border-danger-500" : ""}
-      ${addon ? "!rounded-s-none" : ""}
+      ${error ? "border-danger-500!" : ""}
+      ${addon ? "rounded-s-none!" : ""}
       ${
         loading
-          ? "!text-transparent placeholder:!text-transparent !shadow-none pointer-events-none !select-none"
+          ? "text-transparent! placeholder:text-transparent! shadow-none! pointer-events-none select-none!"
           : ""
       }
       ring-1 ring-transparent focus:ring-warning-500 focus:ring-opacity-50
@@ -112,7 +112,7 @@ const CompactInput: FC<CompactInputProps> = ({
 
         {options && options.length > 0 ? (
           <div
-            className={`absolute start-0 top-0 z-0 flex items-center justify-center font-sans text-[.68rem] text-muted-400 transition-colors duration-300 peer-focus-visible:text-warning-500 dark:text-muted-500 
+            className={`absolute left-0 top-0 z-0 flex items-center justify-center font-sans text-[.68rem] text-muted-400 transition-colors duration-300 peer-focus-visible:text-warning-500 dark:text-muted-500 
             ${size === "sm" ? "h-9 w-24 ps-1" : ""} 
             ${size === "md" ? "h-10 w-24 ps-1" : ""} 
             ${size === "lg" ? "h-12 w-28 ps-1" : ""}`}
@@ -121,7 +121,7 @@ const CompactInput: FC<CompactInputProps> = ({
               options={options}
               size={"sm"}
               color={color}
-              shape={"rounded-sm"}
+              shape={"rounded-xs"}
               error={error}
               loading={loading}
               value={selected}
@@ -130,7 +130,7 @@ const CompactInput: FC<CompactInputProps> = ({
           </div>
         ) : (
           <div
-            className={`absolute start-0 top-0 z-0 flex items-center justify-center font-sans text-[.68rem] text-muted-400 transition-colors duration-300 peer-focus-visible:text-warning-500 dark:text-muted-500 
+            className={`absolute left-0 top-0 z-0 flex items-center justify-center font-sans text-[.68rem] text-muted-400 transition-colors duration-300 peer-focus-visible:text-warning-500 dark:text-muted-500 
             ${size === "sm" ? "h-9 w-9" : ""} 
             ${size === "md" ? "h-10 w-24" : ""} 
             ${size === "lg" ? "h-12 w-12" : ""}`}
@@ -140,7 +140,7 @@ const CompactInput: FC<CompactInputProps> = ({
               ${size === "sm" ? "h-4 w-4" : ""} 
               ${size === "md" ? "h-[14px] w-[14px] min-w-20" : ""} 
               ${size === "lg" ? "h-6 w-6" : ""}
-              ${error ? "!text-danger-500" : ""}
+              ${error ? "text-danger-500!" : ""}
             `}
             >
               {label}
@@ -149,7 +149,7 @@ const CompactInput: FC<CompactInputProps> = ({
         )}
         {!!postLabel ? (
           <div
-            className={`absolute end-0 top-0 z-0 flex items-center justify-center font-sans text-[.6rem] text-end text-muted-400 transition-colors duration-300 peer-focus-visible:text-warning-500 dark:text-muted-500 
+            className={`absolute right-0 top-0 z-0 flex items-center justify-center font-sans text-[.6rem] text-end text-muted-400 transition-colors duration-300 peer-focus-visible:text-warning-500 dark:text-muted-500 
             ${size === "sm" ? "h-9 pe-8" : ""} 
             ${size === "md" ? "h-10 pe-10" : ""} 
             ${size === "lg" ? "h-12 pe-12" : ""}`}
@@ -159,7 +159,7 @@ const CompactInput: FC<CompactInputProps> = ({
               ${size === "sm" ? "h-4 w-4" : ""} 
               ${size === "md" ? "h-[14px] w-[14px]" : ""} 
               ${size === "lg" ? "h-6 w-6" : ""}
-              ${error ? "!text-danger-500" : ""}
+              ${error ? "text-danger-500!" : ""}
             `}
             >
               {postLabel}
@@ -170,7 +170,7 @@ const CompactInput: FC<CompactInputProps> = ({
         )}
         {!!loading ? (
           <div
-            className={`absolute end-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-warning-500 dark:text-muted-500 
+            className={`absolute right-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-warning-500 dark:text-muted-500 
             ${size === "sm" ? "h-9 w-9" : ""} 
             ${size === "md" ? "h-10 w-10" : ""} 
             ${size === "lg" ? "h-12 w-12" : ""}`}

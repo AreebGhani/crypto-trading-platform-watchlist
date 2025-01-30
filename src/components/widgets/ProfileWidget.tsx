@@ -66,7 +66,7 @@ const ProfileWidget: FC<ProfileWidgetProps> = ({
             : ""
         }`}
       >
-        <div className="relative z-[2] flex items-center justify-between text-center">
+        <div className="relative z-2 flex items-center justify-between text-center">
           {stats.map((stat, index) => (
             <div key={index} className="relative">
               <div className="text-[.56rem] uppercase text-muted-400">

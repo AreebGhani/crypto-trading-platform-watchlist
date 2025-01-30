@@ -40,7 +40,7 @@ const PageHeaderBase = ({ title, BackPath, children }: PageHeaderProps) => {
           }
           color="muted"
           variant="pastel"
-          shape="rounded"
+          shape="rounded-sm"
           size="md"
           rotating={!isHovered}
           onMouseOver={() => setIsHovered(true)}

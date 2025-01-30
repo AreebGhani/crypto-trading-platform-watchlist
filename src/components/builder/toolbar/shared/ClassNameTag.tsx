@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import Tag from "@/components/elements/base/tag/Tag";
 
 const ClassNameTag = ({ name, onEdit, onRemove }) => (
-  <Tag className="cursor-pointer relative" shape={"rounded-sm"}>
+  <Tag className="cursor-pointer relative" shape={"rounded-xs"}>
     <span onClick={onEdit}>{name}</span>
     <Icon
       icon="carbon:close-filled"

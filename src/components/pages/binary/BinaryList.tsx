@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC, ReactNode } from "react";
 import { Icon } from "@iconify/react";
 import IconBox from "@/components/elements/base/iconbox/IconBox";
 import Heading from "@/components/elements/base/heading/Heading";
@@ -15,11 +15,15 @@ type BinaryOrder = {
   profit: number;
   createdAt: string;
 };
+
 type Props = {
-  shape?: "straight" | "rounded" | "curved" | "full";
+  shape?: "straight" | "rounded-sm" | "curved" | "full";
   positions: BinaryOrder[];
 };
-const status = (status: string) => {
+
+const getStatusColor = (
+  status: string
+): "success" | "warning" | "danger" | "info" => {
   switch (status) {
     case "WIN":
       return "success";
@@ -35,24 +39,39 @@ const status = (status: string) => {
       return "info";
   }
 };
-const profit = (item: BinaryOrder) => {
-  const pair = item.symbol.split("/")[1];
-  if (item.status === "PENDING") return "Pending";
-  let profit, classColor;
+
+const getProfitContent = (item: BinaryOrder): ReactNode => {
+  const [, pair] = item.symbol.split("/") || [];
+  const basePair = pair || "";
+
+  if (item.status === "PENDING") {
+    return <span className="text-warning-500">Pending</span>;
+  }
+
+  let profitValue = 0;
+  let classColor = "text-muted";
+
   if (item.status === "WIN") {
-    profit = `+${item.amount * (item.profit / 100)}`;
+    profitValue = item.amount * (item.profit / 100);
     classColor = "text-success-500";
   } else if (item.status === "LOSS") {
-    profit = `${-item.amount}`;
+    profitValue = -item.amount;
     classColor = "text-danger-500";
   } else if (item.status === "DRAW") {
-    profit = "0";
+    profitValue = 0;
     classColor = "text-muted";
   }
-  return `<span class="${classColor}">${profit} ${pair}</span>`;
+
+  return (
+    <span className={classColor}>
+      {profitValue > 0 ? `+${profitValue}` : profitValue} {basePair}
+    </span>
+  );
 };
-const BinaryList: React.FC<Props> = ({ shape = "rounded", positions }) => {
+
+const BinaryList: FC<Props> = ({ shape = "rounded-sm", positions }) => {
   const { t } = useTranslation();
+
   return (
     <div className="w-full overflow-y-auto xs:h-64 sm:h-80 slimscroll">
       <div className="space-y-6 pr-2">
@@ -61,7 +80,7 @@ const BinaryList: React.FC<Props> = ({ shape = "rounded", positions }) => {
             <IconBox
               variant="pastel"
               size="md"
-              shape="rounded"
+              shape={"rounded-sm"}
               color={item.side === "RISE" ? "success" : "danger"}
               icon={`ph:trend-${item.side === "RISE" ? "up" : "down"}-duotone`}
             />
@@ -78,8 +97,8 @@ const BinaryList: React.FC<Props> = ({ shape = "rounded", positions }) => {
               </span>
             </div>
             <div className="ms-auto">
-              <Tag color={status(item.status)} variant="pastel">
-                <span dangerouslySetInnerHTML={{ __html: profit(item) }} />
+              <Tag color={getStatusColor(item.status)} variant="pastel">
+                {getProfitContent(item)}
               </Tag>
             </div>
           </div>
@@ -94,4 +113,5 @@ const BinaryList: React.FC<Props> = ({ shape = "rounded", positions }) => {
     </div>
   );
 };
+
 export default BinaryList;

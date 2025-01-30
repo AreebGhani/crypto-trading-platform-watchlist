@@ -14,16 +14,16 @@ const CreatorBanner: React.FC = () => {
     <div className="w-full px-16 py-12 relative z-0 mb-32">
       {/* Right Glow Gradient */}
       <div className="absolute z-[-1] h-[400px] w-[700px] rounded-full opacity-50 blur-[60px] [transform:translate3d(0,0,0)] dark:opacity-100 right-[-400px] top-[-100px] hidden md:block">
-        <div className="h-full w-full bg-gradient-to-l from-green-400 via-green-400/[0.5] to-transparent rotate-[-30deg]"></div>
+        <div className="h-full w-full bg-linear-to-l from-green-400 via-green-400/[0.5] to-transparent rotate-[-30deg]"></div>
       </div>
 
       {/* Left Glow Gradient (Positioned Below) */}
       <div className="absolute z-[-1] h-[400px] w-[800px] rounded-full opacity-50 blur-[60px] [transform:translate3d(0,0,0)] dark:opacity-100 left-[-400px] top-[150px]">
-        <div className="h-full w-full bg-gradient-to-r from-teal-400 via-teal-400/[0.5] to-transparent rotate-[30deg]"></div>
+        <div className="h-full w-full bg-linear-to-r from-teal-400 via-teal-400/[0.5] to-transparent rotate-[30deg]"></div>
       </div>
 
       {/* Content */}
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-10 p-4 bg-purple-200 dark:bg-black rounded-xl z-[9]">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-10 p-4 bg-purple-200 dark:bg-black rounded-xl z-9">
         {/* Image Section */}
         <div className="w-full lg:w-1/2 bg-purple-300 dark:bg-transparent rounded-2xl overflow-hidden">
           <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-2xl">

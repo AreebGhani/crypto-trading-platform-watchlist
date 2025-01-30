@@ -28,7 +28,7 @@ interface MarketState {
   getFirstAvailablePair: () => string;
 }
 
-const useMarketStore = create<MarketState>()(
+const useMarketStoreBase = create<MarketState>()(
   immer((set, get) => ({
     market: null,
     searchQuery: "",
@@ -185,5 +185,12 @@ const useMarketStore = create<MarketState>()(
     },
   }))
 );
+
+const useMarketStore = useMarketStoreBase as typeof useMarketStoreBase & {
+  <T>(
+    selector: (state: MarketState) => T,
+    equalityFn?: (a: T, b: T) => boolean
+  ): T;
+};
 
 export default useMarketStore;

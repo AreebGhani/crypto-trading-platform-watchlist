@@ -13,7 +13,7 @@ interface TrackTabsProps {
   categories: {
     [key: string]: TrackTabsItem[];
   };
-  shape?: "straight" | "rounded" | "smooth" | "curved" | "full";
+  shape?: "straight" | "rounded-sm" | "smooth" | "curved" | "full";
 }
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -27,7 +27,7 @@ const TrackTabs: FC<TrackTabsProps> = ({ categories, shape = "smooth" }) => {
         <Tab.List
           className={`
           flex space-x-1 bg-muted-100 p-1 dark:bg-muted-900
-          ${shape === "rounded" ? "rounded-md" : ""}
+          ${shape === "rounded-sm" ? "rounded-md" : ""}
           ${shape === "smooth" ? "rounded-lg" : ""}
           ${shape === "curved" ? "rounded-xl" : ""}
           ${shape === "full" ? "rounded-full" : ""}
@@ -39,13 +39,13 @@ const TrackTabs: FC<TrackTabsProps> = ({ categories, shape = "smooth" }) => {
               className={({ selected }) =>
                 classNames(
                   "w-full py-2.5 text-sm font-medium leading-5",
-                  "ring-primary-500 ring-opacity-60 ring-offset-2 ring-offset-muted-100 focus:outline-none focus:ring-[1px] dark:ring-offset-muted-900",
-                  shape === "rounded" ? "rounded-md" : "",
+                  "ring-primary-500 ring-opacity-60 ring-offset-2 ring-offset-muted-100 focus:outline-hidden focus:ring-[1px] dark:ring-offset-muted-900",
+                  shape === "rounded-sm" ? "rounded-md" : "",
                   shape === "smooth" ? "rounded-lg" : "",
                   shape === "curved" ? "rounded-xl" : "",
                   shape === "full" ? "rounded-full" : "",
                   selected
-                    ? "bg-white text-primary-500 shadow dark:bg-muted-800"
+                    ? "bg-white text-primary-500 shadow-sm dark:bg-muted-800"
                     : "text-muted-400 hover:text-muted-500 dark:hover:text-muted-100"
                 )
               }
@@ -60,7 +60,7 @@ const TrackTabs: FC<TrackTabsProps> = ({ categories, shape = "smooth" }) => {
               key={idx}
               className={classNames(
                 "py-3",
-                "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
+                "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-hidden focus:ring-2"
               )}
             >
               <ul>
@@ -89,7 +89,7 @@ const TrackTabs: FC<TrackTabsProps> = ({ categories, shape = "smooth" }) => {
                       href={item.href}
                       className={classNames(
                         "absolute inset-0 rounded-md",
-                        "ring-primary-400 focus:z-10 focus:outline-none focus:ring-2"
+                        "ring-primary-400 focus:z-10 focus:outline-hidden focus:ring-2"
                       )}
                     />
                   </li>

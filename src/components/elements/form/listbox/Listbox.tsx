@@ -122,15 +122,15 @@ const ListBox: FC<ListboxProps> = ({
               ${size === "sm" && !selected?.image ? "px-2" : ""}
               ${size === "md" && !selected?.image ? "px-3" : ""}
               ${size === "lg" && !selected?.image ? "px-4" : ""}
-              ${error ? "!border-danger-500" : ""}
+              ${error ? "border-danger-500!" : ""}
               ${
                 disabled
-                  ? "!pointer-events-none !cursor-not-allowed !opacity-50"
+                  ? "pointer-events-none! cursor-not-allowed! opacity-50!"
                   : ""
               }
               ${
                 loading
-                  ? "!text-transparent !pointer-events-none !select-none"
+                  ? "text-transparent! pointer-events-none! select-none!"
                   : ""
               }
             `,
@@ -146,7 +146,7 @@ const ListBox: FC<ListboxProps> = ({
             </span>
 
             <div
-              className={`absolute start-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
+              className={`absolute left-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
                 ${size === "sm" ? "h-8 w-8" : ""} 
                 ${size === "md" ? "h-10 w-10" : ""} 
                 ${size === "lg" ? "h-12 w-12" : ""}`}
@@ -158,7 +158,7 @@ const ListBox: FC<ListboxProps> = ({
                     ${size === "sm" ? "h-3 w-3" : ""} 
                     ${size === "md" ? "h-4 w-4" : ""} 
                     ${size === "lg" ? "h-5 w-5" : ""}
-                    ${error ? "!text-danger-500" : ""}
+                    ${error ? "text-danger-500!" : ""}
                   `}
                 />
               ) : (
@@ -172,7 +172,7 @@ const ListBox: FC<ListboxProps> = ({
                     ${size === "sm" ? "h-3 w-3" : ""}
                     ${size === "md" ? "h-4 w-4" : ""}
                     ${size === "lg" ? "h-5 w-5" : ""}
-                    ${error ? "!text-danger-500" : ""}
+                    ${error ? "text-danger-500!" : ""}
                   `}
                 />
               ) : (
@@ -181,7 +181,7 @@ const ListBox: FC<ListboxProps> = ({
             </div>
             {!!loading ? (
               <div
-                className={`absolute end-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
+                className={`absolute right-0 top-0 z-0 flex items-center justify-center text-muted-400 transition-colors duration-300 peer-focus-visible:text-primary-500 dark:text-muted-500 
                   ${size === "sm" ? "h-8 w-8" : ""} 
                   ${size === "md" ? "h-10 w-10" : ""} 
                   ${size === "lg" ? "h-12 w-12" : ""}`}
@@ -202,11 +202,11 @@ const ListBox: FC<ListboxProps> = ({
               ""
             )}
             <span
-              className={`pointer-events-none absolute end-0 top-0 flex items-center justify-center
+              className={`pointer-events-none absolute right-0 top-0 flex items-center justify-center
                 ${size === "sm" ? "h-8 w-8" : ""} 
                 ${size === "md" ? "h-10 w-10" : ""} 
                 ${size === "lg" ? "h-12 w-12" : ""}
-                ${loading ? "!text-transparent !opacity-0" : ""}
+                ${loading ? "text-transparent! opacity-0!" : ""}
               `}
             >
               <Icon
@@ -224,11 +224,11 @@ const ListBox: FC<ListboxProps> = ({
           >
             <Listbox.Options
               ref={selectRef}
-              className={`z-[9999] max-h-[300px] slimscroll absolute mt-1 w-full overflow-auto border !p-2 text-base shadow-lg shadow-muted-300/30 ring-1 ring-primary-500 ring-opacity-5 focus:outline-none dark:shadow-muted-800/20 sm:text-sm
+              className={`z-9999 max-h-[300px] slimscroll absolute mt-1 w-full overflow-auto border !p-2 text-base shadow-lg shadow-muted-300/30 ring-1 ring-primary-500 ring-opacity-5 focus:outline-hidden dark:shadow-muted-800/20 sm:text-sm
                 ${selected?.image ? "max-h-[201.2px]" : "max-h-60"}
-                ${shape === "rounded" ? "rounded-md" : ""}
+                ${shape === "rounded-sm" ? "rounded-md" : ""}
                 ${shape === "smooth" ? "rounded-lg" : ""}
-                ${shape === "rounded" ? "rounded-md" : ""}
+                ${shape === "rounded-sm" ? "rounded-md" : ""}
                 ${shape === "curved" ? "rounded-xl" : ""}
                 ${shape === "full" ? "rounded-xl" : ""}
                 ${
@@ -263,9 +263,9 @@ const ListBox: FC<ListboxProps> = ({
                       ? "bg-primary-500/10 text-primary-700 dark:bg-primary-500/20"
                       : "text-muted-600 dark:text-muted-400"
                   }
-                  ${shape === "rounded" ? "rounded-md" : ""}
+                  ${shape === "rounded-sm" ? "rounded-md" : ""}
                   ${shape === "smooth" ? "rounded-lg" : ""}
-                  ${shape === "rounded" ? "rounded-md" : ""}
+                  ${shape === "rounded-sm" ? "rounded-md" : ""}
                   ${shape === "curved" ? "rounded-xl" : ""}
                   ${shape === "full" ? "rounded-xl" : ""}
                   `

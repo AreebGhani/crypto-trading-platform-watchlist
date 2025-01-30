@@ -144,7 +144,6 @@ export function getOrderByUuid(
     .then((result) => result.rows[0])
     .then(mapRowToOrder);
 }
-
 export async function cancelOrderByUuid(
   userId: string,
   id: string,
@@ -168,9 +167,11 @@ export async function cancelOrderByUuid(
     const newAmount = orderbookAmount - amount;
 
     if (newAmount <= BigInt(0)) {
+      // Remove the order from the orderbook entirely
       orderbookQuery = `DELETE FROM ${scyllaKeyspace}.orderbook WHERE symbol = ? AND price = ? AND side = ?`;
       orderbookParams = [symbol, priceFormatted.toString(), orderbookSide];
     } else {
+      // Update the orderbook with the reduced amount
       orderbookQuery = `UPDATE ${scyllaKeyspace}.orderbook SET amount = ? WHERE symbol = ? AND price = ? AND side = ?`;
       orderbookParams = [
         fromBigInt(newAmount).toString(),
@@ -185,15 +186,21 @@ export async function cancelOrderByUuid(
     );
   }
 
-  const deleteOrderQuery = `DELETE FROM ${scyllaKeyspace}.orders WHERE "userId" = ? AND id = ? AND "createdAt" = ?`;
-  const deleteOrderParams = [userId, id, createdAt];
+  // Instead of deleting the order, update its status and remaining amount
+  const currentTimestamp = new Date();
+  const updateOrderQuery = `
+    UPDATE ${scyllaKeyspace}.orders
+    SET status = 'CANCELED', "updatedAt" = ?, remaining = 0
+    WHERE "userId" = ? AND id = ? AND "createdAt" = ?;
+  `;
+  const updateOrderParams = [currentTimestamp, userId, id, new Date(createdAt)];
 
   const batchQueries = orderbookQuery
     ? [
         { query: orderbookQuery, params: orderbookParams },
-        { query: deleteOrderQuery, params: deleteOrderParams },
+        { query: updateOrderQuery, params: updateOrderParams },
       ]
-    : [{ query: deleteOrderQuery, params: deleteOrderParams }];
+    : [{ query: updateOrderQuery, params: updateOrderParams }];
 
   try {
     await client.batch(batchQueries, { prepare: true });
@@ -751,4 +758,18 @@ export async function getOrders(
       `Failed to fetch orders by userId and symbol: ${error.message}`
     );
   }
+}
+
+// Helper: Rollback order creation if wallet update fails after creation.
+export async function rollbackOrderCreation(
+  orderId: string,
+  userId: string,
+  createdAt: Date
+) {
+  const query = `
+    DELETE FROM ${scyllaKeyspace}.orders
+    WHERE "userId" = ? AND "createdAt" = ? AND id = ?;
+  `;
+  const params = [userId, createdAt, orderId];
+  await client.execute(query, params, { prepare: true });
 }

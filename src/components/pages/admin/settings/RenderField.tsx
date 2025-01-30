@@ -3,49 +3,66 @@ import InputFile from "@/components/elements/form/input-file/InputFile";
 import Input from "@/components/elements/form/input/Input";
 import Select from "@/components/elements/form/select/Select";
 import ToggleSwitch from "@/components/elements/form/toggle-switch/ToggleSwitch";
+import { useDashboardStore } from "@/stores/dashboard";
 
-const renderField = ({
+const RenderField = ({
   field,
   formData,
   handleInputChange,
   handleFileChange,
+  isDark,
 }: {
   field: any;
   formData: any;
   handleInputChange: any;
   handleFileChange?: any;
+  isDark: boolean;
 }) => {
   const commonProps = {
     label: field.label,
     placeholder: field.placeholder,
     name: field.name,
   };
+
   if (field.showIf && !field.showIf(formData)) {
     return null;
   }
+
   switch (field.type) {
     case "select":
+      const selectedValue = formData[field.name];
+      const preview =
+        field.preview && selectedValue
+          ? field.preview[isDark ? "dark" : "light"][selectedValue]
+          : null;
+
       return (
-        <div key={field.name} className="col-span-12">
+        <div className="col-span-12">
           <Select
             {...commonProps}
-            value={formData[field.name] || ""}
-            options={
-              field.options || [
-                { label: "Disabled", value: false },
-                { label: "Enabled", value: true },
-              ]
-            }
+            value={selectedValue || ""}
+            options={field.options || []}
             onChange={(e) =>
               handleInputChange({ name: field.name, value: e.target.value })
             }
+            className="w-full min-w-48"
           />
           <span className="text-xs text-muted-400">{field.description}</span>
+          {preview && (
+            <div className="w-full min-w-[200px] md:min-w-[400px]">
+              <img
+                src={preview}
+                alt={`${field.label} Preview`}
+                className="w-full max-h-[300px] object-contain rounded-lg border border-muted-300 dark:border-muted-800 hover:border-primary-500 transition-all duration-300 dark:hover:border-primary-400"
+              />
+            </div>
+          )}
         </div>
       );
+
     case "date":
       return (
-        <div key={field.name} className="col-span-12">
+        <div className="col-span-12">
           <DatePicker
             {...commonProps}
             value={formData[field.name] || new Date()}
@@ -59,15 +76,16 @@ const renderField = ({
           <span className="text-xs text-muted-400">{field.description}</span>
         </div>
       );
+
     case "switch":
       const value =
         typeof formData[field.name] === "boolean"
           ? formData[field.name]
           : formData[field.name] === "true"
-          ? true
-          : false;
+            ? true
+            : false;
       return (
-        <div key={field.name} className="col-span-12">
+        <div className="col-span-12">
           <ToggleSwitch
             {...commonProps}
             checked={value}
@@ -83,9 +101,10 @@ const renderField = ({
           />
         </div>
       );
+
     case "file":
       return (
-        <div key={field.name} className="col-span-12">
+        <div className="col-span-12">
           <InputFile
             color={"contrast"}
             id={field.name}
@@ -110,9 +129,10 @@ const renderField = ({
           />
         </div>
       );
+
     default:
       return (
-        <div key={field.name} className="col-span-12">
+        <div className="col-span-12">
           <Input
             {...commonProps}
             type={field.type}
@@ -132,4 +152,9 @@ const renderField = ({
   }
 };
 
-export default renderField;
+const RenderFieldWrapper = (props: any) => {
+  const { isDark } = useDashboardStore(); // Move hook call to a wrapper
+  return <RenderField {...props} isDark={isDark} key={props.field.name} />;
+};
+
+export default RenderFieldWrapper;

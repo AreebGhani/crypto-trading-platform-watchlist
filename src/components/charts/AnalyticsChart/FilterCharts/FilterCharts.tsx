@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Card from "@/components/elements/base/card/Card";
 import Link from "next/link";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
 import { Icon } from "@iconify/react";
 import { themeColors } from "@/components/charts/chart-colors";
@@ -87,7 +87,7 @@ const FilterChartsBase = ({
                         )}
                       </span>
                       <Link href={filterOption.path || "#"}>
-                        <AnimatedTooltip
+                        <Tooltip
                           content={`View ${capitalize(label)} ${modelName}`}
                         >
                           <div className="flex items-center gap-2 pt-2">
@@ -118,25 +118,25 @@ const FilterChartsBase = ({
                               </p>
                             </div>
                           </div>
-                        </AnimatedTooltip>
+                        </Tooltip>
                       </Link>
                     </div>
 
-                    <AnimatedTooltip
+                    <Tooltip
                       content={`${
                         value.percentage?.toFixed(2) || 0
                       }% of ${modelName} by ${capitalize(filterCategory)}`}
                     >
                       <div className="relative min-h-[100px] w-2 rounded-full bg-muted-100 dark:bg-muted-800">
                         <div
-                          className="animated-bar absolute bottom-0 end-0 z-[1] w-full rounded-full transition-all duration-500 ease-in-out"
+                          className="animated-bar absolute bottom-0 right-0 z-1 w-full rounded-full transition-all duration-500 ease-in-out"
                           style={{
                             height: `${value.percentage || 0}%`,
                             backgroundColor: themeColors[filterOption.color],
                           }}
                         ></div>
                       </div>
-                    </AnimatedTooltip>
+                    </Tooltip>
                   </Card>
                 );
               })}

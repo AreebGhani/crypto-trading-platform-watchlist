@@ -17,8 +17,6 @@ const Checkbox: FC<CheckboxProps> = ({
   className: classes = "",
   ...props
 }) => {
-  // const checkboxId = label.toLocaleLowerCase().replaceAll(" ", "-");
-
   return (
     <div
       className={`checkbox-${
@@ -28,7 +26,7 @@ const Checkbox: FC<CheckboxProps> = ({
       <label htmlFor={id} className="flex items-center">
         <span
           className={`shrink-0 relative flex h-5 w-5 items-center justify-center border-muted-300 dark:border-muted-700 overflow-hidden border-2 bg-muted-100 transition-shadow duration-300 dark:bg-muted-800 
-          ${shape === "rounded" ? "rounded" : ""} 
+          ${shape === "rounded-sm" ? "rounded-sm" : ""} 
           ${shape === "smooth" ? "rounded-md" : ""} 
           ${shape === "curved" ? "rounded-lg" : ""} 
           ${shape === "full" ? "rounded-full" : ""}
@@ -42,12 +40,12 @@ const Checkbox: FC<CheckboxProps> = ({
           <input
             id={id}
             type="checkbox"
-            className={`peer absolute start-0 top-0 z-[3] h-full w-full cursor-pointer appearance-none ${classes}`}
+            className={`peer absolute left-0 top-0 z-3 h-full w-full cursor-pointer appearance-none ${classes}`}
             {...props}
           />
           <Icon
             icon="fluent:checkmark-12-filled"
-            className={`relative start-0 z-[2] h-3 w-3 translate-y-5 scale-0 transition-transform delay-150 duration-300 peer-checked:translate-y-0 peer-checked:scale-100
+            className={`relative left-0 z-2 h-3 w-3 translate-y-5 scale-0 transition-transform delay-150 duration-300 peer-checked:translate-y-0 peer-checked:scale-100
               ${
                 color === "default"
                   ? "text-muted-700 dark:text-muted-100"

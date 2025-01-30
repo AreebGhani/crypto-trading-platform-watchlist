@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const checkboxVariants = cva(
-  "absolute top-0 start-0 z-[1] block h-full w-full scale-0 transition-transform duration-300 peer-checked:scale-[1.1]",
+  "absolute top-0 left-0 z-1 block h-full w-full scale-0 transition-transform duration-300 peer-checked:scale-[1.1]",
   {
     variants: {
       color: {
@@ -14,6 +14,7 @@ export const checkboxVariants = cva(
       },
       shape: {
         straight: "",
+        "rounded-sm": "rounded-sm",
         rounded: "rounded",
         smooth: "rounded-md",
         curved: "rounded-lg",

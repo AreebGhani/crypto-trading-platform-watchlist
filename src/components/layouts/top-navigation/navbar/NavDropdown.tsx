@@ -42,7 +42,7 @@ const NavDropdown: FC<NavDropdownProps> = ({
 
   return (
     <div
-      className={`relative flex-shrink-0 flex-grow-0 items-stretch space-x-1 lg:flex ${
+      className={`relative shrink-0 grow-0 items-stretch gap-1 lg:flex ${
         nested && isOpen ? "lg:relative" : ""
       }`}
       ref={dropdownRef}
@@ -53,9 +53,9 @@ const NavDropdown: FC<NavDropdownProps> = ({
         } ${isActive ? "rounded-none lg:rounded-lg" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex items-center">
+        <div className="flex items-center gap-3">
           <Icon icon={icon} className={`h-5 w-5`} />
-          <div className="ml-3 flex flex-col">
+          <div className="flex flex-col">
             <span className="text-sm">{t(title)}</span>
             {description && (
               <span className="text-xs text-muted-400 dark:text-muted-500 leading-none">
@@ -72,17 +72,17 @@ const NavDropdown: FC<NavDropdownProps> = ({
                 ? "lg:rotate-[-90deg] rotate-180"
                 : "rotate-180"
               : nested
-              ? "lg:rotate-90 rotate-0"
-              : "rotate-0"
+                ? "lg:rotate-90 rotate-0"
+                : "rotate-0"
           }`}
         />
       </a>
       <div
         className={`z-20 ${
           isOpen ? "block" : "hidden"
-        } min-w-[220px] rounded-md py-2 text-[.7rem] shadow-lg transition-[opacity,transform] duration-[86ms] lg:absolute ${
-          nested ? "lg:start-full lg:top-0" : "lg:start-0 lg:top-full"
-        } lg:border lg:border-muted-200 lg:bg-white lg:dark:border-muted-800 lg:dark:bg-muted-950 [&>*]:mx-2.5 ${classes}`}
+        } min-w-[220px] rounded-xl py-2 text-md shadow-lg transition-[opacity,transform] duration-100 lg:absolute ${
+          nested ? "lg:left-full lg:top-0" : "lg:left-0 lg:top-full"
+        } lg:border lg:border-muted-200 lg:bg-white lg:dark:border-muted-800 lg:dark:bg-muted-950 px-2 ${classes}`}
       >
         {children}
       </div>

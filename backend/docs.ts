@@ -61,7 +61,7 @@ async function generateSwaggerDoc(startPath, basePath = "/api") {
   for (const entry of entries) {
     const entryPath = path.join(startPath, entry.name);
 
-    if (entry.isDirectory() && ["cron", "admin"].includes(entry.name)) {
+    if (entry.isDirectory() && ["cron", "admin", "util"].includes(entry.name)) {
       continue;
     }
 

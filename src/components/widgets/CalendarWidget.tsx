@@ -118,7 +118,7 @@ const CalendarWidget = () => {
       </div>
 
       <div className="w-full text-xs text-muted-800 dark:text-muted-100">
-        <div className=" grid grid-cols-7 text-xs font-semibold uppercase text-muted-500 [&>*]:py-2 [&>*]:text-center">
+        <div className=" grid grid-cols-7 text-xs font-semibold uppercase text-muted-500 *:py-2 *:text-center">
           <div>{t("Sun")}</div>
           <div>{t("Mon")}</div>
           <div>{t("Tue")}</div>

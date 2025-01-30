@@ -5,12 +5,12 @@ import { DataTable } from "@/components/elements/base/datatable";
 import { useTranslation } from "next-i18next";
 import { toast } from "sonner";
 import $fetch from "@/utils/api";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
 import { Icon } from "@iconify/react";
 
 const api = "/api/admin/crm/user";
-const exportApi = "/api/admin/crm/user/export";
+const exportEndpoint = "/api/admin/crm/user/export";
 
 const columnConfig: ColumnConfigType[] = [
   {
@@ -74,7 +74,7 @@ const Users = () => {
   const handleExport = async () => {
     try {
       await $fetch({
-        url: exportApi,
+        url: exportEndpoint,
       });
     } catch (error) {
       toast.error("An unexpected error occurred while exporting users.");
@@ -90,7 +90,7 @@ const Users = () => {
         hasAnalytics
         navSlot={
           <>
-            <AnimatedTooltip content={t("Export Users to Excel")}>
+            <Tooltip content={t("Export Users to Excel")}>
               <IconButton
                 variant="pastel"
                 aria-label={t("Export Users")}
@@ -100,7 +100,7 @@ const Users = () => {
               >
                 <Icon className="h-6 w-6" icon="mdi:file-excel" />
               </IconButton>
-            </AnimatedTooltip>
+            </Tooltip>
           </>
         }
       />

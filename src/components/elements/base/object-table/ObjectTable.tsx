@@ -1,4 +1,11 @@
-import React, { memo, useState, useEffect, useCallback } from "react";
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useId,
+} from "react";
 import { Icon } from "@iconify/react";
 import Input from "@/components/elements/form/input/Input";
 import Select from "@/components/elements/form/select/Select";
@@ -6,8 +13,10 @@ import Pagination from "@/components/elements/base/pagination/Pagination";
 import HeadCell from "@/components/pages/user/markets/HeadCell";
 import { motion, AnimatePresence } from "framer-motion";
 import IconButton from "../button-icon/IconButton";
-import { AnimatedTooltip } from "../tooltips/AnimatedTooltip";
+import { Tooltip } from "../tooltips/Tooltip";
 import { useTranslation } from "next-i18next";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
+
 type PaginationType = {
   totalItems: number;
   totalPages: number;
@@ -16,18 +25,25 @@ type PaginationType = {
   from: number;
   to: number;
 };
+
 type ObjectTableBaseProps = {
   title?: string;
   items: any[];
   setItems?: (items: any[]) => void;
-  shape?: "straight" | "rounded";
+  shape?: "straight" | "rounded-sm";
   navSlot?: React.ReactNode;
   columnConfig: ColumnConfigType[];
   filterField?: string;
   size?: "xs" | "sm" | "md" | "lg";
   border?: boolean;
   initialPerPage?: number;
+
+  // New props for expansion
+  expandable?: boolean;
+  renderExpandedContent?: (item: any) => React.ReactNode;
+  expansionMode?: "dropdown" | "modal";
 };
+
 const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
   title = "",
   items,
@@ -39,14 +55,16 @@ const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
   size = "md",
   border = true,
   initialPerPage = 5,
+  expandable = false,
+  renderExpandedContent,
+  expansionMode = "dropdown",
 }) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [sorted, setSorted] = useState<{
-    field: string;
-    rule: "asc" | "desc";
-  }>({ field: "", rule: "asc" });
+  const [sorted, setSorted] = useState<{ field: string; rule: "asc" | "desc" }>(
+    { field: "", rule: "asc" }
+  );
   const [pagination, setPagination] = useState<PaginationType>({
     totalItems: 0,
     totalPages: 0,
@@ -55,6 +73,11 @@ const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
     from: 1,
     to: initialPerPage,
   });
+
+  const [expandedItem, setExpandedItem] = useState<any>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const uniqueId = useId(); // For stable layoutIds
+
   const startIndex = (currentPage - 1) * pagination.perPage;
   const endIndex = startIndex + pagination.perPage;
   const filteredItems =
@@ -87,6 +110,7 @@ const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
     },
     [pagination.totalPages, pagination.perPage]
   );
+
   const sort = (field: string, rule: "asc" | "desc") => {
     const copy = [...items];
     copy.sort((a, b) => {
@@ -105,6 +129,7 @@ const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
     setItems?.(copy);
     setSorted({ field, rule });
   };
+
   useEffect(() => {
     setPagination((p) => ({
       ...p,
@@ -112,6 +137,7 @@ const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
       totalPages: Math.ceil(filteredItems.length / p.perPage),
     }));
   }, [items, filter, pagination.perPage, filteredItems.length]);
+
   useEffect(() => {
     const newFrom = (currentPage - 1) * pagination.perPage + 1;
     const newTo = currentPage * pagination.perPage;
@@ -121,6 +147,37 @@ const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
       to: newTo,
     }));
   }, [currentPage, pagination.perPage]);
+
+  const handleRowClick = (item: any) => {
+    if (!expandable) return;
+    if (expansionMode === "dropdown") {
+      setExpandedItem((prev) => (prev?.id === item.id ? null : item));
+    } else {
+      // modal mode
+      setExpandedItem(item);
+    }
+  };
+
+  useOnClickOutside(modalRef, () => {
+    if (expansionMode === "modal") setExpandedItem(null);
+  });
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape" && expansionMode === "modal")
+        setExpandedItem(null);
+    }
+
+    if (expandedItem && expansionMode === "modal") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [expandedItem, expansionMode]);
+
   return (
     <div className="relative h-full">
       <div
@@ -177,43 +234,82 @@ const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
           </thead>
 
           <tbody>
-            {pageItems.map((item, i) => (
-              <tr
-                key={i}
-                className={`text-${size} text-muted-800 dark:text-muted-200
-                 border-b border-muted-200 transition-colors duration-300 last:border-none hover:bg-muted-200/40 dark:border-muted-800 dark:hover:bg-muted-950/60`}
-              >
-                {columnConfig.map((col) => (
-                  <td key={col.field} className="px-4 py-3 align-middle">
-                    {col.type === "actions"
-                      ? col.actions?.map((action, index) => {
-                          return !action.condition ||
-                            !action.condition(item) ? (
-                            <AnimatedTooltip
-                              key={index}
-                              content={action.tooltip}
+            {pageItems.map((item, i) => {
+              const layoutId = `item-${item.id}-${uniqueId}`;
+              return (
+                <React.Fragment key={i}>
+                  <motion.tr
+                    layoutId={layoutId}
+                    className={`text-${size} text-muted-800 dark:text-muted-200
+                     border-b border-muted-200 transition-colors duration-300 last:border-none hover:bg-muted-200/40 dark:border-muted-800 dark:hover:bg-muted-950/60
+                     ${expandable ? "cursor-pointer" : ""}`}
+                    onClick={() => handleRowClick(item)}
+                    initial={false} // needed to prevent layout animation issues
+                    animate={{}}
+                  >
+                    {columnConfig.map((col) => (
+                      <td key={col.field} className="px-4 py-3 align-middle">
+                        {col.type === "actions"
+                          ? col.actions?.map((action, index) => {
+                              return !action.condition ||
+                                !action.condition(item) ? (
+                                <Tooltip key={index} content={action.tooltip}>
+                                  <IconButton
+                                    key={index}
+                                    variant="pastel"
+                                    color={action.color}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      action.onClick(item);
+                                    }}
+                                    loading={action.loading}
+                                    size={action.size}
+                                    disabled={action.disabled}
+                                  >
+                                    <Icon
+                                      icon={action.icon}
+                                      className="h-5 w-5"
+                                    />
+                                  </IconButton>
+                                </Tooltip>
+                              ) : null;
+                            })
+                          : col.renderCell
+                            ? col.renderCell(item)
+                            : col.getValue
+                              ? col.getValue(item)
+                              : item[col.field]}
+                      </td>
+                    ))}
+                  </motion.tr>
+
+                  {/* Dropdown Expansion */}
+                  {expandable &&
+                    expansionMode === "dropdown" &&
+                    expandedItem?.id === item.id &&
+                    renderExpandedContent && (
+                      <tr className="border-b border-muted-200 dark:border-muted-800">
+                        <td
+                          colSpan={columnConfig.length}
+                          className="p-4 bg-muted-50 dark:bg-muted-900"
+                        >
+                          <AnimatePresence>
+                            <motion.div
+                              key={item.id}
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
                             >
-                              <IconButton
-                                key={index}
-                                variant="pastel"
-                                color={action.color}
-                                onClick={() => action.onClick(item)}
-                                loading={action.loading}
-                                size={action.size}
-                                disabled={action.disabled}
-                              >
-                                <Icon icon={action.icon} className="h-5 w-5" />
-                              </IconButton>
-                            </AnimatedTooltip>
-                          ) : null;
-                        })
-                      : col.getValue
-                      ? col.getValue(item)
-                      : item[col.field]}
-                  </td>
-                ))}
-              </tr>
-            ))}
+                              {renderExpandedContent(item)}
+                            </motion.div>
+                          </AnimatePresence>
+                        </td>
+                      </tr>
+                    )}
+                </React.Fragment>
+              );
+            })}
             {!pagination.totalItems && (
               <tr>
                 <td colSpan={columnConfig.length} className="py-3 text-center">
@@ -268,12 +364,28 @@ const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
                     label: "10 per page",
                   },
                   {
-                    value: "15",
-                    label: "15 per page",
+                    value: "25",
+                    label: "25 per page",
                   },
                   {
-                    value: "20",
-                    label: "20 per page",
+                    value: "50",
+                    label: "50 per page",
+                  },
+                  {
+                    value: "100",
+                    label: "100 per page",
+                  },
+                  {
+                    value: "250",
+                    label: "250 per page",
+                  },
+                  {
+                    value: "500",
+                    label: "500 per page",
+                  },
+                  {
+                    value: "1000",
+                    label: "1000 per page",
                   },
                 ]}
                 onChange={(e) =>
@@ -294,7 +406,52 @@ const ObjectTableBase: React.FC<ObjectTableBaseProps> = ({
           </div>
         </motion.div>
       </AnimatePresence>
+
+      {/* Modal Expansion */}
+      {expandable && expansionMode === "modal" && (
+        <AnimatePresence>
+          {expandedItem && (
+            <>
+              {/* Faded background with blur */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/20 h-full w-full z-50 backdrop-filter backdrop-blur-xs"
+              />
+
+              <div className="fixed inset-0 grid place-items-center z-[100]">
+                <motion.button
+                  key={`close-button-${expandedItem.id}`}
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0.05 } }}
+                  className="flex absolute top-2 right-2 items-center justify-center bg-white rounded-full h-6 w-6 cursor-pointer"
+                  onClick={() => setExpandedItem(null)}
+                >
+                  <Icon icon="mdi:close" className="text-neutral-600" />
+                </motion.button>
+
+                <motion.div
+                  ref={modalRef}
+                  layoutId={`item-${expandedItem.id}-${uniqueId}`}
+                  className="w-full max-w-[600px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-muted-950 sm:rounded-xl overflow-hidden border border-muted-100 dark:border-muted-900"
+                  initial={false} // needed for layout transitions
+                >
+                  {/* Render expanded content inside modal */}
+                  <div className="p-4 overflow-auto">
+                    {renderExpandedContent &&
+                      renderExpandedContent(expandedItem)}
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>
+      )}
     </div>
   );
 };
+
 export const ObjectTable = memo(ObjectTableBase);

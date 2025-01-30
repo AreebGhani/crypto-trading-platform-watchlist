@@ -50,6 +50,17 @@ export default async (data: Handler) => {
 
   const password = await hashPassword("12345678");
 
+  const superAdminRole = await models.role.findOne({
+    where: { name: "Super Admin" },
+  });
+
+  // prevent making super admin
+  if (roleId === superAdminRole?.id)
+    throw createError({
+      statusCode: 400,
+      message: "You cannot create a Super Admin",
+    });
+
   await models.user.create({
     firstName,
     lastName,

@@ -51,8 +51,8 @@ const TicketInformationBase = () => {
             avatar={
               <IconBox
                 icon="ph:credit-card-duotone"
-                className="!h-8 !w-8 !rounded-lg bg-primary-500/10"
-                iconClasses="!h-5 !w-5 text-primary-500"
+                className="h-8! w-8! rounded-lg! bg-primary-500/10"
+                iconClasses="h-5! w-5! text-primary-500"
               />
             }
             title={t("Ticket ID")}
@@ -65,8 +65,8 @@ const TicketInformationBase = () => {
             avatar={
               <IconBox
                 icon="ph:timer-duotone"
-                className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-                iconClasses="!h-5 !w-5 text-success-500"
+                className="h-8! w-8! rounded-lg! bg-success-500/10"
+                iconClasses="h-5! w-5! text-success-500"
               />
             }
             title={t("Priority")}
@@ -80,8 +80,8 @@ const TicketInformationBase = () => {
               avatar={
                 <IconBox
                   icon="ph:envelope-duotone"
-                  className="!h-8 !w-8 !rounded-lg bg-info-500/10"
-                  iconClasses="!h-5 !w-5 text-info-500"
+                  className="h-8! w-8! rounded-lg! bg-info-500/10"
+                  iconClasses="h-5! w-5! text-info-500"
                 />
               }
               title={t("Email")}
@@ -102,7 +102,7 @@ const TicketInformationBase = () => {
             avatar={
               <IconBox
                 {...getIconConfig(ticket?.status.toUpperCase())}
-                className="!h-8 !w-8 !rounded-lg"
+                className="h-8! w-8! rounded-lg!"
               />
             }
             title={t("Status")}

@@ -198,22 +198,18 @@ export async function sendTransferEmails(
   amount: number,
   transaction: any
 ) {
-  try {
-    await sendOutgoingTransferEmail(
-      user,
-      toUser,
-      fromWallet,
-      amount,
-      transaction.fromTransfer.id
-    );
-    await sendIncomingTransferEmail(
-      toUser,
-      user,
-      toWallet,
-      amount,
-      transaction.toTransfer.id
-    );
-  } catch (error) {
-    console.log("Error sending transfer email: ", error);
-  }
+  await sendOutgoingTransferEmail(
+    user,
+    toUser,
+    fromWallet,
+    amount,
+    transaction.fromTransfer.id
+  );
+  await sendIncomingTransferEmail(
+    toUser,
+    user,
+    toWallet,
+    amount,
+    transaction.toTransfer.id
+  );
 }

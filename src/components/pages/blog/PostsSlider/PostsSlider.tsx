@@ -33,7 +33,7 @@ const PostsSliderBase = ({ content }: PostsSliderProps) => {
                   fill
                   alt=""
                 />
-                <div className="absolute end-4 top-4">
+                <div className="absolute right-4 top-4">
                   <Tag shape="full">
                     {formatDate(
                       new Date(post.createdAt || new Date()),
@@ -43,7 +43,7 @@ const PostsSliderBase = ({ content }: PostsSliderProps) => {
                 </div>
               </div>
               <div className="hidden md:block absolute inset-x-0 bottom-0 mb-6 px-6 pointer-events-auto">
-                <Card color="contrast" shadow="flat" className="p-6 font-sans">
+                <Card color="contrast" shadow-sm="flat" className="p-6 font-sans">
                   <div className="space-y-2">
                     <Link href={`/blog/post/${post.slug}`}>
                       <h5 className="text-lg font-medium text-muted-800 dark:text-muted-100">

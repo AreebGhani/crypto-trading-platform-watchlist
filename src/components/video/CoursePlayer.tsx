@@ -10,7 +10,7 @@ import Card from "@/components/elements/base/card/Card";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
 import ProgressCircle from "@/components/elements/base/progress/ProgressCircle";
 import Tag from "@/components/elements/base/tag/Tag";
-import ToolTip from "@/components/elements/base/tooltips/Tooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import ToggleBox from "@/components/elements/base/toggle-box/ToggleBox";
 import PlayerControls from "@/components/video/PlayerControls";
 import { useTranslation } from "next-i18next";
@@ -166,7 +166,7 @@ const CoursePlayer: FC<PlayerProps> = ({
       <div className="col-span-12 lg:col-span-8 ltablet:col-span-8">
         <div>
           <div
-            className="relative w-full overflow-hidden rounded-md pt-[56.25%] [&>div]:absolute [&>div]:start-0 [&>div]:top-0 [&>div]:!w-full"
+            className="relative w-full overflow-hidden rounded-md pt-[56.25%] [&>div]:absolute [&>div]:left-0 [&>div]:top-0 [&>div]:w-full!"
             onMouseEnter={mouseMoveHandler}
           >
             <ReactPlayer
@@ -224,21 +224,21 @@ const CoursePlayer: FC<PlayerProps> = ({
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            <ToolTip content={t("Like video")} position="top">
+            <Tooltip content={t("Like video")} position="top">
               <IconButton color="danger" variant="pastel">
                 <Icon icon="pepicons-pencil:heart-filled" className="h-5 w-5" />
               </IconButton>
-            </ToolTip>
-            <ToolTip content={t("Share video")} position="top">
+            </Tooltip>
+            <Tooltip content={t("Share video")} position="top">
               <IconButton color="contrast">
                 <Icon icon="majesticons:share" className="h-5 w-5" />
               </IconButton>
-            </ToolTip>
-            <ToolTip content={t("Contact")} position="top">
+            </Tooltip>
+            <Tooltip content={t("Contact")} position="top">
               <IconButton color="contrast">
                 <Icon icon="fluent:mail-20-filled" className="h-5 w-5" />
               </IconButton>
-            </ToolTip>
+            </Tooltip>
           </div>
         </div>
         <div className="flex items-center justify-between border-b border-muted-200 py-6 dark:border-muted-800">
@@ -256,7 +256,7 @@ const CoursePlayer: FC<PlayerProps> = ({
           <div>
             <Button color="muted" variant="pastel" onClick={selectNextChapter}>
               <span>{t("Next Chapter")}</span>
-              <Icon icon="iconamoon:player-end-fill" className="h-4 w-4" />
+              <Icon icon="iconamoon:player-right-fill" className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -320,7 +320,7 @@ const CoursePlayer: FC<PlayerProps> = ({
         <div className="relative mt-8">
           {activeTab === "downloads" ? (
             <div>
-              <div className="mx-auto mb-4 w-full max-w-4xl space-y-10 rounded pb-8">
+              <div className="mx-auto mb-4 w-full max-w-4xl space-y-10 rounded-sm pb-8">
                 <div className="grid gap-8 md:grid-cols-12">
                   <div className="md:col-span-4">
                     <h3 className="mb-1 font-sans font-medium text-muted-800 dark:text-muted-100">
@@ -502,7 +502,7 @@ const CoursePlayer: FC<PlayerProps> = ({
 
           {activeTab === "comments" ? (
             <div>
-              <div className="mx-auto mb-4 w-full max-w-4xl space-y-10 rounded pb-8">
+              <div className="mx-auto mb-4 w-full max-w-4xl space-y-10 rounded-sm pb-8">
                 <div className="grid gap-4 md:grid-cols-12">
                   <div className="md:col-span-3">
                     <h3 className="mb-1 font-sans font-medium text-muted-800 dark:text-muted-100">
@@ -518,7 +518,7 @@ const CoursePlayer: FC<PlayerProps> = ({
                     <div className="space-y-8">
                       {course.comments.map((comment: any) => (
                         <div key={comment.id} className="flex w-full">
-                          <div className="me-3 hidden flex-shrink-0 md:block">
+                          <div className="me-3 hidden shrink-0 md:block">
                             <Avatar size="sm" src={comment.user.picture} />{" "}
                           </div>
                           <Card
@@ -557,7 +557,7 @@ const CoursePlayer: FC<PlayerProps> = ({
                             </div>
                             <div className="mt-6 space-y-4 pb-2">
                               <div className="flex">
-                                <div className="me-3 hidden flex-shrink-0 md:block">
+                                <div className="me-3 hidden shrink-0 md:block">
                                   <Avatar
                                     size="xs"
                                     src={comment.author.picture}
@@ -655,7 +655,7 @@ const CoursePlayer: FC<PlayerProps> = ({
                       </p>
                     </div>
                     <div className="mt-6 flex items-center space-x-2">
-                      <div className="flex flex-shrink-0 rounded-full border border-muted-200">
+                      <div className="flex shrink-0 rounded-full border border-muted-200">
                         <Avatar src={review.user.picture} size="xs" />
                       </div>
                       <div>
@@ -783,7 +783,7 @@ const CoursePlayer: FC<PlayerProps> = ({
                             />
                           )}
                           {challenge === activeChallenge ? (
-                            <span className="pointer-events-none absolute start-1/2 top-1/2 z-10 block -translate-x-1/2 -translate-y-1/2">
+                            <span className="pointer-events-none absolute left-1/2 top-1/2 z-10 block -translate-x-1/2 -translate-y-1/2">
                               <ProgressCircle
                                 size={65}
                                 thickness={1}

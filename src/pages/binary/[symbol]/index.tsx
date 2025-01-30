@@ -132,7 +132,7 @@ const BinaryTradePageBase = () => {
         <meta name="theme-color" content="#ffffff" />
       </Head>
       <div className="w-full h-full bg-white dark:bg-muted-900 ">
-        <div className="sticky top-0 z-50 bg-white dark:bg-muted-900 w-[99%]">
+        <div className="sticky top-0 z-50 bg-white dark:bg-muted-900 w-[100%_-_4px]">
           <BinaryNav />
         </div>
 

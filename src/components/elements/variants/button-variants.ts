@@ -21,6 +21,7 @@ export const buttonVariants = cva(
       },
       shape: {
         straight: "",
+        "rounded-xs": "rounded-xs",
         "rounded-sm": "rounded-sm",
         rounded: "rounded-md",
         smooth: "rounded-lg",
@@ -169,7 +170,7 @@ export const buttonVariants = cva(
         color: "primary",
         variant: "outlined",
         className:
-          "[&>span>.loader]:text-primary-500 border border-primary-500 text-primary-500 hover:bg-primary-500 active:enabled:bg-primary-400 hover:text-white",
+          "[&>span>.loader]:text-primary-500 border border-primary-500 text-primary-500 hover:bg-primary-500 active:enabled:bg-primary-400 hover:text-white ",
       },
       {
         color: "info",

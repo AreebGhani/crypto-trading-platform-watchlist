@@ -17,9 +17,11 @@ import Tag from "@/components/elements/base/tag/Tag";
 import { useTranslation } from "next-i18next";
 import Alert from "@/components/elements/base/alert/Alert";
 import { toast } from "sonner";
+import { useDashboardStore } from "@/stores/dashboard";
 
 const InvestmentPlansDashboard = () => {
   const { t } = useTranslation();
+  const { settings } = useDashboardStore();
   const router = useRouter();
   const { type, id } = router.query as {
     type: string;
@@ -105,8 +107,10 @@ const InvestmentPlansDashboard = () => {
 
   const invest = async () => {
     if (!plan) return;
-    if (!duration.value || amount <= 0) {
-      toast.error("Please select a duration and amount to invest");
+    if (!duration.value || isNaN(amount) || amount <= 0) {
+      toast.error(
+        "Please select a duration and enter a valid amount to invest"
+      );
       return;
     }
     if (!wallet || wallet.balance < amount) {
@@ -157,8 +161,8 @@ const InvestmentPlansDashboard = () => {
   };
 
   const ROI = useMemo(() => {
-    if (!plan) return 0;
-    return (amount * plan.profitPercentage) / 100;
+    if (!plan || plan.profitPercentage === undefined) return 0;
+    return ((amount * plan.profitPercentage) / 100).toFixed(8);
   }, [amount, plan]);
 
   const progress = useMemo(() => {
@@ -200,6 +204,12 @@ const InvestmentPlansDashboard = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, [plan]);
+
+  // Determine if investment Lottie is enabled
+  const isInvestmentLottieEnabled =
+    settings?.lottieAnimationStatus === "true" &&
+    settings?.investmentLottieEnabled === "true";
+  const investmentLottieFile = settings?.investmentLottieFile;
 
   return (
     <Layout title={`${plan?.title || "Loading"} Investment Plan`} color="muted">
@@ -275,18 +285,26 @@ const InvestmentPlansDashboard = () => {
               <div className="rounded-lg border border-transparent bg-muted-50 p-4 dark:bg-muted-900 md:border-muted-200 md:p-6 md:dark:border-muted-800">
                 {investment ? (
                   <div className="w-full">
-                    <Lottie
-                      category="stock-market"
-                      path="stock-market-monitoring"
-                      max={2}
-                      height={250}
-                    />
+                    {isInvestmentLottieEnabled ? (
+                      <Lottie
+                        category="stock-market"
+                        path="stock-market-monitoring"
+                        max={2}
+                        height={250}
+                      />
+                    ) : investmentLottieFile ? (
+                      <img
+                        src={investmentLottieFile}
+                        alt="Investment Illustration"
+                        className="mx-auto max-h-[250px] object-contain"
+                      />
+                    ) : null}
                     <div>
                       <div className="flex justify-between items-center mt-4">
                         <p className="text-lg font-semibold text-muted-800 dark:text-muted-100">
                           {capitalize(type)} {t("Investment Details")}
                         </p>
-                        <Tag color={statusColor as any} shape={"rounded"}>
+                        <Tag color={statusColor as any} shape={"rounded-sm"}>
                           {investment.status}
                         </Tag>
                       </div>

@@ -6,8 +6,8 @@ const BestPricesBase = ({ bestAsk, bestBid }) => {
   const { t } = useTranslation();
   const { setAsk, setBid } = useOrderStore();
   useEffect(() => {
-    setAsk(bestAsk);
-    setBid(bestBid);
+    if (bestAsk) setAsk(bestAsk);
+    if (bestBid) setBid(bestBid);
   }, [bestAsk, bestBid]);
   const { market } = useMarketStore();
   const getPrecision = (type) => Number(market?.precision?.[type] || 8);

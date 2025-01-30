@@ -29,7 +29,7 @@ const AppNavbar: FC<AppNavbarProps> = ({
 
   return (
     <div
-      className={`fixed start-0 top-[56px] z-10 w-full transition-all duration-300`}
+      className={`fixed left-0 top-[56px] z-10 w-full transition-all duration-300`}
     >
       <div
         className={`relative mx-auto w-full px-4 lg:px-10
@@ -38,7 +38,7 @@ const AppNavbar: FC<AppNavbarProps> = ({
         `}
       >
         <div
-          className={`relative z-[1] flex h-[40px] w-full items-center justify-end rounded-2xl border transition-all duration-300 ${
+          className={`relative z-1 flex h-[40px] w-full items-center justify-end rounded-2xl border transition-all duration-300 ${
             scrolled
               ? "-mt-12 border-muted-200 bg-white px-2 shadow-lg shadow-muted-300/30 dark:border-muted-800 dark:bg-muted-900 dark:shadow-muted-800/30"
               : "border-transparent dark:border-transparent px-2"
@@ -46,7 +46,7 @@ const AppNavbar: FC<AppNavbarProps> = ({
         >
           <MediaQuery minWidth={parseInt(breakpoints.md)}>
             <div
-              className={`flex-grow-[2] items-center md:max-w-[680px] ${
+              className={`flex-grow-2 items-center md:max-w-[680px] ${
                 isMobileSearchActive ? "hidden" : "flex "
               }`}
             >
@@ -54,7 +54,7 @@ const AppNavbar: FC<AppNavbarProps> = ({
                 <div className="relative text-base">
                   <input
                     type="text"
-                    className="peer relative inline-flex h-10 w-full max-w-full items-center justify-start rounded-lg border border-muted-200 bg-white py-2 pe-3 ps-10 font-sans text-base leading-snug text-muted-600 outline-none outline-0 outline-offset-0 outline-current transition-all duration-300 placeholder:text-muted-300 focus-visible:shadow-lg focus-visible:shadow-muted-300/30 dark:border-muted-800 dark:bg-muted-900 dark:text-muted-300 placeholder:dark:text-muted-700 dark:focus-visible:shadow-muted-800/30"
+                    className="peer relative inline-flex h-10 w-full max-w-full items-center justify-start rounded-lg border border-muted-200 bg-white py-2 pe-3 ps-10 font-sans text-base leading-snug text-muted-600 outline-hidden outline-0 outline-offset-0 outline-current transition-all duration-300 placeholder:text-muted-300 focus-visible:shadow-lg focus-visible:shadow-muted-300/30 dark:border-muted-800 dark:bg-muted-900 dark:text-muted-300 dark:placeholder:text-muted-700 dark:focus-visible:shadow-muted-800/30"
                     placeholder={t("Search our platform...")}
                     value={searchTerm}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +62,7 @@ const AppNavbar: FC<AppNavbarProps> = ({
                     }}
                   />
 
-                  <div className="absolute start-0 top-0 z-[1] flex h-10 w-10 items-center justify-center text-muted-400 transition-colors duration-300 dark:text-muted-500 peer-checked:[&>svg]:text-primary-500 peer-focus:[&>svg]:stroke-primary-500 peer-focus:[&>svg]:text-primary-500 ">
+                  <div className="absolute left-0 top-0 z-1 flex h-10 w-10 items-center justify-center text-muted-400 transition-colors duration-300 dark:text-muted-500 [&>svg]:peer-checked:text-primary-500 [&>svg]:peer-focus:stroke-primary-500 [&>svg]:peer-focus:text-primary-500 ">
                     <Icon
                       icon="lucide:search"
                       className="text-lg transition-colors duration-300"
@@ -106,7 +106,7 @@ const AppNavbar: FC<AppNavbarProps> = ({
             {isFetched && profile && (
               <>
                 <div className="group relative text-start">
-                  <span className="absolute end-0.5 top-0.5 z-[2] block h-2 w-2 rounded-full bg-primary-500 "></span>
+                  <span className="absolute right-0.5 top-0.5 z-2 block h-2 w-2 rounded-full bg-primary-500 "></span>
                   <button
                     className="mask mask-blob flex h-10 w-10 cursor-pointer items-center justify-center transition-all duration-300 text-muted-400 hover:text-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/20 rotate-0"
                     onClick={() => setPanelOpen("announcements", true)}
@@ -137,13 +137,13 @@ const AppNavbar: FC<AppNavbarProps> = ({
                     type="text"
                     value={searchTerm}
                     placeholder={t("Search...")}
-                    className="peer relative inline-flex h-10 w-full max-w-full items-center justify-start rounded-lg border border-muted-200 bg-white py-2 pe-3 ps-10 text-base leading-tight text-muted-500 outline-none outline-0 outline-offset-0 outline-current transition-all duration-300 placeholder:text-muted-300 focus-visible:shadow-lg focus-visible:shadow-muted-300/30 dark:border-muted-800 dark:bg-muted-900 dark:text-muted-300 placeholder:dark:text-muted-700 dark:focus-visible:shadow-muted-800/30"
+                    className="peer relative inline-flex h-10 w-full max-w-full items-center justify-start rounded-lg border border-muted-200 bg-white py-2 pe-3 ps-10 text-base leading-tight text-muted-500 outline-hidden outline-0 outline-offset-0 outline-current transition-all duration-300 placeholder:text-muted-300 focus-visible:shadow-lg focus-visible:shadow-muted-300/30 dark:border-muted-800 dark:bg-muted-900 dark:text-muted-300 dark:placeholder:text-muted-700 dark:focus-visible:shadow-muted-800/30"
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                       setSearchTerm(event.currentTarget.value);
                     }}
                   />
 
-                  <div className="absolute start-0 top-0 z-[1] flex h-10 w-10 items-center justify-center transition-colors duration-300">
+                  <div className="absolute left-0 top-0 z-1 flex h-10 w-10 items-center justify-center transition-colors duration-300">
                     <Icon
                       icon="lucide:search"
                       className="h-4 w-4 text-muted-400 transition-colors duration-300"
@@ -155,7 +155,7 @@ const AppNavbar: FC<AppNavbarProps> = ({
                       setSearchTerm("");
                       setIsMobileSearchActive(false);
                     }}
-                    className="absolute end-0 top-0 z-[1] flex h-10 w-10 items-center justify-center transition-colors duration-300"
+                    className="absolute right-0 top-0 z-1 flex h-10 w-10 items-center justify-center transition-colors duration-300"
                   >
                     <Icon
                       icon="lucide:x"

@@ -13,14 +13,14 @@ export default function NotFound() {
       <main className="flex min-h-screen flex-col items-stretch justify-between bg-muted-100 dark:bg-muted-900">
         {/* <MinimalHeader /> */}
 
-        <div className="hero-body flex flex-shrink-0 flex-grow items-center px-6 py-12 md:px-12 md:py-0">
+        <div className="hero-body flex shrink-0 grow items-center px-6 py-12 md:px-12 md:py-0">
           <div className="container">
             <div className="error-wrapper relative flex flex-col items-center justify-center overflow-hidden py-12">
               <div className="error-wrapper-inner relative isolate w-full">
-                <div className="underlay absolute start-1/2 top-[36%] -z-[1] -translate-x-1/2 -translate-y-1/2 font-sans text-[8rem] font-extrabold text-muted-800 dark:text-muted-300 opacity-10 md:top-[38%] md:text-[20rem] ltablet:text-[23rem] lg:text-[26rem]">
+                <div className="underlay absolute left-1/2 top-[36%] -z-1 -translate-x-1/2 -translate-y-1/2 font-sans text-[8rem] font-extrabold text-muted-800 dark:text-muted-300 opacity-10 md:top-[38%] md:text-[20rem] ltablet:text-[23rem] lg:text-[26rem]">
                   <span>404</span>
                 </div>
-                <div className="relative z-[1]">
+                <div className="relative z-1">
                   <MashImage
                     className="mx-auto block w-full max-w-xl dark:hidden"
                     width={510}
@@ -56,7 +56,7 @@ export default function NotFound() {
 
                     <Button
                       onClick={() => router.back()}
-                      className="!min-w-[130px]"
+                      className="min-w-[130px]!"
                     >
                       {t("Back")}
                     </Button>

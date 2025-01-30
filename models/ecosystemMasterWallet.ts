@@ -2,6 +2,22 @@ import * as Sequelize from "sequelize";
 import { DataTypes, Model } from "sequelize";
 import ecosystemCustodialWallet from "./ecosystemCustodialWallet";
 
+// Interface for attributes
+export interface ecosystemMasterWalletAttributes {
+  id: string;
+  chain: string;
+  currency: string;
+  address: string;
+  balance: number;
+  data?: string;
+  status: boolean;
+  lastIndex: number;
+}
+
+// Interface for creation attributes
+export interface ecosystemMasterWalletCreationAttributes
+  extends Partial<ecosystemMasterWalletAttributes> {}
+
 export default class ecosystemMasterWallet
   extends Model<
     ecosystemMasterWalletAttributes,
@@ -10,7 +26,6 @@ export default class ecosystemMasterWallet
   implements ecosystemMasterWalletAttributes
 {
   id!: string;
-
   chain!: string;
   currency!: string;
   address!: string;
@@ -24,32 +39,32 @@ export default class ecosystemMasterWallet
   getEcosystemCustodialWallets!: Sequelize.HasManyGetAssociationsMixin<ecosystemCustodialWallet>;
   setEcosystemCustodialWallets!: Sequelize.HasManySetAssociationsMixin<
     ecosystemCustodialWallet,
-    ecosystemCustodialWalletId
+    string
   >;
   addEcosystemCustodialWallet!: Sequelize.HasManyAddAssociationMixin<
     ecosystemCustodialWallet,
-    ecosystemCustodialWalletId
+    string
   >;
   addEcosystemCustodialWallets!: Sequelize.HasManyAddAssociationsMixin<
     ecosystemCustodialWallet,
-    ecosystemCustodialWalletId
+    string
   >;
   createEcosystemCustodialWallet!: Sequelize.HasManyCreateAssociationMixin<ecosystemCustodialWallet>;
   removeEcosystemCustodialWallet!: Sequelize.HasManyRemoveAssociationMixin<
     ecosystemCustodialWallet,
-    ecosystemCustodialWalletId
+    string
   >;
   removeEcosystemCustodialWallets!: Sequelize.HasManyRemoveAssociationsMixin<
     ecosystemCustodialWallet,
-    ecosystemCustodialWalletId
+    string
   >;
   hasEcosystemCustodialWallet!: Sequelize.HasManyHasAssociationMixin<
     ecosystemCustodialWallet,
-    ecosystemCustodialWalletId
+    string
   >;
   hasEcosystemCustodialWallets!: Sequelize.HasManyHasAssociationsMixin<
     ecosystemCustodialWallet,
-    ecosystemCustodialWalletId
+    string
   >;
   countEcosystemCustodialWallets!: Sequelize.HasManyCountAssociationsMixin;
 
@@ -151,3 +166,5 @@ export default class ecosystemMasterWallet
     });
   }
 }
+
+export { ecosystemMasterWallet as ecosystemMasterWallet };

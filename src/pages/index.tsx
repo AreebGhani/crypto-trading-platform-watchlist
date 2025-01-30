@@ -104,15 +104,45 @@ const Index = () => {
         <link rel="stylesheet" href="/assetz/css/default.css" />
         <link rel="stylesheet" href="/assetz/css/style.css" />
         <link rel="stylesheet" href="/assetz/css/responsive.css" />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `.homepage-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: #030B15;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+          }
+          .homepage-spinner-container {
+            font-size: 0.9rem;
+            color: white;
+          }
+          .homepage-spinner {
+            height: 2.4rem;
+            width: 2.4rem;
+            margin-right: 0.4rem;
+            animation: homepage-animation-spinner 1s linear infinite;
+          }
+          @keyframes homepage-animation-spinner {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }`,
+          }}
+        ></style>
       </Head>
 
       {loading && (
-        <div className="fixed inset-0 bg-[#030B15] z-[9999] flex justify-center items-center">
-          <div className="text-lg text-white">
-            <Icon
-              icon="mingcute:loading-3-line"
-              className="animate-spin mr-2 h-12 w-12"
-            />
+        <div className="homepage-overlay">
+          <div className="homepage-spinner-container">
+            <Icon icon="mingcute:loading-3-line" className="homepage-spinner" />
           </div>
         </div>
       )}

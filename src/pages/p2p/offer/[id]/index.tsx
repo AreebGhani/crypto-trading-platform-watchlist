@@ -169,7 +169,7 @@ const P2pOffer: React.FC = () => {
             {profile?.id !== offer?.userId && (
               <Button
                 color="primary"
-                shape={"rounded"}
+                shape={"rounded-sm"}
                 type="button"
                 onClick={() => {
                   setOpen(true);

@@ -16,7 +16,7 @@ interface MessageProps {
     | "success"
     | "warning"
     | "danger";
-  shape?: "straight" | "rounded" | "smooth" | "curved";
+  shape?: "straight" | "rounded-sm" | "smooth" | "curved";
   className?: string;
   style?: React.CSSProperties;
   isFixed?: boolean;
@@ -56,7 +56,7 @@ const Message: FC<MessageProps> = ({
         {visible ? (
           <div
             className={`${className} flex items-center gap-2 border py-3 pe-2 ps-4
-        ${shape === "rounded" ? "rounded-md" : ""}
+        ${shape === "rounded-sm" ? "rounded-md" : ""}
         ${shape === "smooth" ? "rounded-lg" : ""}
         ${shape === "curved" ? "rounded-xl" : ""}
         ${

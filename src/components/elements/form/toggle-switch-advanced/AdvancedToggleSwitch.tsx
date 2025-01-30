@@ -38,9 +38,9 @@ const AdvancedToggleSwitch: FC<ToggleSwitchProps> = ({
         className="peer absolute cursor-pointer opacity-0"
         {...props}
       />
-      <span className="relative block h-5 w-[55px] rounded-full border-2 border-muted-200 bg-muted-200 dark:border-muted-800 dark:bg-muted-900 peer-checked:[&>.off]:translate-x-[85%] peer-checked:[&>.off]:rotate-[360deg] peer-checked:[&>.off]:opacity-100 peer-checked:[&>.on]:translate-x-full peer-checked:[&>.on]:rotate-[360deg] peer-checked:[&>.on]:opacity-0">
+      <span className="relative block h-5 w-[55px] rounded-full border-2 border-muted-200 bg-muted-200 dark:border-muted-800 dark:bg-muted-900 [&>.off]:peer-checked:translate-x-[85%] [&>.off]:peer-checked:rotate-[360deg] [&>.off]:peer-checked:opacity-100 [&>.on]:peer-checked:translate-x-full [&>.on]:peer-checked:rotate-[360deg] [&>.on]:peer-checked:opacity-0">
         <span
-          className={`off absolute -start-0.5 -top-2 z-0 flex h-8 w-8 translate-x-0 rotate-0 items-center justify-center rounded-full opacity-0 transition-all duration-300 ease-in
+          className={`off absolute -left-0.5 -top-2 z-0 flex h-8 w-8 translate-x-0 rotate-0 items-center justify-center rounded-full opacity-0 transition-all duration-300 ease-in
             ${classes}
             ${
               endColor === "default"
@@ -77,7 +77,7 @@ const AdvancedToggleSwitch: FC<ToggleSwitchProps> = ({
           <Icon className="h-4 w-4 text-current" icon={endIcon} />
         </span>
         <span
-          className={`on absolute -start-0.5 -top-2 z-[1] flex h-8 w-8 translate-x-0 rotate-0 items-center justify-center rounded-full opacity-100 transition-all duration-300 ease-in 
+          className={`on absolute -left-0.5 -top-2 z-1 flex h-8 w-8 translate-x-0 rotate-0 items-center justify-center rounded-full opacity-100 transition-all duration-300 ease-in 
             ${classes}  
             ${
               startColor === "default"

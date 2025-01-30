@@ -6,7 +6,7 @@ import ToggleSwitch from "@/components/elements/form/toggle-switch/ToggleSwitch"
 import { Icon } from "@iconify/react";
 import Checkbox from "@/components/elements/form/checkbox/Checkbox";
 import { useDataTable } from "@/stores/datatable";
-import { AnimatedTooltip } from "../../tooltips/AnimatedTooltip";
+import { Tooltip } from "../../tooltips/Tooltip";
 import useEditState from "@/hooks/useEditState";
 import { numberFilterOptions, stringFilterOptions } from "@/utils/datatable";
 import ListBox from "@/components/elements/form/listbox/Listbox";
@@ -80,13 +80,13 @@ const HeadBase = ({
               onChange={onChange}
               color="success"
             />
-            <AnimatedTooltip content={t("Clear filter")}>
+            <Tooltip content={t("Clear filter")}>
               <Icon
                 onClick={() => saveEdit(editState.field, undefined, true)}
                 icon="ph:x"
                 className="cursor-pointer text-red-500 dark:text-red-400 dark:hover:text-red-500 hover:text-red-600"
               />
-            </AnimatedTooltip>
+            </Tooltip>
           </div>
         );
       case "select":
@@ -203,7 +203,7 @@ const HeadBase = ({
       ) : (
         <div className="flex items-center justify-between gap-4 font-sans">
           {filterable ? (
-            <AnimatedTooltip
+            <Tooltip
               content={`${t("Double-click to filter by")} ${t(label)}`}
             >
               <span className="text-xs font-medium uppercase text-muted cursor-help">
@@ -211,7 +211,7 @@ const HeadBase = ({
                   ? `${t(label)} (${t(currentFilterValue)})`
                   : t(label)}
               </span>
-            </AnimatedTooltip>
+            </Tooltip>
           ) : (
             <span className="text-xs py-3 font-medium uppercase text-muted">
               {currentFilterValue

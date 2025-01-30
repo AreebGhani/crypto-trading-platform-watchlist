@@ -167,7 +167,7 @@ export default function Register() {
     <Layout title={t("Register")} color="muted">
       <main className="relative min-h-screen">
         <div className="flex h-screen flex-col items-center bg-white dark:bg-muted-900 md:flex-row">
-          <div className="hidden h-screen w-full bg-indigo-600 md:w-1/2 lg:flex xl:w-2/3 from-primary-900 to-primary-500 i group relative items-center justify-around overflow-hidden bg-gradient-to-tr md:flex">
+          <div className="hidden h-screen w-full bg-indigo-600 md:w-1/2 lg:flex xl:w-2/3 from-primary-900 to-primary-500 i group relative items-center justify-around overflow-hidden bg-linear-to-tr md:flex">
             <div className="mx-auto max-w-xs text-center">
               <Heading as="h2" weight="medium" className="text-white">
                 {t("Have an Account")}?
@@ -331,7 +331,7 @@ export default function Register() {
                             {t("I accept the")}{" "}
                             <Link
                               href="/terms-and-conditions"
-                              className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-none"
+                              className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-hidden"
                             >
                               {t("Terms and Conditions")}
                             </Link>
@@ -363,7 +363,7 @@ export default function Register() {
                     <span>{t("Already have an account?")}</span>
                     <Link
                       href="/login"
-                      className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-none"
+                      className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-hidden"
                     >
                       {t("Log in")}
                     </Link>

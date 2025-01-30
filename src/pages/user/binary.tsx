@@ -123,7 +123,7 @@ const HeaderSection = ({ t, binaryPractice, firstAvailableMarket }) => (
               <ButtonLink
                 href={`/binary/${firstAvailableMarket}?practice=true`}
                 color="primary"
-                shape="rounded"
+                shape="rounded-sm"
                 className="text-white dark:text-muted-100"
                 variant={"outlined"}
               >
@@ -133,13 +133,13 @@ const HeaderSection = ({ t, binaryPractice, firstAvailableMarket }) => (
             <ButtonLink
               href={`/binary/${firstAvailableMarket}`}
               color="contrast"
-              shape="rounded"
+              shape="rounded-sm"
             >
               {t("Start Trading")}
             </ButtonLink>
           </>
         ) : (
-          <Button color="primary" shape="rounded">
+          <Button color="primary" shape="rounded-sm">
             {t("Coming Soon")}
           </Button>
         )}

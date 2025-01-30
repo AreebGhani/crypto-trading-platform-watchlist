@@ -6,6 +6,7 @@ import {
   handleApiVerification,
   rateLimit,
   rolesGate,
+  siteMaintenanceAccessGate,
 } from "../handler/Middleware";
 import { handleWsMethod } from "./Websocket";
 import { sanitizePath } from "@b/utils/validation";
@@ -13,6 +14,7 @@ import { isProduction } from "@b/utils/constants";
 import { logError } from "@b/utils/logger";
 
 const fileExtension = isProduction ? ".js" : ".ts";
+export const routeCache = new Map();
 
 export async function setupApiRoutes(app, startPath, basePath = "/api") {
   const entries = await fs.readdir(startPath, { withFileTypes: true });
@@ -33,17 +35,20 @@ export async function setupApiRoutes(app, startPath, basePath = "/api") {
     const entryPath = sanitizePath(path.join(startPath, entry.name));
 
     if (
-      entry.isDirectory() ||
+      (entry.isDirectory() && entry.name === "util") ||
       entry.name === `queries${fileExtension}` ||
-      entry.name === `utils${fileExtension}`
+      entry.name === `utils${fileExtension}` ||
+      entry.name.includes(".test")
     ) {
-      if (entry.isDirectory()) {
-        await setupApiRoutes(
-          app,
-          entryPath,
-          `${basePath}/${entry.name.replace(/\[(\w+)\]/, ":$1")}`
-        );
-      }
+      continue;
+    }
+
+    if (entry.isDirectory()) {
+      await setupApiRoutes(
+        app,
+        entryPath,
+        `${basePath}/${entry.name.replace(/\[(\w+)\]/, ":$1")}`
+      );
       continue;
     }
 
@@ -65,23 +70,37 @@ export async function setupApiRoutes(app, startPath, basePath = "/api") {
 
 async function handleHttpMethod(app, method, routePath, entryPath) {
   app[method](routePath, async (res, req) => {
-    const startTime = Date.now(); // Capture start time
+    const startTime = Date.now();
 
     let metadata, handler;
-
-    try {
-      const handlerModule = await import(entryPath);
-      handler = handlerModule.default;
-      metadata = handlerModule.metadata;
-
-      if (!metadata) {
-        throw new Error(`Metadata not found for ${entryPath}`);
-      }
+    const cached = routeCache.get(entryPath);
+    if (cached) {
+      handler = cached.handler;
+      metadata = cached.metadata;
       req.setMetadata(metadata);
-    } catch (error) {
-      logError("route", error, entryPath);
-      res.handleError(500, error.message);
-      return;
+    } else {
+      try {
+        const handlerModule = await import(entryPath);
+        handler = handlerModule.default;
+        if (!handler) {
+          throw new Error(`Handler not found for ${entryPath}`);
+        }
+
+        metadata = handlerModule.metadata;
+        if (!metadata) {
+          throw new Error(`Metadata not found for ${entryPath}`);
+        }
+        req.setMetadata(metadata);
+        routeCache.set(entryPath, { handler, metadata });
+      } catch (error) {
+        logError("route", error, entryPath);
+        res.handleError(500, error.message);
+        return;
+      }
+    }
+
+    if (typeof handler !== "function") {
+      throw new Error(`Handler is not a function for ${entryPath}`);
     }
 
     try {
@@ -94,29 +113,29 @@ async function handleHttpMethod(app, method, routePath, entryPath) {
 
     const endBenchmarking = () => {
       const duration = Date.now() - startTime;
-      let color = "\x1b[0m"; // Default color
+      let color = "\x1b[0m";
       let label = "FAST";
 
       if (duration > 1000) {
-        color = "\x1b[41m"; // Red background for +1000ms
+        color = "\x1b[41m";
         label = "VERY SLOW";
       } else if (duration > 500) {
-        color = "\x1b[31m"; // Red for +500ms
+        color = "\x1b[31m";
         label = "SLOW";
       } else if (duration > 200) {
-        color = "\x1b[33m"; // Yellow for +200ms
+        color = "\x1b[33m";
         label = "MODERATE";
       } else if (duration > 100) {
-        color = "\x1b[32m"; // Green for +100ms
+        color = "\x1b[32m";
         label = "GOOD";
       } else if (duration > 50) {
-        color = "\x1b[36m"; // Cyan for +50ms
+        color = "\x1b[36m";
         label = "FAST";
       } else if (duration > 10) {
-        color = "\x1b[34m"; // Blue for +10ms
+        color = "\x1b[34m";
         label = "VERY FAST";
       } else {
-        color = "\x1b[35m"; // Magenta for +0ms
+        color = "\x1b[35m";
         label = "EXCELLENT";
       }
 
@@ -135,15 +154,17 @@ async function handleHttpMethod(app, method, routePath, entryPath) {
 
     if (!metadata.requiresAuth) {
       await handleRequest(res, req, handler, entryPath);
-      endBenchmarking(); // Log duration after response is sent
+      endBenchmarking();
       return;
     }
 
     await rateLimit(res, req, async () => {
       await authenticate(res, req, async () => {
         await rolesGate(app, res, req, routePath, method, async () => {
-          await handleRequest(res, req, handler, entryPath);
-          endBenchmarking(); // Log duration after response is sent
+          await siteMaintenanceAccessGate(app, res, req, async () => {
+            await handleRequest(res, req, handler, entryPath);
+            endBenchmarking();
+          });
         });
       });
     });

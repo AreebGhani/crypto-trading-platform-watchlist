@@ -186,7 +186,7 @@ const P2POfferEditor: React.FC = () => {
             <Button
               onClick={() => router.push(`/user/p2p`)}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="danger"
             >
@@ -195,7 +195,7 @@ const P2POfferEditor: React.FC = () => {
             <Button
               onClick={handleSubmit}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="success"
             >

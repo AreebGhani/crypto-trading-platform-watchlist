@@ -3,7 +3,7 @@ import { NavActionsProps } from "./NavActions.types";
 import ToggleSwitch from "@/components/elements/form/toggle-switch/ToggleSwitch";
 import IconButton from "../../button-icon/IconButton";
 import { Icon } from "@iconify/react";
-import { AnimatedTooltip } from "../../tooltips/AnimatedTooltip";
+import { Tooltip } from "../../tooltips/Tooltip";
 import { useTranslation } from "next-i18next";
 
 const NavActionsBase = ({ navAction, navActionsSlot }: NavActionsProps) => {
@@ -24,17 +24,18 @@ const NavActionsBase = ({ navAction, navActionsSlot }: NavActionsProps) => {
             onChange={() => handleAction(action)}
           />
         ) : (
-          <AnimatedTooltip content={t(action.label)}>
+          <Tooltip content={t(action.label)}>
             <IconButton
               variant="pastel"
               aria-label={t(action.label)}
               onClick={() => handleAction(action)}
               color={action.color || "primary"}
               size="lg"
+              shape={"rounded"}
             >
               <Icon icon={action.icon} className="h-6 w-6" />
             </IconButton>
-          </AnimatedTooltip>
+          </Tooltip>
         )}
       </div>
     ));

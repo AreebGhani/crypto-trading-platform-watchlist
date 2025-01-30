@@ -199,7 +199,7 @@ const TrendingMarkets = () => {
         {memoizedMarketItems.map((item, i) => (
           <Link key={i} href={`/trade/${item.symbol.replace("/", "_")}`}>
             <div
-              className="p-4 mx-2 border border-muted-200 dark:border-muted-800 hover:border hover:border-primary-500 dark:hover:border dark:hover:border-primary-400 transition-all duration-300 bg-gradient-to-r from-white to-white dark:from-muted-900 dark:to-muted-1000 dark:bg-gradient-to-r rounded-xl"
+              className="p-4 mx-2 border border-muted-200 dark:border-muted-800 hover:border hover:border-primary-500 dark:hover:border dark:hover:border-primary-400 transition-all duration-300 bg-linear-to-r from-white to-white dark:from-muted-900 dark:to-muted-1000 dark:bg-linear-to-r rounded-xl"
               style={{
                 width: "300px",
                 flexShrink: 0,

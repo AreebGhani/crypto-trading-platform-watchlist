@@ -19,6 +19,7 @@ import Progress from "@/components/elements/base/progress/Progress";
 import { addDays } from "date-fns";
 import { Faq } from "@/components/pages/knowledgeBase/Faq";
 import { useTranslation } from "next-i18next";
+import PaginationControls from "@/components/pages/nft/collection/elements/PaginationControls";
 type StakingDuration = {
   id: string;
   poolId: string;
@@ -64,8 +65,6 @@ const StakesDashboard = () => {
   const [stakingPools, setStakingPools] = useState<StakingPool[]>([]);
   const [selectedPool, setSelectedPool] = useState<StakingPool | null>(null);
   const [filter, setFilter] = useState("");
-  const [perPage] = useState(10);
-  const [currentPage] = useState(1);
   const [amount, setAmount] = useState(0);
   const [hasStaked, setHasStaked] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState<{
@@ -84,16 +83,37 @@ const StakesDashboard = () => {
     startDate: string;
   } | null>(null);
 
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    totalItems: 0,
+  });
+
   const fetchStakingPools = async () => {
     const url = "/api/ext/staking/pool";
-    const { data, error } = await $fetch({
-      url,
-      silent: true,
-    });
+    const { data, error } = await $fetch({ url, silent: true });
+
     if (!error) {
       setStakingPools(data);
+      setPagination((prev) => ({ ...prev, totalItems: data.length }));
     }
   };
+
+  useEffect(() => {
+    if (router.isReady) {
+      fetchStakingPools();
+    }
+  }, [router.isReady]);
+
+  const filteredPools = stakingPools.filter((pool) =>
+    pool.currency.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  const paginatedPools = filteredPools.slice(
+    (pagination.currentPage - 1) * pagination.perPage,
+    pagination.currentPage * pagination.perPage
+  );
+
   useEffect(() => {
     if (router.isReady) {
       fetchStakingPools();
@@ -220,13 +240,7 @@ const StakesDashboard = () => {
       startDate,
     };
   };
-  const filteredPools = stakingPools.filter((pool) =>
-    pool.currency.includes(filter)
-  );
-  const paginatedPools = filteredPools.slice(
-    (currentPage - 1) * perPage,
-    currentPage * perPage
-  );
+
   return (
     <Layout title={t("Staking Pool")} color="muted">
       <HeaderCardImage
@@ -313,7 +327,7 @@ const StakesDashboard = () => {
                 <Button
                   onClick={() => openStake(pool)}
                   color={"primary"}
-                  shape={"rounded"}
+                  shape={"rounded-sm"}
                 >
                   {t("Stake")}
                 </Button>
@@ -321,7 +335,12 @@ const StakesDashboard = () => {
             </Card>
           ))}
         </div>
-        {/* Add pagination and modal here */}
+
+        {/* Pagination */}
+        <PaginationControls
+          pagination={pagination}
+          setPagination={setPagination}
+        />
       </div>
       <Panel
         isOpen={!!selectedPool}
@@ -398,7 +417,7 @@ const StakesDashboard = () => {
                   <Button
                     onClick={() => {}}
                     color="primary"
-                    shape="rounded"
+                    shape="rounded-sm"
                     className="w-full"
                     disabled
                   >
@@ -420,7 +439,7 @@ const StakesDashboard = () => {
                         ({
                           label: `${d.duration} days`,
                           value: d.id,
-                        } || [])
+                        }) || []
                     )}
                   />
                   <Input
@@ -434,7 +453,7 @@ const StakesDashboard = () => {
                   <Button
                     onClick={handleStake}
                     color="primary"
-                    shape="rounded"
+                    shape="rounded-sm"
                     className="w-full"
                     loading={loading}
                     disabled={loading}

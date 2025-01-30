@@ -46,7 +46,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/60 backdrop-blur-sm transition-all duration-300 ease-in-out">
+    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/60 backdrop-blur-xs transition-all duration-300 ease-in-out">
       {/* Modal Container */}
       <div className="bg-white dark:bg-muted-800 rounded-xl p-8 w-[500px] shadow-2xl relative border border-gray-100 dark:border-muted-700 transition-all duration-300 ease-in-out">
         {/* Close Button */}

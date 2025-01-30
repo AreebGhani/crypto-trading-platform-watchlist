@@ -87,7 +87,7 @@ const Log = () => {
         hasStructure={false}
         navSlot={
           <>
-            <Button onClick={cleanLogs} color="danger" shape={"rounded"}>
+            <Button onClick={cleanLogs} color="danger" shape={"rounded-sm"}>
               <Icon icon="mdi:delete" />
               {t("Clean Logs")}
             </Button>

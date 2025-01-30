@@ -17,13 +17,17 @@ export async function getTokenContractAddress(
   try {
     const token = await getEcosystemToken(chain, currency);
     if (!token) {
-      throw new Error("Token not found");
+      throw new Error(
+        `No token found for chain "${chain}" and currency "${currency}".`
+      );
     }
 
     const contractAddress = token.contract;
 
     if (!ethers.isAddress(contractAddress)) {
-      throw new Error(`Invalid token contract address: ${contractAddress}`);
+      throw new Error(
+        `The token contract address "${contractAddress}" is invalid.`
+      );
     }
 
     return {
@@ -31,10 +35,15 @@ export async function getTokenContractAddress(
       contractType: token.contractType,
       tokenDecimals: token.decimals,
     };
-  } catch (error) {
+  } catch (error: any) {
     logError("get_token_contract_address", error, __filename);
-    console.error("Failed to get token contract: " + error.message);
-    throw new Error("Withdrawal failed - please try again later");
+
+    // Provide a user-friendly error message
+    throw new Error(
+      `Unable to retrieve token contract details for chain "${chain}" and currency "${currency}". ${
+        error.message || "Please try again later."
+      }`
+    );
   }
 }
 
@@ -46,17 +55,19 @@ export const fetchTokenHolders = async (
   try {
     const chainConfig = chainConfigs[chain];
     if (!chainConfig) {
-      throw new Error(`Unsupported chain: ${chain}`);
+      throw new Error(`Chain "${chain}" is not supported.`);
     }
 
     const apiKey = process.env[`${chain}_EXPLORER_API_KEY`];
     if (!apiKey) {
-      throw new Error(`API Key for ${chain} is not set`);
+      throw new Error(`API key for chain "${chain}" is not configured.`);
     }
 
     const networkConfig = chainConfig.networks[network];
     if (!networkConfig || !networkConfig.explorer) {
-      throw new Error(`Unsupported network: ${network} for chain: ${chain}`);
+      throw new Error(
+        `Network "${network}" for chain "${chain}" is not supported.`
+      );
     }
 
     const cacheKey = `token:${contract}:holders`;
@@ -73,11 +84,13 @@ export const fetchTokenHolders = async (
       data = await response.json();
     } catch (error) {
       logError("fetch_token_holders", error, __filename);
-      throw new Error(`API call failed: ${error.message}`);
+      throw new Error(
+        "Failed to fetch token holders. Please check the API connection."
+      );
     }
 
     if (data.status !== "1") {
-      throw new Error(`API Error: ${data.message}`);
+      throw new Error(`Explorer API returned error: ${data.message}`);
     }
 
     const holders: Record<string, number> = {};
@@ -90,12 +103,10 @@ export const fetchTokenHolders = async (
     const decimals = chainConfig.decimals || 18;
 
     const formattedHolders = Object.entries(holders)
-      .map(([address, balance]) => {
-        return {
-          address,
-          balance: parseFloat((balance / Math.pow(10, decimals)).toFixed(8)),
-        };
-      })
+      .map(([address, balance]) => ({
+        address,
+        balance: parseFloat((balance / Math.pow(10, decimals)).toFixed(8)),
+      }))
       .filter((holder) => holder.balance > 0);
 
     const redis = RedisSingleton.getInstance();
@@ -106,10 +117,14 @@ export const fetchTokenHolders = async (
     );
 
     return formattedHolders;
-  } catch (error) {
+  } catch (error: any) {
     logError("fetch_token_holders", error, __filename);
-    console.error("Failed to fetch token holders: " + error.message);
-    throw new Error("Failed to fetch token holders");
+
+    throw new Error(
+      `Failed to fetch token holders for contract "${contract}" on chain "${chain}". ${
+        error.message || "Please try again later."
+      }`
+    );
   }
 };
 
@@ -200,8 +215,12 @@ export async function deployTokenContract(
 
     return await response.getAddress();
   } catch (error: any) {
-    logError("deploy_token_contract", error, __filename);
-    throw new Error(error.message);
+    // logError("deploy_token_contract", error, __filename);
+    throw new Error(
+      `Failed to deploy token contract on chain "${chain}". ${
+        error.message || "An unknown error occurred."
+      }`
+    );
   }
 }
 

@@ -21,10 +21,10 @@ const OrderBookRowBase = ({
   return (
     <div
       ref={rowRef}
-      className={`flex justify-between px-2 py-[2px] cursor-pointer relative w-full flex-grow ${
+      className={`flex justify-between px-2 py-[2px] cursor-pointer relative w-full grow ${
         index === lastHoveredIndex
           ? `border-dashed ${
-              type === "ask" ? "border-t !pt-[1px]" : "border-b !pb-[1px]"
+              type === "ask" ? "border-t pt-[1px]!" : "border-b pb-[1px]!"
             } border-muted-300`
           : ""
       }

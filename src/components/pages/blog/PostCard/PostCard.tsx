@@ -25,7 +25,7 @@ const PostCardBase = ({ post }: PostCardProps) => {
             shape="full"
             color="primary"
             variant="pastel"
-            className="absolute start-3 top-3 translate-y-1 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+            className="absolute left-3 top-3 translate-y-1 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
           >
             {post.category?.name}
           </Tag>

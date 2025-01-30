@@ -107,7 +107,7 @@ const EcommerceProductCreate: React.FC<EcommerceProductCreateProps> = ({
             <Button
               onClick={() => router.push(`/admin/ext/ecommerce/product`)}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="danger"
             >
@@ -116,7 +116,7 @@ const EcommerceProductCreate: React.FC<EcommerceProductCreateProps> = ({
             <Button
               onClick={handleSubmit}
               variant="outlined"
-              shape="rounded"
+              shape="rounded-sm"
               size="md"
               color="success"
             >
@@ -213,12 +213,9 @@ const EcommerceProductCreate: React.FC<EcommerceProductCreateProps> = ({
 };
 
 export async function getServerSideProps(context: any) {
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const baseUrl = `${protocol}://${context.req.headers.host}`;
-
   try {
-    const { data } = await $serverFetch({
-      url: `${baseUrl}/api/admin/ext/ecommerce/product/data`,
+    const { data } = await $serverFetch(context, {
+      url: `/api/admin/ext/ecommerce/product/data`,
     });
 
     return {

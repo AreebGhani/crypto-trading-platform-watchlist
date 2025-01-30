@@ -23,7 +23,6 @@ type ParsedTransaction = {
 
 class TonService {
   private tonWeb: any;
-  private cacheExpiration: number;
   private chainActive: boolean = false;
   private static instance: TonService;
   private static monitoringAddresses = new Map<string, boolean>();
@@ -33,12 +32,15 @@ class TonService {
 
   private constructor(
     endpoint: string = TonService.getTonEndpoint(),
-    apiKey: string | undefined = TonService.getTonApiKey(),
-    cacheExpirationMinutes: number = 30
+    apiKey: string | undefined = TonService.getTonApiKey()
   ) {
+    if (!apiKey) {
+      console.warn(
+        "No TON API Key provided. Some functionalities may be limited."
+      );
+    }
     const httpProvider = new TonWeb.HttpProvider(endpoint, { apiKey });
     this.tonWeb = new TonWeb(httpProvider);
-    this.cacheExpiration = cacheExpirationMinutes;
   }
 
   /**
@@ -140,6 +142,21 @@ class TonService {
     TonService.processing = false;
   }
 
+  private formatAddress(address): string {
+    const addressObj = new this.tonWeb.utils.Address(address);
+    const network = process.env.TON_NETWORK || "mainnet";
+
+    // Determine if the network is testnet
+    const isTestnet = network === "testnet";
+
+    // Parameters for toString method
+    const isUserFriendly = true;
+    const isUrlSafe = true;
+    const isBounceable = false;
+
+    return addressObj.toString(isUserFriendly, isUrlSafe, isBounceable);
+  }
+
   /**
    * Monitors TON deposits for a given wallet.
    */
@@ -162,10 +179,7 @@ class TonService {
 
       const checkDeposits = async () => {
         try {
-          const rawAddress = new this.tonWeb.utils.Address(address).toString(
-            false
-          );
-          const rawTransactions = await this.fetchTransactions(rawAddress);
+          const rawTransactions = await this.fetchTransactions(address);
 
           for (const tx of rawTransactions) {
             const existingTx = await models.transaction.findOne({
@@ -178,7 +192,7 @@ class TonService {
             }
 
             if (tx.status === "Success") {
-              await this.processTonTransaction(tx.hash, wallet, rawAddress);
+              await this.processTonTransaction(tx.hash, wallet, address);
               TonService.processedTransactions.add(tx.hash);
             }
           }
@@ -215,12 +229,10 @@ class TonService {
       );
 
       // Fetch all transactions for the address and search for the specific transaction by hash
-      const rawTransactions = await this.tonWeb.provider.getTransactions(
-        address
-      );
+      const rawTransactions = (await this.fetchTransactions(address)) as any[];
 
       const transactionInfo = rawTransactions.find(
-        (tx) => tx.transaction_id?.hash === transactionHash
+        (tx) => tx.hash === transactionHash
       );
 
       if (!transactionInfo) {
@@ -230,15 +242,26 @@ class TonService {
         return;
       }
 
-      const { in_msg } = transactionInfo;
-      const from = in_msg?.source || "Unknown";
+      const { from, amount } = transactionInfo;
 
-      const amount = (parseInt(in_msg.value, 10) / 1e9).toString(); // Convert from nanoTON to TON
       const addresses =
         typeof wallet.address === "string"
           ? JSON.parse(wallet.address)
           : wallet.address;
       const to = addresses["TON"].address; // Correctly assign the destination address
+
+      const toStr = new this.tonWeb.utils.Address(to).toString(false);
+      const txToStr = new this.tonWeb.utils.Address(
+        transactionInfo.to
+      ).toString(false);
+      console.log("🚀 ~ TonService ~ toStr:", toStr);
+      console.log("🚀 ~ TonService ~ toStr1:", txToStr);
+      if (txToStr !== toStr) {
+        console.error(
+          `[ERROR] Transaction ${transactionHash} is not for the expected address ${to}`
+        );
+        return;
+      }
 
       const txData = {
         contractType: "NATIVE",
@@ -271,15 +294,25 @@ class TonService {
   ): Promise<ParsedTransaction[]> {
     this.ensureChainActive();
 
+    let rawTransactions = [];
     try {
-      const rawTransactions = await this.tonWeb.provider.getTransactions(
-        address
+      const addressStr = this.formatAddress(address);
+      rawTransactions = await this.tonWeb.provider.getTransactions(
+        addressStr,
+        10,
+        undefined,
+        undefined,
+        undefined,
+        true
       );
-      return this.parseTonTransactions(rawTransactions);
     } catch (error) {
+      console.error(`Error in fetchTransactions:`, error);
+      const errorMessage = error.message || "Unknown error occurred";
       logError("ton_fetch_transactions", error, __filename);
-      throw new Error(`Failed to fetch TON transactions: ${error.message}`);
+      throw new Error(`Failed to fetch TON transactions: ${errorMessage}`);
     }
+
+    return this.parseTonTransactions(rawTransactions);
   }
 
   /**
@@ -389,7 +422,7 @@ class TonService {
         typeof walletDb.address === "string"
           ? JSON.parse(walletDb.address)
           : walletDb.address;
-      const fromAddress = addresses["TON"].address;
+      const fromAddressStr = addresses["TON"].address;
 
       const walletData = await models.walletData.findOne({
         where: { walletId, currency: "TON", chain: "TON" },
@@ -410,6 +443,8 @@ class TonService {
           "WalletContract requires both publicKey and privateKey."
         );
       }
+
+      const fromAddress = this.formatAddress(fromAddressStr);
 
       const wallet = this.tonWeb.wallet.create({
         publicKey: publicKey,
@@ -443,22 +478,14 @@ class TonService {
         return;
       }
 
-      let recipientAddress = toAddress;
-      const addressInfo = await this.tonWeb.provider.getAddressInfo(toAddress);
-
-      if (addressInfo.state !== "active") {
-        recipientAddress = new TonWeb.utils.Address(toAddress).toString(
-          true,
-          true,
-          false
-        );
-      }
+      // Format recipient address properly
+      const recipientAddress = this.formatAddress(toAddress);
 
       // Generate a unique payload for this transaction
       const uniquePayload = `TON_WITHDRAWAL_${transactionId}_${Date.now()}`;
 
       // Send the transfer with the unique payload
-      const transfer = await wallet.methods
+      await wallet.methods
         .transfer({
           secretKey: privateKey,
           toAddress: recipientAddress,

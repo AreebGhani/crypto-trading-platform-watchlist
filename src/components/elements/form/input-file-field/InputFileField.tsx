@@ -8,7 +8,7 @@ interface InputFileFieldProps
   label: string;
   maxFileSize?: number;
   color?: "default" | "contrast" | "muted" | "mutedContrast";
-  shape?: "smooth" | "rounded" | "curved" | "full";
+  shape?: "smooth" | "rounded-sm" | "curved" | "full";
   error?: string;
 }
 const InputFileField: FC<InputFileFieldProps> = ({
@@ -52,7 +52,7 @@ const InputFileField: FC<InputFileFieldProps> = ({
             ? "border-muted-200 bg-muted-100 hover:border-primary-500 dark:border-muted-800 dark:bg-muted-950 dark:hover:border-primary-500"
             : ""
         }
-        ${shape === "rounded" ? "rounded-md" : ""}
+        ${shape === "rounded-sm" ? "rounded-md" : ""}
         ${shape === "smooth" ? "rounded-lg" : ""}
         ${shape === "curved" ? "rounded-xl" : ""}
         ${shape === "full" ? "rounded-full" : ""}

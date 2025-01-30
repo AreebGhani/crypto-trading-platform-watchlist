@@ -92,8 +92,8 @@ const TradeInfoBase = () => {
               avatar={
                 <IconBox
                   icon="ph:calendar-duotone"
-                  className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-                  iconClasses="!h-5 !w-5 text-success-500"
+                  className="h-8! w-8! rounded-lg! bg-success-500/10"
+                  iconClasses="h-5! w-5! text-success-500"
                 />
               }
               title={t("Method")}
@@ -106,8 +106,8 @@ const TradeInfoBase = () => {
               avatar={
                 <IconBox
                   icon="ph:calendar-duotone"
-                  className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-                  iconClasses="!h-5 !w-5 text-success-500"
+                  className="h-8! w-8! rounded-lg! bg-success-500/10"
+                  iconClasses="h-5! w-5! text-success-500"
                 />
               }
               title={t("Currency")}
@@ -121,8 +121,8 @@ const TradeInfoBase = () => {
                 avatar={
                   <IconBox
                     icon="ph:calendar-duotone"
-                    className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-                    iconClasses="!h-5 !w-5 text-success-500"
+                    className="h-8! w-8! rounded-lg! bg-success-500/10"
+                    iconClasses="h-5! w-5! text-success-500"
                   />
                 }
                 title={t("Chain")}
@@ -136,8 +136,8 @@ const TradeInfoBase = () => {
               avatar={
                 <IconBox
                   icon="ph:timer-duotone"
-                  className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-                  iconClasses="!h-5 !w-5 text-success-500"
+                  className="h-8! w-8! rounded-lg! bg-success-500/10"
+                  iconClasses="h-5! w-5! text-success-500"
                 />
               }
               title={t("Instructions")}
@@ -160,8 +160,8 @@ const TradeInfoBase = () => {
               avatar={
                 <IconBox
                   icon="ph:timer-duotone"
-                  className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-                  iconClasses="!h-5 !w-5 text-success-500"
+                  className="h-8! w-8! rounded-lg! bg-success-500/10"
+                  iconClasses="h-5! w-5! text-success-500"
                 />
               }
               title={t("Transaction Hash")}
@@ -175,8 +175,8 @@ const TradeInfoBase = () => {
                 avatar={
                   <IconBox
                     icon="ph:envelope-duotone"
-                    className="!h-8 !w-8 !rounded-lg bg-info-500/10"
-                    iconClasses="!h-5 !w-5 text-info-500"
+                    className="h-8! w-8! rounded-lg! bg-info-500/10"
+                    iconClasses="h-5! w-5! text-info-500"
                   />
                 }
                 title={t("Email")}
@@ -197,7 +197,7 @@ const TradeInfoBase = () => {
               avatar={
                 <IconBox
                   {...getIconConfig(trade?.status.toUpperCase())}
-                  className="!h-8 !w-8 !rounded-lg"
+                  className="h-8! w-8! rounded-lg!"
                 />
               }
               title={t("Status")}
@@ -210,8 +210,8 @@ const TradeInfoBase = () => {
               avatar={
                 <IconBox
                   icon="ph:info-duotone"
-                  className="!h-8 !w-8 !rounded-lg bg-primary-500/10"
-                  iconClasses="!h-5 !w-5 text-primary-500"
+                  className="h-8! w-8! rounded-lg! bg-primary-500/10"
+                  iconClasses="h-5! w-5! text-primary-500"
                 />
               }
               title={t("You are the")}
@@ -238,7 +238,7 @@ const TradeInfoBase = () => {
                     {...getIconConfig(
                       trade?.p2pDisputes[0].status.toUpperCase()
                     )}
-                    className="!h-8 !w-8 !rounded-lg"
+                    className="h-8! w-8! rounded-lg!"
                   />
                 }
                 title={t("Status")}
@@ -253,8 +253,8 @@ const TradeInfoBase = () => {
                 avatar={
                   <IconBox
                     icon="ph:calendar-duotone"
-                    className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-                    iconClasses="!h-5 !w-5 text-success-500"
+                    className="h-8! w-8! rounded-lg! bg-success-500/10"
+                    iconClasses="h-5! w-5! text-success-500"
                   />
                 }
                 title={t("Raised by")}
@@ -267,8 +267,8 @@ const TradeInfoBase = () => {
                 avatar={
                   <IconBox
                     icon="ph:calendar-duotone"
-                    className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-                    iconClasses="!h-5 !w-5 text-success-500"
+                    className="h-8! w-8! rounded-lg! bg-success-500/10"
+                    iconClasses="h-5! w-5! text-success-500"
                   />
                 }
                 title={t("Reason")}
@@ -283,8 +283,8 @@ const TradeInfoBase = () => {
                 avatar={
                   <IconBox
                     icon="ph:calendar-duotone"
-                    className="!h-8 !w-8 !rounded-lg bg-success-500/10"
-                    iconClasses="!h-5 !w-5 text-success-500"
+                    className="h-8! w-8! rounded-lg! bg-success-500/10"
+                    iconClasses="h-5! w-5! text-success-500"
                   />
                 }
                 title={t("Resolution")}

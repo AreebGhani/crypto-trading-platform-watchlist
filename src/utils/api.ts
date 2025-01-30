@@ -227,12 +227,14 @@ function handleNetworkError(
   };
 }
 
-export async function $serverFetch<T = any>({
-  url,
-  method = "GET",
-  body = null,
-  headers = {},
-}: FetchOptions<T>): Promise<FetchResponse<T>> {
+export async function $serverFetch<T = any>(
+  context,
+  { url, method = "GET", body = null, headers = {} }: FetchOptions<T>
+): Promise<FetchResponse<T>> {
+  const protocol = context.req.headers["x-forwarded-proto"] || "http";
+  const baseUrl = `${protocol}://${context.req.headers.host}`;
+  const fullUrl = `${baseUrl}${url}`;
+
   const defaultHeaders: HeadersInit = {
     "Content-Type": "application/json",
     ...headers,
@@ -245,13 +247,12 @@ export async function $serverFetch<T = any>({
   };
 
   try {
-    const response = await fetch(url, fetchOptions);
+    const response = await fetch(fullUrl, fetchOptions);
 
     // Check if response is not JSON, handle unexpected responses like "Not Found"
     if (!response.ok) {
-      const textResponse = await response.text();
-      const errorMessage = `Error: ${textResponse || response.statusText}`;
-      return { data: null, error: errorMessage };
+      const textResponse = await response.json();
+      return { data: null, error: textResponse.message || response.statusText };
     }
 
     // Parse response as JSON

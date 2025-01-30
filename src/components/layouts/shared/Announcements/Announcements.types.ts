@@ -10,5 +10,5 @@ export interface Announcement {
 }
 
 export interface AnnouncementsProps {
-  shape?: "straight" | "rounded" | "smooth" | "curved" | "full";
+  shape?: "straight" | "rounded-sm" | "smooth" | "curved" | "full";
 }

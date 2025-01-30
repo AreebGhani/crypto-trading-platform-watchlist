@@ -53,7 +53,7 @@ export const TracingBeam = ({
     >
       <div className="absolute -left-4 top-3">
         <motion.div
-          className="ml-[27px] h-4 w-4 rounded-full border border-neutral-200 shadow-sm flex items-center justify-center"
+          className="ml-[27px] h-4 w-4 rounded-full border border-neutral-200 shadow-xs flex items-center justify-center"
           transition={{
             duration: 0.2,
             delay: 0.5,

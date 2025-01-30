@@ -25,9 +25,6 @@ const GoogleTranslate = dynamic(
   { ssr: false }
 );
 
-const GoogleTranslateEnabled =
-  process.env.NEXT_PUBLIC_GOOGLE_TRANSLATE_STATUS === "true";
-
 function MyApp({ Component, pageProps }: AppProps) {
   const { fetchProfile, settings } = useDashboardStore();
   const router = useRouter();
@@ -101,7 +98,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       />
       <GoogleAnalytics />
       <FacebookPixel />
-      {GoogleTranslateEnabled && <GoogleTranslate />}
+      {settings?.googleTranslateStatus === "true" && <GoogleTranslate />}
       <Component {...pageProps} />
     </div>
   );

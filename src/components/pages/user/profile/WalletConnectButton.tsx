@@ -53,7 +53,7 @@ const WalletConnectButton = () => {
           disabled={walletLoading}
           loading={walletLoading}
           color="danger"
-          shape={"rounded"}
+          shape={"rounded-sm"}
         >
           <Icon
             icon="hugeicons:wifi-disconnected-01"
@@ -67,7 +67,7 @@ const WalletConnectButton = () => {
           disabled={walletLoading}
           loading={walletLoading}
           color="success"
-          shape={"rounded"}
+          shape={"rounded-sm"}
         >
           <Icon icon="hugeicons:wifi-connected-03" className="w-6 h-6 mr-2" />
           {t("Register Wallet")}
@@ -85,7 +85,7 @@ const WalletConnectButton = () => {
                 disabled={walletLoading}
                 loading={walletLoading}
                 color="warning"
-                shape={"rounded"}
+                shape={"rounded-sm"}
               >
                 <Icon
                   icon={

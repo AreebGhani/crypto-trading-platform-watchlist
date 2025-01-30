@@ -119,43 +119,6 @@ interface ExchangeOrder {
   updatedAt: Date;
 }
 
-enum BinaryOrderSide {
-  RISE = "RISE",
-  FALL = "FALL",
-}
-
-enum BinaryOrderType {
-  RISE_FALL = "RISE_FALL",
-}
-
-enum BinaryOrderStatus {
-  PENDING = "PENDING",
-  WIN = "WIN",
-  LOSS = "LOSS",
-  DRAW = "DRAW",
-  CANCELLED = "CANCELLED",
-  REJECTED = "REJECTED",
-  EXPIRED = "EXPIRED",
-}
-
-interface BinaryOrder {
-  id: string;
-  userId: string;
-  user?: User;
-  symbol: string;
-  price: number;
-  amount: number;
-  profit: number;
-  side: BinaryOrderSide;
-  type: BinaryOrderType;
-  status: BinaryOrderStatus;
-  isDemo: boolean;
-  closedAt: Date;
-  closePrice?: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 type Precision = {
   amount: number;
   price: number;

@@ -44,12 +44,17 @@ const columnConfig: ColumnConfigType[] = [
   },
   {
     field: "amount",
-    label: "Amount - Fee",
-    sublabel: "fee",
+    label: "Amount",
     type: "number",
     precision: 8,
     sortable: true,
-    getSubValue: (row) => row.fee,
+  },
+  {
+    field: "fee",
+    label: "Fee",
+    type: "number",
+    precision: 8,
+    sortable: true,
   },
   {
     field: "status",
@@ -197,7 +202,7 @@ const ForexAccountsDashboard = () => {
           {Object.values(accounts).map((account, index) => (
             <Card key={index} className="relative text-md" color={"contrast"}>
               {!account.accountId && (
-                <div className="absolute h-full w-full bg-white bg-opacity-50 backdrop-blur-sm z-10 rounded-lg dark:bg-black dark:bg-opacity-50">
+                <div className="absolute h-full w-full bg-white bg-opacity-50 backdrop-blur-xs z-10 rounded-lg dark:bg-black dark:bg-opacity-50">
                   <div className="flex items-center justify-center h-full flex-col">
                     <Icon
                       icon="svg-spinners:blocks-shuffle-3"
@@ -216,7 +221,7 @@ const ForexAccountsDashboard = () => {
                       disabled={!account.status || account.balance === 0}
                       type="button"
                       color="primary"
-                      shape="rounded"
+                      shape="rounded-sm"
                       className="w-full"
                     >
                       {account.type} {t("Trade")}
@@ -291,7 +296,7 @@ const ForexAccountsDashboard = () => {
                       <Button
                         type="button"
                         color="success"
-                        shape="rounded"
+                        shape="rounded-sm"
                         className="w-full"
                         disabled={!account.status}
                       >
@@ -305,7 +310,7 @@ const ForexAccountsDashboard = () => {
                       <Button
                         type="button"
                         color="danger"
-                        shape="rounded"
+                        shape="rounded-sm"
                         className="w-full"
                         disabled={!account.status || account.balance === 0}
                       >

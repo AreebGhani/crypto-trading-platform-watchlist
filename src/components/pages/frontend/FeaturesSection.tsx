@@ -8,9 +8,9 @@ const FeaturesSection = () => {
 
   const features = [
     {
-      title: t("Advanced Charting Tools"),
+      title: t("Welcome to Acrypto Cloud"),
       description: t(
-        "Utilize sophisticated charting tools to analyze market trends and make informed trading decisions."
+        "Your all-in-one platform for advanced AI, blockchain, and decentralized finance. We offer a powerful suite of crypto-native AI tools, multi-platform chatbots, decentralized marketplaces, trading solutions, and more, all underpinned by the $REAI token. Whether you’re a trader, developer, or blockchain enthusiast, Acrypto Cloud is here to empower your journey with cutting-edge, blockchain-secured AI technology."
       ),
       icon: (
         <svg
@@ -32,12 +32,12 @@ const FeaturesSection = () => {
           <path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z" />
         </svg>
       ),
-      imageUrl: "/img/home/chart.webp",
+      imageUrl: "/img/home/home.png",
     },
     {
-      title: t("Real-Time Market Data"),
+      title: t("Decentralized, Community-Driven Governance."),
       description: t(
-        "Stay ahead with real-time updates on market prices, trends, and news."
+        "The $REAI token empowers our community to influence the platform’s growth, ensuring Acrypto Cloud evolves with user needs. Staking and governance opportunities give users direct control and incentives for contributing to the ecosystem."
       ),
       icon: (
         <svg
@@ -56,12 +56,12 @@ const FeaturesSection = () => {
           <path d="M3.34 19a10 10 0 1 1 17.32 0" />
         </svg>
       ),
-      imageUrl: "/img/home/markets.webp",
+      imageUrl: "/img/home/home1.png",
     },
     {
-      title: t("Powerful Trading Algorithms"),
+      title: t("Ultimate AI-Powered Platform"),
       description: t(
-        "Deploy advanced trading algorithms to maximize your trading efficiency and profitability."
+        "Over at RealWorld AI Hub. Seamlessly access a suite of advanced tools including AI chatbots, video creation, music generation, image generation, and trading bots, all in one powerful dashboard. Designed to simplify and enhance your digital and financial world, our cutting-edge AI solutions offer unmatched precision, performance, and ease of use. Unlock the future of AI and blockchain innovation, tailored to your needs."
       ),
       icon: (
         <svg
@@ -83,7 +83,7 @@ const FeaturesSection = () => {
           <path d="M17 19h4" />
         </svg>
       ),
-      imageUrl: "/img/home/order.webp",
+      imageUrl: "/img/home/ai.png",
     },
   ];
 

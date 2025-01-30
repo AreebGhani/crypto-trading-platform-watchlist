@@ -6,7 +6,7 @@ import Logo from "@/components/vector/Logo";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
 import { Icon } from "@iconify/react";
 import Card from "@/components/elements/base/card/Card";
-import DarkToolTip from "@/components/elements/base/tooltips/DarkTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import { useRouter } from "next/router";
 import Modal from "@/components/elements/base/modal/Modal";
 import Button from "@/components/elements/base/button/Button";
@@ -85,7 +85,7 @@ export const Viewport: React.FC<{ children?: React.ReactNode }> = ({
       className={`viewport flex h-full overflow-hidden flex-col w-full fixed`}
     >
       <nav
-        className={`fixed h-full start-0 top-0 z-[50] w-20 overflow-visible border border-muted-200 bg-white transition-all duration-300 dark:border-muted-800 dark:bg-muted-950 lg:translate-x-0`}
+        className={`fixed h-full left-0 top-0 z-50 w-20 overflow-visible border border-muted-200 bg-white transition-all duration-300 dark:border-muted-800 dark:bg-muted-950 lg:translate-x-0`}
       >
         <div className="h-full flex justify-between flex-col z-50">
           <ul>
@@ -115,13 +115,13 @@ export const Viewport: React.FC<{ children?: React.ReactNode }> = ({
             >
               <Icon
                 icon={"mdi:chevron-left"}
-                className="relative h-7 w-7 text-muted-400 transition-colors duration-300 group-hover/side-icon:text-muted-500 group-hover:text-primary-500 group-dark:hover:text-primary-500"
+                className="relative h-7 w-7 text-muted-400 transition-colors duration-300 group-hover/side-icon:text-muted-500 group-hover:text-primary-500 hover:group-dark:text-primary-500"
               />
             </div>
             <div className="side-icon-inner mask mask-blob flex h-[35px] w-[35px] items-center justify-center transition-colors duration-300 bg-muted-200 dark:bg-muted-800 cursor-pointer group hover:bg-muted-500/10 dark:hover:bg-muted-500/20">
               <ThemeSwitcher />
             </div>
-            <DarkToolTip content="View" position="end">
+            <Tooltip content="View" position="end">
               <div
                 className="side-icon-inner mask mask-blob flex h-[35px] w-[35px] items-center justify-center transition-colors duration-300 bg-muted-200 dark:bg-muted-800 cursor-pointer group hover:bg-muted-500/10 dark:hover:bg-muted-500/20"
                 onClick={() => {
@@ -134,11 +134,11 @@ export const Viewport: React.FC<{ children?: React.ReactNode }> = ({
                       ? "solar:eye-bold-duotone"
                       : "solar:pen-2-bold-duotone"
                   }
-                  className="relative h-7 w-7 text-muted-400 transition-colors duration-300 group-hover/side-icon:text-muted-500 group-hover:text-primary-500 group-dark:hover:text-primary-500"
+                  className="relative h-7 w-7 text-muted-400 transition-colors duration-300 group-hover/side-icon:text-muted-500 group-hover:text-primary-500 hover:group-dark:text-primary-500"
                 />
               </div>
-            </DarkToolTip>
-            <DarkToolTip content="Save" position="end">
+            </Tooltip>
+            <Tooltip content="Save" position="end">
               <div
                 className="side-icon-inner mask mask-blob flex h-[35px] w-[35px] items-center justify-center transition-colors duration-300 bg-muted-200 dark:bg-muted-800 cursor-pointer group hover:bg-muted-500/10 dark:hover:bg-muted-500/20"
                 onClick={() => {
@@ -147,11 +147,11 @@ export const Viewport: React.FC<{ children?: React.ReactNode }> = ({
               >
                 <Icon
                   icon={"solar:check-read-line-duotone"}
-                  className="relative h-7 w-7 text-muted-400 transition-colors duration-300 group-hover/side-icon:text-muted-500 group-hover:text-primary-500 group-dark:hover:text-primary-500"
+                  className="relative h-7 w-7 text-muted-400 transition-colors duration-300 group-hover/side-icon:text-muted-500 group-hover:text-primary-500 hover:group-dark:text-primary-500"
                 />
               </div>
-            </DarkToolTip>
-            <DarkToolTip content="Import/Export" position="end">
+            </Tooltip>
+            <Tooltip content="Import/Export" position="end">
               <div
                 className="side-icon-inner mask mask-blob flex h-[35px] w-[35px] items-center justify-center transition-colors duration-300 bg-muted-200 dark:bg-muted-800 cursor-pointer group hover:bg-muted-500/10 dark:hover:bg-muted-500/20"
                 onClick={() => {
@@ -160,15 +160,15 @@ export const Viewport: React.FC<{ children?: React.ReactNode }> = ({
               >
                 <Icon
                   icon="solar:cloud-upload-line-duotone"
-                  className="relative h-7 w-7 text-muted-400 transition-colors duration-300 group-hover/side-icon:text-muted-500 group-hover:text-primary-500 group-dark:hover:text-primary-500"
+                  className="relative h-7 w-7 text-muted-400 transition-colors duration-300 group-hover/side-icon:text-muted-500 group-hover:text-primary-500 hover:group-dark:text-primary-500"
                 />
               </div>
-            </DarkToolTip>
+            </Tooltip>
           </div>
         </div>
       </nav>
       <div className="flex flex-1 h-full bg-muted-100 dark:bg-muted-900 w-full">
-        <div className="h-full ms-20 z-[12]">
+        <div className="h-full ms-20 z-12">
           <BuilderMenu />
         </div>
         <div className="page-container relative flex-1 h-full transition-all duration-300">
@@ -186,11 +186,11 @@ export const Viewport: React.FC<{ children?: React.ReactNode }> = ({
             </div>
           </div>
 
-          <div className="absolute bottom-0 right-0 z-[20]">
+          <div className="absolute bottom-0 right-0 z-20">
             <div className="flex gap-2 px-2 pt-[5px] pb-[2px] bg-white dark:bg-muted-800 border-t border-s border-muted-300 dark:border-muted-700 rounded-tl-md">
-              <DarkToolTip content="Undo" position="bottom">
+              <Tooltip content="Undo" position="bottom">
                 <IconButton
-                  shape={"rounded"}
+                  shape={"rounded-sm"}
                   size={"sm"}
                   variant={"solid"}
                   color={"muted"}
@@ -204,10 +204,10 @@ export const Viewport: React.FC<{ children?: React.ReactNode }> = ({
                     className="h-6 w-6 text-muted-800 dark:text-muted-200"
                   />
                 </IconButton>
-              </DarkToolTip>
-              <DarkToolTip content="Redo" position="bottom">
+              </Tooltip>
+              <Tooltip content="Redo" position="bottom">
                 <IconButton
-                  shape={"rounded"}
+                  shape={"rounded-sm"}
                   size={"sm"}
                   variant={"solid"}
                   color={"muted"}
@@ -221,7 +221,7 @@ export const Viewport: React.FC<{ children?: React.ReactNode }> = ({
                     className="h-6 w-6 text-muted-800 dark:text-muted-200"
                   />
                 </IconButton>
-              </DarkToolTip>
+              </Tooltip>
             </div>
           </div>
         </div>

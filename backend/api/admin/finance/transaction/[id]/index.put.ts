@@ -247,19 +247,27 @@ async function handleWalletTransaction(transaction, status, rejection, t) {
   transaction.metadata = JSON.stringify(metadata);
 }
 
-async function handleForexRejection(transaction, account, wallet, cost, t) {
-  if (transaction.type === "FOREX_WITHDRAW") {
+async function handleForexCompletion(transaction, account, wallet, cost, t) {
+  if (transaction.type === "FOREX_DEPOSIT") {
+    // Increase forex account balance
     await updateForexAccountBalance(account, cost, true, t);
-  } else if (transaction.type === "FOREX_DEPOSIT") {
+    // Wallet balance was already decreased during the deposit request
+  } else if (transaction.type === "FOREX_WITHDRAW") {
+    // Increase wallet balance
     await updateWalletBalance(wallet, cost, true, t);
+    // Forex account balance was already decreased during the withdrawal request
   }
 }
 
-async function handleForexCompletion(transaction, account, wallet, cost, t) {
+async function handleForexRejection(transaction, account, wallet, cost, t) {
   if (transaction.type === "FOREX_DEPOSIT") {
-    await updateForexAccountBalance(account, cost, false, t);
+    // Refund amount to wallet
+    await updateWalletBalance(wallet, cost, true, t);
+    // Forex account balance was not changed
   } else if (transaction.type === "FOREX_WITHDRAW") {
-    await updateWalletBalance(wallet, cost, false, t);
+    // Refund amount to forex account
+    await updateForexAccountBalance(account, cost, true, t);
+    // Wallet balance was not changed
   }
 }
 

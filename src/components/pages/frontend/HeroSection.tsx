@@ -45,9 +45,9 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
             >
-              {t("Find the Next")}{" "}
+              {t("The Next Generation of")}{" "}
               <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
-                {t("Crypto Gem")}
+                {t("AI-Driven Blockchain Solutions")}
               </span>{" "}
               {t("on")} {siteName}
             </motion.h1>
@@ -58,7 +58,7 @@ const HeroSection = () => {
               transition={{ duration: 1, delay: 0.5 }}
             >
               {t(
-                "We provide the latest information on the best cryptocurrencies to invest in."
+                "Embrace AI-Driven Crypto, Forex and Futures Trading All in 1."
               )}
             </motion.p>
             {isLoggedIn && pnl ? (

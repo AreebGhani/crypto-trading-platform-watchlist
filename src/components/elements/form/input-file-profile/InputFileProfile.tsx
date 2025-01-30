@@ -2,7 +2,7 @@ import React, { type FC } from "react";
 import { Icon, type IconifyIcon } from "@iconify/react";
 import Avatar from "@/components/elements/base/avatar/Avatar";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
-import Tooltip from "@/components/elements/base/tooltips/Tooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import { useTranslation } from "next-i18next";
 interface InputFileProfileProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
@@ -21,7 +21,7 @@ interface InputFileProfileProps
     | "success"
     | "warning"
     | "danger";
-  shape?: "smooth" | "rounded" | "curved" | "full";
+  shape?: "smooth" | "rounded-sm" | "curved" | "full";
   onRemoveFile?: () => void;
 }
 const InputFileProfile: FC<InputFileProfileProps> = ({
@@ -40,7 +40,7 @@ const InputFileProfile: FC<InputFileProfileProps> = ({
   return (
     <div
       className={`relative inline-flex items-center justify-center border-2 border-muted-300 dark:border-muted-700
-          ${shape === "rounded" ? "rounded-md" : ""}
+          ${shape === "rounded-sm" ? "rounded-md" : ""}
           ${shape === "smooth" ? "rounded-lg" : ""}
           ${shape === "curved" ? "rounded-xl" : ""}
           ${shape === "full" ? "rounded-full" : ""}
@@ -52,7 +52,7 @@ const InputFileProfile: FC<InputFileProfileProps> = ({
         name={id}
         accept={acceptedFileTypes ? acceptedFileTypes.join(",") : undefined}
         {...props}
-        className={`absolute inset-0 z-[2] h-full w-full cursor-pointer opacity-0 ${
+        className={`absolute inset-0 z-2 h-full w-full cursor-pointer opacity-0 ${
           value ? "pointer-events-none" : ""
         }`}
       />
@@ -60,7 +60,7 @@ const InputFileProfile: FC<InputFileProfileProps> = ({
         {value || preview ? (
           ""
         ) : (
-          <div className="absolute start-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center text-muted-500 dark:text-muted-600">
+          <div className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center text-muted-500 dark:text-muted-600">
             <Icon
               icon={previewIcon}
               className={`
@@ -75,8 +75,8 @@ const InputFileProfile: FC<InputFileProfileProps> = ({
       {value ? (
         <div
           className={`absolute 
-            ${previewSize === "lg" ? "bottom-0 end-0" : ""}
-            ${previewSize === "xl" ? "bottom-0.5 end-0.5" : ""}
+            ${previewSize === "lg" ? "bottom-0 right-0" : ""}
+            ${previewSize === "xl" ? "bottom-0.5 right-0.5" : ""}
           `}
           onClick={() => {
             onRemoveFile?.();
@@ -96,8 +96,8 @@ const InputFileProfile: FC<InputFileProfileProps> = ({
         <label
           htmlFor={id}
           className={`absolute 
-            ${previewSize === "lg" ? "bottom-0 end-0" : ""}
-            ${previewSize === "xl" ? "bottom-0.5 end-0.5" : ""}
+            ${previewSize === "lg" ? "bottom-0 right-0" : ""}
+            ${previewSize === "xl" ? "bottom-0.5 right-0.5" : ""}
           `}
         >
           <Tooltip content={t("Add picture")} position="top">

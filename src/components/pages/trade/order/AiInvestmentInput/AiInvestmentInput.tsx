@@ -86,7 +86,7 @@ const AiInvestmentInputBase = () => {
             placeholder={t("Select a Plan")}
             disabled={loading}
             loading={loading}
-            shape={"rounded-sm"}
+            shape={"rounded-xs"}
           />
           <ListBox
             selected={selectedDuration}
@@ -98,7 +98,7 @@ const AiInvestmentInputBase = () => {
             placeholder={t("Select a Duration")}
             disabled={loading || !selectedPlan?.durations}
             loading={loading}
-            shape={"rounded-sm"}
+            shape={"rounded-xs"}
           />
         </div>
 
@@ -109,7 +109,7 @@ const AiInvestmentInputBase = () => {
             placeholder="0.0"
             label={t("Amount")}
             postLabel={market?.pair}
-            shape={"rounded-sm"}
+            shape={"rounded-xs"}
             value={amount}
             onChange={(e) => setAmount(parseFloat(e.target.value))}
             min={selectedPlan?.minAmount}
@@ -139,7 +139,7 @@ const AiInvestmentInputBase = () => {
         </div>
       </div>
       {selectedPlan && (
-        <div className="p-3 rounded-sm text-xs mt-2 bg-muted-100 dark:bg-muted-800 text-muted-400 dark:text-muted-400">
+        <div className="p-3 rounded-xs text-xs mt-2 bg-muted-100 dark:bg-muted-800 text-muted-400 dark:text-muted-400">
           {selectedPlan?.description}
           <div className="mt-2">
             <p className="text-success-500">
@@ -154,7 +154,7 @@ const AiInvestmentInputBase = () => {
           color={profile?.id ? "success" : "muted"}
           animated={false}
           className="w-full"
-          shape={"rounded-sm"}
+          shape={"rounded-xs"}
           onClick={() => {
             if (profile?.id) {
               handlePlaceInvestment();

@@ -1,24 +1,25 @@
-"use client";
+import Layout from "@/layouts/Default";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Layout from "@/layouts/Default";
 import { useDashboardStore } from "@/stores/dashboard";
-import $fetch from "@/utils/api";
+import $fetch, { $serverFetch } from "@/utils/api";
 import Input from "@/components/elements/form/input/Input";
 import Card from "@/components/elements/base/card/Card";
 import { Icon } from "@iconify/react";
 import Progress from "@/components/elements/base/progress/Progress";
 import Avatar from "@/components/elements/base/avatar/Avatar";
-import { format, parseISO, differenceInSeconds } from "date-fns";
+import { format, parseISO } from "date-fns";
 import Button from "@/components/elements/base/button/Button";
 import { MashImage } from "@/components/elements/MashImage";
 import { formatLargeNumber } from "@/utils/market";
 import Link from "next/link";
 import { BackButton } from "@/components/elements/base/button/BackButton";
 import { useWalletStore } from "@/stores/user/wallet";
-import { debounce } from "lodash";
 import { useTranslation } from "next-i18next";
 import { toast } from "sonner";
+import { ErrorPage, NotFound } from "@/components/ui/Errors";
+import Countdown from "@/components/elements/addons/Countdown/Default";
+
 type Token = {
   id: string;
   projectId: string;
@@ -33,9 +34,6 @@ type Token = {
   description: string;
   image: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string;
   phases: {
     id: string;
     name: string;
@@ -43,24 +41,15 @@ type Token = {
     endDate: string;
     price: number;
     status: string;
-    tokenId: string;
-    minPurchase: number;
-    maxPurchase: number;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string;
     contributions: number;
     contributionPercentage: number;
+    minPurchase: number;
+    maxPurchase: number;
   }[];
   icoAllocation: {
     id: string;
     name: string;
     percentage: number;
-    tokenId: string;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string;
   };
   project: {
     id: string;
@@ -68,43 +57,23 @@ type Token = {
     description: string;
     website: string;
     whitepaper: string;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string;
   };
 };
-const OfferDetails = () => {
+
+interface Props {
+  token?: Token;
+  error?: string;
+}
+
+const OfferDetails: React.FC<Props> = ({ token: initialToken, error }) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { id } = router.query as {
-    id: string;
-  };
-  const [token, setToken] = useState<Token | null>(null);
-  const [amount, setAmount] = useState(0);
+  const { id } = router.query as { id: string };
+  const [token, setToken] = useState<Token | null>(initialToken || null);
   const { profile, getSetting } = useDashboardStore();
   const { wallet, fetchWallet } = useWalletStore();
-  const fetchToken = async () => {
-    const { data, error } = await $fetch({
-      url: `/api/ext/ico/offer/${id}`,
-      silent: true,
-    });
-    if (!error) {
-      setToken(data);
-    }
-  };
-  const debouncedFetchToken = debounce(fetchToken, 100);
-  useEffect(() => {
-    if (router.isReady) {
-      debouncedFetchToken();
-    }
-  }, [router.isReady]);
-  useEffect(() => {
-    if (token) {
-      const intervalId = setInterval(() => updateCountdown(), 1000);
-      return () => clearInterval(intervalId);
-    }
-  }, [token]);
+  const [amount, setAmount] = useState(0);
+
   useEffect(() => {
     if (
       token &&
@@ -116,31 +85,47 @@ const OfferDetails = () => {
       fetchWallet(token.purchaseWalletType, token.purchaseCurrency);
     }
   }, [token, wallet]);
-  const [countdown, setCountdown] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    isStarted: false,
-  });
-  const activePhase = token?.phases?.find((phase) => phase.status === "ACTIVE");
-  const updateCountdown = () => {
-    if (!activePhase) return;
-    const now = new Date();
-    const start = parseISO(activePhase.startDate);
-    const end = parseISO(activePhase.endDate);
-    const isStarted = now >= start;
-    const targetDate = isStarted ? end : start;
-    const timeRemaining = differenceInSeconds(targetDate, now);
-    if (timeRemaining < 0) return;
-    const days = Math.floor(timeRemaining / (60 * 60 * 24));
-    const hours = Math.floor((timeRemaining % (60 * 60 * 24)) / (60 * 60));
-    const minutes = Math.floor((timeRemaining % (60 * 60)) / 60);
-    const seconds = timeRemaining % 60;
-    setCountdown({ days, hours, minutes, seconds, isStarted });
+
+  if (!token) {
+    return (
+      <NotFound
+        title={t("Token Not Found")}
+        description={t("We couldn't find the token details.")}
+        link="/ico"
+        linkTitle={t("Back to ICO Dashboard")}
+      />
+    );
+  }
+
+  if (error) {
+    return (
+      <ErrorPage
+        title={t("Error")}
+        description={t(error)}
+        link="/ico"
+        linkTitle={t("Back to ICO Dashboard")}
+      />
+    );
+  }
+
+  const activePhase = token.phases.find((phase) => phase.status === "ACTIVE");
+
+  const fetchToken = async () => {
+    const { data, error } = await $fetch({
+      url: `/api/ext/ico/offer/${id}`,
+      silent: true,
+    });
+
+    if (!error) {
+      setToken(data);
+    } else {
+      toast.error(t("Failed to fetch token details."));
+    }
   };
+
   const purchase = async () => {
     if (!activePhase) return;
+
     if (
       getSetting("icoRestrictions") === "true" &&
       (!profile?.kyc?.status ||
@@ -151,18 +136,20 @@ const OfferDetails = () => {
       toast.error(t("Please complete your KYC to participate in ICO"));
       return;
     }
+
     const { error } = await $fetch({
       url: `/api/ext/ico/contribution`,
       method: "POST",
       body: { amount, phaseId: activePhase.id },
     });
+
     if (!error) {
-      if (token)
-        await fetchWallet(token.purchaseWalletType, token.purchaseCurrency);
-      fetchToken();
+      fetchWallet(token.purchaseWalletType, token.purchaseCurrency);
+      await fetchToken(); // Refetch token details to update UI
       setAmount(0);
     }
   };
+
   return (
     <Layout title={`${token?.name} Details`} color="muted">
       <div className="flex flex-col md:flex-row gap-5 justify-between items-center">
@@ -211,20 +198,20 @@ const OfferDetails = () => {
           >
             <h3 className="text-start font-bold mb-2">{t("Token Details")}</h3>
             <ul className="flex flex-col gap-2">
-              <li className="border-b border-muted-200 dark:border-muted-700 flex justify-between">
+              <li className="border-b border-muted-200 dark:border-muted-800 flex justify-between">
                 <strong>{t("Name")}</strong> {token?.name}
               </li>
-              <li className="border-b border-muted-200 dark:border-muted-700 flex justify-between">
+              <li className="border-b border-muted-200 dark:border-muted-800 flex justify-between">
                 <strong>{t("Address")}</strong> {token?.address}
               </li>
-              <li className="border-b border-muted-200 dark:border-muted-700 flex justify-between">
+              <li className="border-b border-muted-200 dark:border-muted-800 flex justify-between">
                 <strong>{t("Project Name")}</strong> {token?.project.name}
               </li>
-              <li className="border-b border-muted-200 dark:border-muted-700 flex justify-between">
+              <li className="border-b border-muted-200 dark:border-muted-800 flex justify-between">
                 <strong>{t("Project Description")}</strong>{" "}
                 {token?.project.description}
               </li>
-              <li className="border-b border-muted-200 dark:border-muted-700 flex justify-between">
+              <li className="border-b border-muted-200 dark:border-muted-800 flex justify-between">
                 <strong>{t("Project Website")}</strong>
                 <a
                   href={token?.project.website}
@@ -235,7 +222,7 @@ const OfferDetails = () => {
                   {token?.project.website}
                 </a>
               </li>
-              <li className="border-b border-muted-200 dark:border-muted-700 flex justify-between">
+              <li className="border-b border-muted-200 dark:border-muted-800 flex justify-between">
                 <strong>{t("Project Whitepaper")}</strong>
                 <p>{token?.project.whitepaper}</p>
               </li>
@@ -255,25 +242,25 @@ const OfferDetails = () => {
                   {t("Active Phase Details")}
                 </h3>
                 <ul className="flex flex-col gap-2">
-                  <li className="flex justify-between border-b border-muted-200 dark:border-muted-700">
+                  <li className="flex justify-between border-b border-muted-200 dark:border-muted-800">
                     <strong>{t("Price")}</strong>
                     <span>
                       {activePhase.price} {token?.purchaseCurrency}
                     </span>
                   </li>
-                  <li className="flex justify-between border-b border-muted-200 dark:border-muted-700">
+                  <li className="flex justify-between border-b border-muted-200 dark:border-muted-800">
                     <strong>{t("Min Purchase Amount")}</strong>
                     <span>
                       {activePhase.minPurchase} {token?.purchaseCurrency}
                     </span>
                   </li>
-                  <li className="flex justify-between border-b border-muted-200 dark:border-muted-700">
+                  <li className="flex justify-between border-b border-muted-200 dark:border-muted-800">
                     <strong>{t("Max Purchase Amount")}</strong>
                     <span>
                       {activePhase.maxPurchase} {token?.purchaseCurrency}
                     </span>
                   </li>
-                  <li className="flex justify-between border-b border-muted-200 dark:border-muted-700">
+                  <li className="flex justify-between border-b border-muted-200 dark:border-muted-800">
                     <strong>{t("Start Date")}</strong>
                     <span>
                       {format(parseISO(activePhase.startDate), "PPpp")}
@@ -295,16 +282,12 @@ const OfferDetails = () => {
           >
             <div className="w-full p-4 border-b text-center border-gray-200 dark:border-gray-700">
               <div className="w-full">
-                {countdown.isStarted ? (
-                  <span>
-                    {t("Ends in")} {countdown.days}d {countdown.hours}h{" "}
-                    {countdown.minutes}m {countdown.seconds}s
-                  </span>
-                ) : (
-                  <span>
-                    {t("Starts in")} {countdown.days}d {countdown.hours}h{" "}
-                    {countdown.minutes}m {countdown.seconds}s
-                  </span>
+                {activePhase && (
+                  <Countdown
+                    startDate={activePhase.startDate}
+                    endDate={activePhase.endDate}
+                    onExpire={() => fetchToken()} // Optional: Refetch token or trigger an action when countdown ends
+                  />
                 )}
               </div>
             </div>
@@ -315,7 +298,7 @@ const OfferDetails = () => {
                 </h4>
                 <div>
                   <span className="text-muted-400 font-sans text-sm">
-                    {activePhase?.contributionPercentage?.toFixed(2) ?? 0}%
+                    {activePhase?.contributionPercentage?.toFixed(6) ?? 0}%
                   </span>
                 </div>
               </div>
@@ -325,9 +308,9 @@ const OfferDetails = () => {
                 value={activePhase?.contributionPercentage ?? 0}
               />
             </div>
-            {countdown.isStarted && activePhase?.status === "ACTIVE" && (
+            {activePhase && (
               <>
-                <div className="border-t border-muted-200 dark:border-muted-700 pt-4 px-4">
+                <div className="border-t border-muted-200 dark:border-muted-800 pt-4 px-4">
                   <Input
                     type="number"
                     label={t("Amount")}
@@ -361,7 +344,7 @@ const OfferDetails = () => {
                 <div className="px-4 pb-4">
                   <Button
                     type="button"
-                    shape="rounded"
+                    shape="rounded-sm"
                     color="primary"
                     className="w-full"
                     onClick={() => purchase()}
@@ -384,7 +367,7 @@ const OfferDetails = () => {
             className="text-muted-800 dark:text-muted-200 "
           >
             <div className="w-full">
-              <div className="flex flex-col gap-1 text-center border-b border-muted-200 dark:border-muted-700 p-4">
+              <div className="flex flex-col gap-1 text-center border-b border-muted-200 dark:border-muted-800 p-4">
                 <h3 className="font-sans text-md font-semibold">
                   {activePhase?.name}
                 </h3>
@@ -392,7 +375,7 @@ const OfferDetails = () => {
                   {t("Phase")}
                 </p>
               </div>
-              <div className="flex flex-col gap-1 border-b border-muted-200 dark:border-muted-700 p-4 text-center">
+              <div className="flex flex-col gap-1 border-b border-muted-200 dark:border-muted-800 p-4 text-center">
                 <h3 className="font-sans text-md font-semibold">
                   {formatLargeNumber(token?.saleAmount || 0)}
                 </h3>
@@ -400,7 +383,7 @@ const OfferDetails = () => {
                   {t("Sale Amount")}
                 </p>
               </div>
-              <div className="flex flex-col gap-1 border-b border-muted-200 dark:border-muted-700 p-4 text-center">
+              <div className="flex flex-col gap-1 border-b border-muted-200 dark:border-muted-800 p-4 text-center">
                 <h3 className="font-sans text-md font-semibold">
                   {activePhase?.contributions ?? 0}
                 </h3>
@@ -415,4 +398,36 @@ const OfferDetails = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps(context: any) {
+  const { id } = context.params;
+
+  try {
+    const { data, error } = await $serverFetch(context, {
+      url: `/api/ext/ico/offer/${id}`,
+    });
+
+    if (error || !data) {
+      return {
+        props: {
+          error: error || "Unable to fetch token details.",
+        },
+      };
+    }
+
+    return {
+      props: {
+        token: data,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching token details:", error);
+    return {
+      props: {
+        error: `An unexpected error occurred: ${error.message}`,
+      },
+    };
+  }
+}
+
 export default OfferDetails;

@@ -34,7 +34,7 @@ const ForexInvestments = () => {
           hasImage: true,
           imageKey: "plan.image",
           placeholder: "/img/placeholder.svg",
-          className: "rounded",
+          className: "rounded-sm",
         },
         {
           field: "amount",

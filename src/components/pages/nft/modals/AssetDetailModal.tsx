@@ -43,7 +43,7 @@ const AssetDetailModal: React.FC<AssetDetailModalProps> = ({
   if (!isVisible || !collection) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 backdrop-blur-xs">
       {/* Modal Container */}
       <div className="bg-white dark:bg-muted-900 w-full max-w-5xl rounded-lg overflow-hidden shadow-lg relative">
         {/* Close Button */}

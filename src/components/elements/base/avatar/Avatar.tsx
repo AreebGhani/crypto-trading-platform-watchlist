@@ -7,7 +7,7 @@ export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   alt?: string;
   size?: Sizes;
   text?: string;
-  shape?: "straight" | "rounded" | "smooth" | "curved" | "full";
+  shape?: "straight" | "rounded-sm" | "smooth" | "curved" | "full";
   mask?: "hex" | "hexed" | "blob" | "deca" | "diamond";
   color?:
     | "default"
@@ -97,7 +97,7 @@ const Avatar: FC<AvatarProps> = ({
           ? "-ms-8 border-8 border-white first:ms-0 dark:border-muted-800"
           : ""
       } 
-      ${shape === "rounded" ? "rounded-md" : ""}
+      ${shape === "rounded-sm" ? "rounded-md" : ""}
       ${shape === "smooth" ? "rounded-lg" : ""}
       ${shape === "curved" && size !== "xxxs" ? "rounded-xl" : ""}
       ${shape === "curved" && size === "xxxs" ? "rounded-lg" : ""}
@@ -157,7 +157,7 @@ const Avatar: FC<AvatarProps> = ({
           src={src}
           className={`
             block w-full
-            ${shape === "rounded" ? "rounded-md" : ""}
+            ${shape === "rounded-sm" ? "rounded-md" : ""}
             ${shape === "smooth" ? "rounded-lg" : ""}
             ${shape === "curved" && size !== "xxxs" ? "rounded-xl" : ""}
             ${shape === "curved" && size === "xxxs" ? "rounded-lg" : ""}

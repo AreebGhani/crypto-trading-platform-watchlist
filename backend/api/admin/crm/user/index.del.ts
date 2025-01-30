@@ -3,6 +3,8 @@ import {
   commonBulkDeleteResponses,
   handleBulkDelete,
 } from "@b/utils/query";
+import { createError } from "@b/utils/error";
+import { models } from "@b/db";
 
 export const metadata: OperationObject = {
   summary: "Bulk deletes users by UUIDs",
@@ -33,8 +35,42 @@ export const metadata: OperationObject = {
 };
 
 export default async (data: Handler) => {
-  const { body, query } = data;
+  const { body, query, user } = data;
   const { ids } = body;
+
+  if (!user?.id) {
+    throw createError({
+      statusCode: 401,
+      message: "Unauthorized",
+    });
+  }
+
+  // Check if the request is from a Super Admin
+  const userPk = await models.user.findByPk(user.id, {
+    include: [{ model: models.role, as: "role" }],
+  });
+  if (!userPk || !userPk.role || userPk.role.name !== "Super Admin") {
+    throw createError({
+      statusCode: 403,
+      message: "Forbidden - Only Super Admins can bulk delete users",
+    });
+  }
+
+  // If desired, you can also verify that none of the target users
+  // is a super admin to add further restrictions:
+  const targetUsers = await models.user.findAll({
+    where: { id: ids },
+    include: [{ model: models.role, as: "role" }],
+  });
+  for (const targetUser of targetUsers) {
+    if (targetUser.role && targetUser.role.name === "Super Admin") {
+      throw createError({
+        statusCode: 403,
+        message: "Forbidden - You cannot delete Super Admin accounts",
+      });
+    }
+  }
+
   return handleBulkDelete({
     model: "user",
     ids,

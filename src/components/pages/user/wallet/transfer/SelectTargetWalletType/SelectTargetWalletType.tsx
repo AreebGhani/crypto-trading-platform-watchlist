@@ -62,7 +62,7 @@ const SelectTargetWalletTypeBase = () => {
         </p>
       </div>
 
-      <div className="mx-auto mb-4 w-full max-w-lg rounded px-8 pb-8">
+      <div className="mx-auto mb-4 w-full max-w-lg rounded-sm px-8 pb-8">
         <div className={`grid gap-4 ${getGridCols()}`}>
           {getFilteredWalletTypes().map((walletType) => (
             <RadioHeadless
@@ -96,7 +96,7 @@ const SelectTargetWalletTypeBase = () => {
           ))}
         </div>
 
-        <div className="mx-auto !mt-8 max-w-sm">
+        <div className="mx-auto mt-8! max-w-sm">
           <div className="flex w-full gap-4 justify-center">
             <Button
               type="button"

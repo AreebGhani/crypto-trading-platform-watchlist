@@ -1,5 +1,5 @@
 // src/pages/index.jsx
-import React, { useState } from "react";
+import React from "react";
 import HeroSection from "@/components/pages/frontend/HeroSection";
 import FeaturesSection from "@/components/pages/frontend/FeaturesSection";
 import Footer from "@/components/pages/frontend/Footer";
@@ -9,25 +9,23 @@ import StatusSection from "@/components/pages/frontend/StatusSection";
 import CookieBanner from "@/components/pages/frontend/Cookie";
 import BannerSection from "@/components/pages/frontend/BannerSection";
 import MarketsSection from "@/components/pages/frontend/MarketsSection";
-
-const frontendType = process.env.NEXT_PUBLIC_FRONTEND_TYPE || "default";
+import { useDashboardStore } from "@/stores/dashboard";
 
 const Home = () => {
-  if (frontendType === "default") {
-    return (
-      <Layout horizontal>
-        <HeroSection />
-        <MarketsSection />
-        <StatusSection />
-        <FeaturesSection />
-        <BannerSection />
-        <Footer />
-        <CookieBanner />
-      </Layout>
-    );
-  }
+  const { settings } = useDashboardStore();
+  if (settings?.frontendType === "builder") return <BuilderComponent />;
 
-  return <BuilderComponent />;
+  return (
+    <Layout horizontal>
+      <HeroSection />
+      <MarketsSection />
+      <StatusSection />
+      <FeaturesSection />
+      <BannerSection />
+      <Footer />
+      <CookieBanner />
+    </Layout>
+  );
 };
 
 export default Home;

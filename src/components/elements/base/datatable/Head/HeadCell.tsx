@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useDataTable } from "@/stores/datatable";
 import { Icon } from "@iconify/react";
-import { AnimatedTooltip } from "../../tooltips/AnimatedTooltip";
+import { Tooltip } from "../../tooltips/Tooltip";
 import { useTranslation } from "next-i18next";
 const HeadCell = ({
   label,
@@ -43,11 +43,11 @@ const HeadCell = ({
   return (
     <div className="flex items-center justify-between gap-4 font-sans h-[40px]">
       {tooltip && filterable ? (
-        <AnimatedTooltip content={t(tooltip)}>
+        <Tooltip content={t(tooltip)}>
           <span className="text-xs font-medium uppercase text-muted">
             {t(label)}
           </span>
-        </AnimatedTooltip>
+        </Tooltip>
       ) : (
         <span className="text-xs font-medium uppercase text-muted">
           {t(label)}
@@ -55,7 +55,7 @@ const HeadCell = ({
       )}
       <div className="flex flex-row items-center justify-center gap-2">
         {filterable && setIsOperatorOpen && !isOperatorOpen && (
-          <AnimatedTooltip content={t("Filter by")}>
+          <Tooltip content={t("Filter by")}>
             <span
               className="flex cursor-pointer items-center justify-center gap-1"
               onClick={() => setIsOperatorOpen(!isOperatorOpen)}
@@ -78,7 +78,7 @@ const HeadCell = ({
                 }`}
               />
             </span>
-          </AnimatedTooltip>
+          </Tooltip>
         )}
         <div className="flex flex-col">
           <svg

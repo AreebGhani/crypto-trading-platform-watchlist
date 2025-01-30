@@ -201,7 +201,7 @@ const Layout: FC<LayoutProps> = ({
               ? "is-pushed " + layoutPushedClasses[activeLayout]
               : layoutNotPushedClasses[activeLayout]
           } ${color === "muted" ? "bg-muted-50/[0.96]" : "bg-white/[0.96]"}
-    ${horizontal ? "!pb-0 !pe-0 !pt-0" : ""}`}
+    ${horizontal ? "pb-0! pe-0! pt-0!" : ""}`}
         >
           <LayoutSwitcher />
           {floatingLiveChatEnabled && !isExcludedPath && <FloatingLiveChat />}

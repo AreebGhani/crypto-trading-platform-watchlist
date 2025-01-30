@@ -154,7 +154,7 @@ const Marquee: React.FC<MarqueeProps> = ({
       {showGradients && (
         <>
           <div
-            className="absolute top-0 bottom-0 left-0 w-40 z-50 flex items-center justify-center bg-gradient-to-r from-white to-transparent dark:from-black dark:to-transparent pointer-events-auto"
+            className="absolute top-0 bottom-0 left-0 w-40 z-50 flex items-center justify-center bg-linear-to-r from-white to-transparent dark:from-black dark:to-transparent pointer-events-auto"
             onMouseEnter={() => handleSideMouseEnter("left")}
             onMouseLeave={handleSideMouseLeave}
           >
@@ -168,7 +168,7 @@ const Marquee: React.FC<MarqueeProps> = ({
             />
           </div>
           <div
-            className="absolute top-0 bottom-0 right-0 w-40 z-50 flex items-center justify-center bg-gradient-to-l from-white to-transparent dark:from-black dark:to-transparent pointer-events-auto"
+            className="absolute top-0 bottom-0 right-0 w-40 z-50 flex items-center justify-center bg-linear-to-l from-white to-transparent dark:from-black dark:to-transparent pointer-events-auto"
             onMouseEnter={() => handleSideMouseEnter("right")}
             onMouseLeave={handleSideMouseLeave}
           >

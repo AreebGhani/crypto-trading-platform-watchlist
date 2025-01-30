@@ -10,7 +10,7 @@ interface PaginationProps {
   currentPage: number;
   pageSize: number;
   buttonSize?: "sm" | "md" | "lg";
-  buttonShape?: "straight" | "rounded" | "smooth" | "curved" | "full";
+  buttonShape?: "straight" | "rounded-sm" | "smooth" | "curved" | "full";
 }
 const Pagination: FC<PaginationProps> = ({
   onPageChange,

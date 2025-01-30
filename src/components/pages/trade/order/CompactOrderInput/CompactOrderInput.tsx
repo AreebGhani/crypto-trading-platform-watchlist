@@ -8,7 +8,7 @@ import { useOrderStore } from "@/stores/trade/order";
 import useMarketStore from "@/stores/trade/market";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { toast } from "sonner";
@@ -102,7 +102,7 @@ const CompactOrderInputBase = ({ type }) => {
     if (type === "MARKET" && inputType === "TOTAL")
       calculatedAmount = amount / (side === "BUY" ? ask : bid);
 
-    await placeOrder(
+    const result = await placeOrder(
       market.isEco,
       market.currency,
       market.pair,
@@ -112,11 +112,13 @@ const CompactOrderInputBase = ({ type }) => {
       price
     );
 
-    if (type !== "MARKET") {
-      setPrice(0);
+    if (result) {
+      if (type !== "MARKET") {
+        setPrice(0);
+      }
+      setAmount(0);
+      setPercentage(0);
     }
-    setAmount(0);
-    setPercentage(0);
   };
 
   return (
@@ -161,7 +163,7 @@ const CompactOrderInputBase = ({ type }) => {
                 : currencyBalance.toFixed(getPrecision("amount"))}{" "}
               {side === "BUY" ? market?.pair : market?.currency}
             </span>
-            <AnimatedTooltip
+            <Tooltip
               content={`Deposit ${
                 side === "BUY" ? market?.pair : market?.currency
               }`}
@@ -178,7 +180,7 @@ const CompactOrderInputBase = ({ type }) => {
                   className="h-3 w-3 text-primary-500 cursor-pointer border border-primary-500 rounded-full hover:bg-primary-500 hover:text-white"
                 />
               </Link>
-            </AnimatedTooltip>
+            </Tooltip>
           </div>
           {type !== "MARKET" && (
             <span
@@ -197,7 +199,7 @@ const CompactOrderInputBase = ({ type }) => {
             placeholder={type === "MARKET" ? "Market" : price.toString()}
             label={t("Price")}
             postLabel={market?.pair}
-            shape={"rounded-sm"}
+            shape={"rounded-xs"}
             disabled={type === "MARKET"}
             value={type === "MARKET" ? "" : price}
             onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
@@ -216,7 +218,7 @@ const CompactOrderInputBase = ({ type }) => {
             placeholder="0.0"
             label={type === "MARKET" ? "" : "Amount"}
             postLabel={inputType === "AMOUNT" ? market?.currency : market?.pair}
-            shape={"rounded-sm"}
+            shape={"rounded-xs"}
             options={options}
             selected={inputType}
             setSelected={(value) => {
@@ -262,7 +264,7 @@ const CompactOrderInputBase = ({ type }) => {
           }
           animated={false}
           className="w-full"
-          shape={"rounded-sm"}
+          shape={"rounded-xs"}
           onClick={() => {
             if (profile?.id) {
               handlePlaceOrder();

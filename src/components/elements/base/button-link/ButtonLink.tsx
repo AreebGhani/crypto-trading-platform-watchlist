@@ -44,7 +44,7 @@ const ButtonLink: FC<ButtonLinkProps> = ({
           size,
           shadow,
           className: `inline-flex items-center justify-center h-10 whitespace-nowrap px-4 py-2 text-center text-sm ${
-            loading ? "relative !text-transparent pointer-events-none" : ""
+            loading ? "relative text-transparent! pointer-events-none" : ""
           }  ${classes}`,
         })}
         {...props}
@@ -52,7 +52,7 @@ const ButtonLink: FC<ButtonLinkProps> = ({
         {children}
         {loading && (
           <Loader
-            classNames={`absolute top-1/2 start-1/2 -translate-y-1/2 -translate-x-1/2`}
+            classNames={`absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2`}
             size={20}
             thickness={4}
           />

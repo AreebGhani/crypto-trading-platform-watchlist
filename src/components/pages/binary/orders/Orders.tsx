@@ -1,12 +1,16 @@
 import React, { memo, useEffect } from "react";
 import { Tab } from "@/components/elements/base/tab";
-import { formatDate } from "date-fns";
+import { format as formatDate } from "date-fns";
 import useMarketStore from "@/stores/trade/market";
 import { useRouter } from "next/router";
 import { useBinaryOrderStore } from "@/stores/binary/order";
 import { ObjectTable } from "@/components/elements/base/object-table";
 import { debounce } from "lodash";
 import { useTranslation } from "next-i18next";
+import { OrderDetails } from "./OrderDetails";
+import { DynamicProfitCell } from "./cells/ProfitCell";
+import { DynamicClosePriceCell } from "./cells/ClosePriceCell";
+import { shallow } from "zustand/shallow";
 
 const statusClass = (status: string) => {
   switch (status) {
@@ -20,13 +24,14 @@ const statusClass = (status: string) => {
       return "text-muted-500";
   }
 };
+
 const OrdersBase = () => {
   const { t } = useTranslation();
   const tabs = [
     { value: "OPEN", label: "Open Orders" },
     { value: "HISTORY", label: "Order History" },
   ];
-  const { market } = useMarketStore();
+  const market = useMarketStore((state) => state.market, shallow);
   const getPrecision = (type: string) => Number(market?.precision?.[type] || 8);
   const {
     ordersTab,
@@ -36,8 +41,6 @@ const OrdersBase = () => {
     fetchOrders,
     setOrders,
     setOpenOrders,
-    loading,
-    cancelOrder,
   } = useBinaryOrderStore();
   const router = useRouter();
   const columnConfig: ColumnConfigType[] = [
@@ -83,23 +86,14 @@ const OrdersBase = () => {
       label: "Close Price",
       type: "number",
       sortable: true,
-      getValue: (row) => {
-        if (row.status === "PENDING")
-          return <span className="text-warning-500">{t("Pending")}</span>;
-        const startPrice = row.price;
-        const closePrice = row.closePrice;
-        const change = closePrice - startPrice;
-        const percentage = (change / startPrice) * 100;
-        return (
-          <span className={`${statusClass(row.status)} flex gap-2`}>
-            <span>{row.closePrice?.toFixed(getPrecision("price"))}</span>
-            <span>
-              ({change > 0 && "+"}
-              {percentage.toFixed(2)}%)
-            </span>
-          </span>
-        );
-      },
+      renderCell: (row) => (
+        <DynamicClosePriceCell
+          order={row}
+          getPrecision={getPrecision}
+          t={t}
+          statusClass={statusClass}
+        />
+      ),
     },
     {
       field: "amount",
@@ -113,23 +107,14 @@ const OrdersBase = () => {
       label: "Profit",
       type: "number",
       sortable: true,
-      getValue: (row) => {
-        const amount = row.amount;
-        const profitPercentage = row.profit || 87;
-        const profit = amount * (profitPercentage / 100);
-        const result = profit.toFixed(getPrecision("price"));
-        return (
-          <span className={statusClass(row.status)}>
-            {row.status === "WIN" && "+ "}
-            {row.status === "LOSS" && "- "}
-            {result ? (row.status === "DRAW" ? 0 : result) : "Pending"}
-          </span>
-        );
-      },
+      renderCell: (row) => (
+        <DynamicProfitCell order={row} getPrecision={getPrecision} />
+      ),
     },
   ];
   const openColumnConfig: ColumnConfigType[] = [
     ...columnConfig,
+    // Uncomment if you want actions
     // {
     //   field: "actions",
     //   label: "",
@@ -150,6 +135,7 @@ const OrdersBase = () => {
     //   ],
     // },
   ];
+
   const debouncedFetchOrders = debounce(fetchOrders, 100);
   useEffect(() => {
     if (market && router.isReady && ordersTab) {
@@ -158,6 +144,11 @@ const OrdersBase = () => {
       }
     }
   }, [router.isReady, market, ordersTab]);
+
+  const renderExpandedContent = (item: any) => {
+    return <OrderDetails order={item} />;
+  };
+
   return (
     <div className="w-full h-full flex flex-col">
       <div className="flex gap-2 border-b border-muted-200 dark:border-muted-800 md:overflow-x-auto">
@@ -180,6 +171,9 @@ const OrdersBase = () => {
           shape="straight"
           size="xs"
           border={false}
+          expandable={true} // Enable expandable rows
+          renderExpandedContent={renderExpandedContent}
+          expansionMode="modal"
         />
       )}
       {ordersTab === "HISTORY" && (
@@ -190,6 +184,9 @@ const OrdersBase = () => {
           shape="straight"
           size="xs"
           border={false}
+          expandable={true} // Enable expandable rows
+          renderExpandedContent={renderExpandedContent}
+          expansionMode="modal"
         />
       )}
     </div>

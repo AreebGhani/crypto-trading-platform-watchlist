@@ -82,7 +82,7 @@ const TicketStatsBase = ({}: TicketStatsProps) => {
                   <div className="mb-2">
                     <p className="relative text-4xl font-normal text-muted-800 dark:text-muted-100">
                       <span>21</span>
-                      <span className="absolute -top-2 -end-2 h-2.5 w-2.5 rounded-full bg-success-500"></span>
+                      <span className="absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full bg-success-500"></span>
                     </p>
                   </div>
                   <div className="text-xs uppercase tracking-wide text-muted-500 dark:text-muted-400">
@@ -95,7 +95,7 @@ const TicketStatsBase = ({}: TicketStatsProps) => {
                   <div className="mb-2">
                     <p className="relative text-4xl font-normal text-muted-800 dark:text-muted-100">
                       <span>1279</span>
-                      <span className="absolute -top-2 -end-2 h-2.5 w-2.5 rounded-full bg-muted-300 dark:bg-muted-600"></span>
+                      <span className="absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full bg-muted-300 dark:bg-muted-600"></span>
                     </p>
                   </div>
                   <div className="text-xs uppercase tracking-wide text-muted-500 dark:text-muted-400">
@@ -108,7 +108,7 @@ const TicketStatsBase = ({}: TicketStatsProps) => {
                   <div className="mb-2">
                     <p className="relative text-4xl font-normal text-muted-800 dark:text-muted-100">
                       <span>2</span>
-                      <span className="absolute -top-2 -end-2 h-2.5 w-2.5 rounded-full bg-danger-500"></span>
+                      <span className="absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full bg-danger-500"></span>
                     </p>
                   </div>
                   <div className="text-xs uppercase tracking-wide text-muted-500 dark:text-muted-400">
@@ -144,7 +144,7 @@ const TicketStatsBase = ({}: TicketStatsProps) => {
                   <div className="mb-2">
                     <p className="relative text-4xl font-normal text-muted-800 dark:text-muted-100">
                       <span>176</span>
-                      <span className="absolute -top-2 -end-2 h-2.5 w-2.5 rounded-full bg-success-500"></span>
+                      <span className="absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full bg-success-500"></span>
                     </p>
                   </div>
                   <div className="text-xs uppercase tracking-wide text-muted-500 dark:text-muted-400">
@@ -157,7 +157,7 @@ const TicketStatsBase = ({}: TicketStatsProps) => {
                   <div className="mb-2">
                     <p className="relative text-4xl font-normal text-muted-800 dark:text-muted-100">
                       <span>679</span>
-                      <span className="absolute -top-2 -end-2 h-2.5 w-2.5 rounded-full bg-yellow-400"></span>
+                      <span className="absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full bg-yellow-400"></span>
                     </p>
                   </div>
                   <div className="text-xs uppercase tracking-wide text-muted-500 dark:text-muted-400">
@@ -170,7 +170,7 @@ const TicketStatsBase = ({}: TicketStatsProps) => {
                   <div className="mb-2">
                     <p className="relative text-4xl font-normal text-muted-800 dark:text-muted-100">
                       <span>212</span>
-                      <span className="absolute -top-2 -end-2 h-2.5 w-2.5 rounded-full bg-danger-500"></span>
+                      <span className="absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full bg-danger-500"></span>
                     </p>
                   </div>
                   <div className="text-xs uppercase tracking-wide text-muted-500 dark:text-muted-400">
@@ -204,7 +204,7 @@ const TicketStatsBase = ({}: TicketStatsProps) => {
                   <div className="mb-2">
                     <p className="relative text-4xl font-normal text-muted-800 dark:text-muted-100">
                       <span>971</span>
-                      <span className="absolute -top-2 -end-2 h-2.5 w-2.5 rounded-full bg-success-500"></span>
+                      <span className="absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full bg-success-500"></span>
                     </p>
                   </div>
                   <div className="text-xs uppercase tracking-wide text-muted-500 dark:text-muted-400">
@@ -217,7 +217,7 @@ const TicketStatsBase = ({}: TicketStatsProps) => {
                   <div className="mb-2">
                     <p className="relative text-4xl font-normal text-muted-800 dark:text-muted-100">
                       <span>876</span>
-                      <span className="absolute -top-2 -end-2 h-2.5 w-2.5 rounded-full bg-muted-300 dark:bg-muted-600"></span>
+                      <span className="absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full bg-muted-300 dark:bg-muted-600"></span>
                     </p>
                   </div>
                   <div className="text-xs uppercase tracking-wide text-muted-500 dark:text-muted-400">
@@ -230,7 +230,7 @@ const TicketStatsBase = ({}: TicketStatsProps) => {
                   <div className="mb-2">
                     <p className="relative text-4xl font-normal text-muted-800 dark:text-muted-100">
                       <span>29</span>
-                      <span className="absolute -top-2 -end-2 h-2.5 w-2.5 rounded-full bg-danger-500"></span>
+                      <span className="absolute -top-2 -right-2 h-2.5 w-2.5 rounded-full bg-danger-500"></span>
                     </p>
                   </div>
                   <div className="text-xs uppercase tracking-wide text-muted-500 dark:text-muted-400">

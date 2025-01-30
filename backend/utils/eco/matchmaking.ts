@@ -96,73 +96,88 @@ export const matchAndCalculateOrders = async (
   return { matchedOrders, bookUpdates };
 };
 
-export const processMatchedOrders = async (
+export async function processMatchedOrders(
   buyOrder: Order,
   sellOrder: Order,
   currentOrderBook: OrderBook,
   bookUpdates: OrderBook
-) => {
+) {
+  // Determine the amount to fill
   const amountToFill =
-    BigInt(buyOrder.remaining) < BigInt(sellOrder.remaining)
-      ? BigInt(buyOrder.remaining)
-      : BigInt(sellOrder.remaining);
+    buyOrder.remaining < sellOrder.remaining
+      ? buyOrder.remaining
+      : sellOrder.remaining;
 
-  updateOrderBook(bookUpdates, buyOrder, currentOrderBook, amountToFill);
-  updateOrderBook(bookUpdates, sellOrder, currentOrderBook, amountToFill);
-
+  // Update the orders' filled and remaining fields
   [buyOrder, sellOrder].forEach((order) => {
     order.filled += amountToFill;
     order.remaining -= amountToFill;
     order.status = order.remaining === BigInt(0) ? "CLOSED" : "OPEN";
   });
 
-  const [currency, pair] = buyOrder.symbol.split("/");
+  // Extract base and quote currency from symbol, e.g., "BTC/USDT" => base=BTC, quote=USDT
+  const [baseCurrency, quoteCurrency] = buyOrder.symbol.split("/");
 
-  try {
-    const buyerWallet = await getUserEcosystemWalletByCurrency(
-      buyOrder.userId,
-      currency
-    );
-    const sellerWallet = await getUserEcosystemWalletByCurrency(
-      sellOrder.userId,
-      pair
-    );
+  // Retrieve buyer's base wallet and seller's quote wallet
+  // - Buyer will receive BASE currency now
+  // - Seller will receive QUOTE currency now
+  const buyerBaseWallet = await getUserEcosystemWalletByCurrency(
+    buyOrder.userId,
+    baseCurrency
+  );
+  const sellerQuoteWallet = await getUserEcosystemWalletByCurrency(
+    sellOrder.userId,
+    quoteCurrency
+  );
 
-    if (buyerWallet && sellerWallet) {
-      const cost =
-        (amountToFill * BigInt(buyOrder.price)) / BigInt(SCALING_FACTOR);
-      const fee =
-        (cost * BigInt(sellOrder.fee)) / (BigInt(100) * BigInt(SCALING_FACTOR));
-
-      await updateWalletBalance(
-        buyerWallet,
-        fromBigInt(removeTolerance(amountToFill)),
-        "add"
-      );
-      await updateWalletBalance(
-        sellerWallet,
-        fromBigInt(removeTolerance(cost - fee)),
-        "add"
-      );
-    }
-  } catch (error) {
-    logError("process_matched_orders", error, __filename);
-    console.error(`Failed to update wallet balances: ${error}`);
+  if (!buyerBaseWallet || !sellerQuoteWallet) {
+    throw new Error("Required wallets not found for buyer or seller.");
   }
 
+  // Determine the final trade price
+  // If one order is market, we take the other's price
+  // If both are limit, the match occurs at the best crossing price logic
   const finalPrice =
-    buyOrder.type === "MARKET"
+    buyOrder.type.toUpperCase() === "MARKET"
       ? sellOrder.price
-      : sellOrder.type === "MARKET"
-      ? buyOrder.price
-      : buyOrder.price;
+      : sellOrder.type.toUpperCase() === "MARKET"
+        ? buyOrder.price
+        : buyOrder.price; // Typically, matching engines define a specific priority, here we just use buyOrder.price as example
 
+  // Calculate cost: amountToFill * finalPrice (scaled by 10^18)
+  const cost = (amountToFill * finalPrice) / SCALING_FACTOR;
+
+  // Fee to be deducted from seller’s proceeds: this was determined at order creation time.
+  // For SELL orders, the fee is stored in `sellOrder.fee` and it should be applied at match time.
+  // For BUY orders, the fee is already covered by the buyer (included in buyer’s locked cost).
+  //
+  // Since the buyer locked cost + fee upfront for a BUY order, we have:
+  // - Buyer: no extra subtraction now, just give them their BASE tokens.
+  // - Seller: receive cost - fee
+  const fee = sellOrder.fee; // Fee is in quote currency terms (scaled by 10^18).
+
+  // Distribute final amounts:
+  // Buyer receives BASE tokens for the filled amount
+  await updateWalletBalance(
+    buyerBaseWallet,
+    fromBigInt(removeTolerance(amountToFill)), // Convert to normal number
+    "add"
+  );
+
+  // Seller receives (cost - fee) in QUOTE tokens
+  await updateWalletBalance(
+    sellerQuoteWallet,
+    fromBigInt(removeTolerance(cost - fee)), // Convert to normal number
+    "add"
+  );
+
+  // Record the trades
   const buyTradeDetail: TradeDetail = {
     id: `${buyOrder.id}`,
     amount: fromBigInt(amountToFill),
     price: fromBigInt(finalPrice),
     cost: fromBigIntMultiply(amountToFill, finalPrice),
-    side: buyOrder.side as EcosystemOrderSide,
+    side: "BUY",
     timestamp: Date.now(),
   };
 
@@ -171,16 +186,20 @@ export const processMatchedOrders = async (
     amount: fromBigInt(amountToFill),
     price: fromBigInt(finalPrice),
     cost: fromBigIntMultiply(amountToFill, finalPrice),
-    side: sellOrder.side as EcosystemOrderSide,
+    side: "SELL",
     timestamp: Date.now(),
   };
 
   addTradeToOrder(buyOrder, buyTradeDetail);
   addTradeToOrder(sellOrder, sellTradeDetail);
 
-  const trades = [buyTradeDetail, sellTradeDetail];
-  handleTradesBroadcast(buyOrder.symbol, trades);
-};
+  // Broadcast the trades
+  handleTradesBroadcast(buyOrder.symbol, [buyTradeDetail, sellTradeDetail]);
+
+  // Update the orderbook entries
+  updateOrderBook(bookUpdates, buyOrder, currentOrderBook, amountToFill);
+  updateOrderBook(bookUpdates, sellOrder, currentOrderBook, amountToFill);
+}
 
 export function addTradeToOrder(order: Order, trade: TradeDetail) {
   let trades: TradeDetail[] = [];

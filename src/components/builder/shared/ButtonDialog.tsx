@@ -62,7 +62,7 @@ const Dialog: React.FC<DialogProps> = ({ open, setOpen, node, actions }) => {
                 {type === "url" && (
                   <Input
                     type="text"
-                    shape="rounded"
+                    shape="rounded-sm"
                     label="URL"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 mb-4"
                     placeholder="Eg. https://codecanyon.net/user/mashdiv"
@@ -73,7 +73,7 @@ const Dialog: React.FC<DialogProps> = ({ open, setOpen, node, actions }) => {
                 {type === "email" && (
                   <Input
                     type="text"
-                    shape="rounded"
+                    shape="rounded-sm"
                     label="Email"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                     placeholder="Eg. johndoe@example.com"
@@ -96,7 +96,7 @@ const Dialog: React.FC<DialogProps> = ({ open, setOpen, node, actions }) => {
                     />
                     <Input
                       type="text"
-                      shape="rounded"
+                      shape="rounded-sm"
                       label="Submit URL"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                       placeholder="Eg. /api/submit"

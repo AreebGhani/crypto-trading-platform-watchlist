@@ -27,7 +27,7 @@ const SelectCurrencyBase = ({}) => {
         </p>
       </div>
 
-      <div className="mx-auto mb-4 w-full max-w-lg rounded px-4 md:px-8 pb-8">
+      <div className="mx-auto mb-4 w-full max-w-lg rounded-sm px-4 md:px-8 pb-8">
         <div>
           <ComboBox
             selected={selectedCurrency}

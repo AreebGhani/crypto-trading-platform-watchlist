@@ -31,9 +31,9 @@ const SubMenuItemBase = ({
   const activeBaseClass =
     'after:absolute after:top-0 after:h-full after:w-1 after:content-[""]';
 
-  const activeClass = `text-white ${activeBaseClass} after:-end-[2.4px] after:rounded-full after:bg-primary-400`;
+  const activeClass = `text-white ${activeBaseClass} after:-right-[2.4px] after:rounded-full after:bg-primary-400`;
   const inactiveClass = "text-white/70 hover:text-white";
-  const activeDarkClass = `text-primary-500 ${activeBaseClass} after:end-[-2.4px] after:rounded-xl after:bg-primary-500 dark:after:bg-primary-400 dark:text-primary-400`;
+  const activeDarkClass = `text-primary-500 ${activeBaseClass} after:right-[-2.4px] after:rounded-xl after:bg-primary-500 dark:after:bg-primary-400 dark:text-primary-400`;
   const inactiveDarkClass =
     "text-muted-400 hover:text-muted-500 dark:text-muted-400 dark:hover:text-muted-300";
 

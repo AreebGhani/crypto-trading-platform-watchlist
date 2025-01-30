@@ -91,7 +91,7 @@ const MenuItemsBase = ({
 
   if (collapse) {
     return (
-      <li className="slimscroll flex-grow overflow-y-auto overflow-x-hidden py-3">
+      <li className="slimscroll grow overflow-y-auto overflow-x-hidden py-3">
         <nav>
           <ul className={listClasses}>{content}</ul>
         </nav>

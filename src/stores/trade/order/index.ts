@@ -2,30 +2,6 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import $fetch from "@/utils/api";
 
-type Order = {
-  id: string;
-  userId: string;
-  referenceId: string;
-  status: "OPEN" | "CLOSED" | "CANCELED" | "EXPIRED" | "REJECTED";
-  currency: string;
-  pair: string;
-  type: "MARKET" | "LIMIT";
-  timeInForce: string;
-  side: "BUY" | "SELL";
-  price: number;
-  average: number;
-  amount: number;
-  filled: number;
-  remaining: number;
-  cost: number;
-  trades: any;
-  fee: number;
-  feeCurrency: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string;
-};
-
 type OrderStore = {
   currencyBalance: number;
   pairBalance: number;
@@ -54,11 +30,10 @@ type OrderStore = {
     side: "BUY" | "SELL",
     amount: number,
     price?: number
-  ) => void;
+  ) => Promise<boolean>;
   setOrdersTab: (tab: "OPEN" | "HISTORY" | "AI") => void;
   setOrders: (orders: Order[]) => void;
   setOpenOrders: (openOrders: Order[]) => void;
-  handleOrderMessage: (message: any) => void;
   cancelOrder: (
     id: string,
     isEco: boolean,
@@ -194,32 +169,42 @@ export const useOrderStore = create<OrderStore>()(
 
       const { fetchOrders, fetchWallets } = get();
       const url = isEco ? "/api/ext/ecosystem/order" : "/api/exchange/order";
-      const { error } = await $fetch({
-        url,
-        method: "POST",
-        body: {
-          currency,
-          pair,
-          amount,
-          type: orderType,
-          side,
-          price:
-            orderType === "MARKET"
-              ? side === "BUY"
-                ? get().ask
-                : get().bid
-              : Number(price),
-        },
-      });
 
-      if (!error) {
-        fetchWallets(isEco, currency, pair);
-        fetchOrders(isEco, currency, pair);
+      try {
+        const { error } = await $fetch({
+          url,
+          method: "POST",
+          body: {
+            currency,
+            pair,
+            amount,
+            type: orderType,
+            side,
+            price:
+              orderType === "MARKET"
+                ? side === "BUY"
+                  ? get().ask
+                  : get().bid
+                : Number(price),
+          },
+        });
+
+        if (!error) {
+          await fetchWallets(isEco, currency, pair);
+          await fetchOrders(isEco, currency, pair);
+
+          return true;
+        }
+      } catch (error) {
+        console.error("Failed to place order:", error);
+        throw error;
+      } finally {
+        set((state) => {
+          state.loading = false;
+        });
       }
 
-      set((state) => {
-        state.loading = false;
-      });
+      return false;
     },
 
     setOrders: (orders: Order[]) => {
@@ -231,29 +216,6 @@ export const useOrderStore = create<OrderStore>()(
     setOpenOrders: (openOrders: Order[]) => {
       set((state) => {
         state.openOrders = openOrders;
-      });
-    },
-
-    handleOrderMessage: (message: any) => {
-      if (!message || !message.data) return;
-
-      const { data } = message;
-      if (!data || !Array.isArray(data.data)) return;
-
-      set((state) => {
-        const newItems = [...state.openOrders];
-        for (const item of data.data) {
-          const index = newItems.findIndex((i) => i.id === item.id);
-          if (index > -1) {
-            newItems[index] = {
-              ...newItems[index],
-              ...item,
-            };
-          } else {
-            newItems.push(item);
-          }
-        }
-        state.openOrders = newItems;
       });
     },
 

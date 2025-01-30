@@ -1,7 +1,7 @@
 import { memo } from "react";
 import ListWidgetItem from "@/components/widgets/ListWidgetItem";
 import { MashImage } from "@/components/elements/MashImage";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
 
@@ -25,7 +25,7 @@ const OrderProductListBase = ({ products }) => {
         itemAction={
           <div className="flex items-center gap-2">
             {product.type === "DOWNLOADABLE" && (
-              <AnimatedTooltip
+              <Tooltip
                 content={
                   product.ecommerceOrderItem?.key
                     ? "Download key"
@@ -69,7 +69,7 @@ const OrderProductListBase = ({ products }) => {
                     }
                   }}
                 />
-              </AnimatedTooltip>
+              </Tooltip>
             )}
 
             <Link

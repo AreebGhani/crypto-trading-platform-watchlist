@@ -4,31 +4,31 @@
 .apexcharts-xaxis-label,
 .apexcharts-yaxis-label,
 .apexcharts-legend-text {
-  @apply font-sans font-normal !text-muted-500 dark:!text-muted-400 fill-current;
+  @apply font-sans font-normal text-muted-500! dark:text-muted-400! fill-current;
 }
 
 .apexcharts-bar-series .apexcharts-datalabels,
 .apexcharts-rangebar-series .apexcharts-datalabels {
-  @apply !font-thin;
+  @apply font-thin!;
 }
 
 .apexcharts-bar-series .apexcharts-datalabels text,
 .apexcharts-rangebar-series .apexcharts-datalabels text {
-  @apply !text-white fill-current;
+  @apply text-white! fill-current;
   font-weight: 400 !important;
 }
 
 .apexcharts-gridline,
 .apexcharts-gridline + line {
-  @apply !text-muted-200 dark:!text-muted-800 !stroke-current;
+  @apply text-muted-200! dark:text-muted-800! stroke-current!;
 }
 
 .apexcharts-gridlines-vertical line {
-  @apply !text-transparent dark:!text-transparent !stroke-current;
+  @apply text-transparent! dark:text-transparent! stroke-current!;
 }
 
 .apexcharts-subtitle-text {
-  @apply text-muted-800 dark:!text-muted-100 !fill-current;
+  @apply text-muted-800 dark:text-muted-100! fill-current!;
 }
 
 .apexcharts-xaxis line,
@@ -56,7 +56,7 @@
 }
 
 .apexcharts-slices .apexcharts-pie-label {
-  @apply !text-muted-50 dark:!text-muted-100 !stroke-none !fill-current;
+  @apply text-muted-50! dark:text-muted-100! stroke-none! fill-current!;
 }
 
 .apexcharts-radialbar-track .apexcharts-radialbar-area,

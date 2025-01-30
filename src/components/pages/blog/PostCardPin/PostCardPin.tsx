@@ -19,7 +19,7 @@ const PostCardPinBase = ({ post }: PostCardPinProps) => {
           <h3 className="line-clamp-2 text-gray-800 dark:text-gray-100">
             {post.title}
           </h3>
-          <div className="text-base !m-0 !p-0 font-normal">
+          <div className="text-base m-0! p-0! font-normal">
             <span className="text-slate-500 ">
               {post.content?.slice(0, 120)}...
             </span>

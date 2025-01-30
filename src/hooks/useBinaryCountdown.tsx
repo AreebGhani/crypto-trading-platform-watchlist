@@ -1,58 +1,86 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
-export const formatTime = (timeInSeconds: number) => {
-  const roundedTimeInSeconds = Math.floor(timeInSeconds);
-  const hours = String(Math.floor(roundedTimeInSeconds / 3600)).padStart(
+const MIN_TIME_LEFT = 50; // Minimum threshold (in seconds) before selecting the next expiration
+
+/**
+ * Formats a given time (in seconds) into HH:MM:SS format.
+ */
+export const formatTime = (timeInSeconds: number): string => {
+  const roundedTime = Math.floor(timeInSeconds);
+  const hours = String(Math.floor(roundedTime / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((roundedTime % 3600) / 60)).padStart(
     2,
     "0"
   );
-  const minutes = String(
-    Math.floor((roundedTimeInSeconds % 3600) / 60)
-  ).padStart(2, "0");
-  const seconds = String(roundedTimeInSeconds % 60).padStart(2, "0");
+  const seconds = String(roundedTime % 60).padStart(2, "0");
   return `${hours}:${minutes}:${seconds}`;
 };
 
-const generateExpirations = () => {
+/**
+ * Generates a list of expiration times based on predefined minute intervals.
+ * Starts counting from the next full minute.
+ */
+const generateExpirations = (): { minutes: number; expirationTime: Date }[] => {
   const expirations = [1, 2, 3, 5, 10, 15, 20, 30, 60, 120, 240, 360];
+
   const now = new Date();
-  now.setSeconds(0, 0); // Round to the start of the next minute
+  // Move to the very next full minute to ensure expirations start at a clean minute mark.
+  now.setSeconds(0, 0);
+  if (now.getTime() <= Date.now()) {
+    now.setMinutes(now.getMinutes() + 1);
+  }
+
   return expirations.map((minutes) => {
     const expirationTime = new Date(now.getTime() + minutes * 60000);
     return { minutes, expirationTime };
   });
 };
 
+/**
+ * Hook that provides a countdown mechanism for binary expirations.
+ * It updates every second, shifting to a future expiration when the current one
+ * is within a certain threshold of expiring.
+ */
 export const useBinaryCountdown = () => {
   const [expirations, setExpirations] = useState(generateExpirations);
-  const [expiry, setExpiry] = useState(
+
+  // Find an initial expiration that is more than MIN_TIME_LEFT seconds away, or fallback to the first one.
+  const initialExpiry =
     expirations.find(
-      (exp) => (exp.expirationTime.getTime() - new Date().getTime()) / 1000 > 50
-    ) || expirations[0]
-  );
+      (exp) =>
+        (exp.expirationTime.getTime() - Date.now()) / 1000 > MIN_TIME_LEFT
+    ) || expirations[0];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newExpirations = generateExpirations();
-      setExpirations(newExpirations);
+  const [expiry, setExpiry] = useState(initialExpiry);
 
-      const timeLeft = Math.round(
-        (expiry.expirationTime.getTime() - new Date().getTime()) / 1000
+  /**
+   * Recalculate expirations and possibly update the current expiry if we're running out of time.
+   */
+  const updateExpirations = useCallback(() => {
+    const newExpirations = generateExpirations();
+    setExpirations(newExpirations);
+
+    const timeLeft = Math.round(
+      (expiry.expirationTime.getTime() - Date.now()) / 1000
+    );
+
+    // If the current expiry is too close, select the next suitable one
+    if (timeLeft <= MIN_TIME_LEFT) {
+      const nextExpiration = newExpirations.find(
+        (exp) =>
+          (exp.expirationTime.getTime() - Date.now()) / 1000 > MIN_TIME_LEFT
       );
 
-      if (timeLeft <= 50) {
-        const nextExpiration = newExpirations.find(
-          (exp) =>
-            (exp.expirationTime.getTime() - new Date().getTime()) / 1000 > 50
-        );
-        if (nextExpiration) {
-          setExpiry(nextExpiration);
-        }
+      if (nextExpiration) {
+        setExpiry(nextExpiration);
       }
-    }, 1000); // Update every second
-
-    return () => clearInterval(interval);
+    }
   }, [expiry]);
+
+  useEffect(() => {
+    const interval = setInterval(updateExpirations, 1000);
+    return () => clearInterval(interval);
+  }, [updateExpirations]);
 
   return { expirations, expiry, setExpiry };
 };

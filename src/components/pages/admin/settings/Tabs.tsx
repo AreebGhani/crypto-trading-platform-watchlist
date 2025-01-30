@@ -75,6 +75,12 @@ const Tabs: React.FC<TabsProps> = ({ mainTab, setMainTab }) => {
         tabName="WALLET"
       />
       <Tab
+        label={t("Animations")}
+        activeTab={mainTab}
+        setActiveTab={setMainTab}
+        tabName="ANIMATIONS"
+      />
+      <Tab
         label={t("Logos")}
         activeTab={mainTab}
         setActiveTab={setMainTab}

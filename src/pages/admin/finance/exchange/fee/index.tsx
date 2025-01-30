@@ -6,7 +6,7 @@ import { useTranslation } from "next-i18next";
 import { debounce } from "lodash";
 import { ObjectTable } from "@/components/elements/base/object-table";
 import IconBox from "@/components/elements/base/iconbox/IconBox";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 const api = "/api/admin/finance/exchange/fee";
 interface FeeComparison {
   currency: string;
@@ -78,19 +78,19 @@ const ExchangeOrderFeesDashboard: React.FC = () => {
         setItems={setFees}
         columnConfig={columnConfig}
         navSlot={
-          <AnimatedTooltip content={t("Refresh")}>
+          <Tooltip content={t("Refresh")}>
             <IconBox
               color="primary"
               onClick={() => fetchOrderFees()}
               size={"sm"}
-              shape={"rounded"}
+              shape={"rounded-sm"}
               variant={"pastel"}
-              className="cursor-pointer hover:shadow transition-all duration-300 ease-in-out hover:shadow-muted-300/30 dark:hover:shadow-muted-800/20 hover:bg-primary-500 hover:text-muted-100"
+              className="cursor-pointer hover:shadow-sm transition-all duration-300 ease-in-out hover:shadow-muted-300/30 dark:hover:shadow-muted-800/20 hover:bg-primary-500 hover:text-muted-100"
               icon="mdi:refresh"
             />
-          </AnimatedTooltip>
+          </Tooltip>
         }
-        shape="rounded"
+        shape="rounded-sm"
         size="sm"
         filterField="currency"
         initialPerPage={20}

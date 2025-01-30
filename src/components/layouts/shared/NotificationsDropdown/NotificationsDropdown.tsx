@@ -28,7 +28,7 @@ const NotificationsDropdownBase = () => {
     <>
       <div className="group relative text-start">
         {hasNotifications && (
-          <span className="absolute end-0.5 top-0.5 z-[2] block h-2 w-2 rounded-full bg-primary-500 "></span>
+          <span className="absolute right-0.5 top-0.5 z-2 block h-2 w-2 rounded-full bg-primary-500 "></span>
         )}
         <button
           type="button"
@@ -51,7 +51,7 @@ const NotificationsDropdownBase = () => {
         size="xl"
         onClose={() => setIsPanelOpened(false)}
       >
-        <NotificationTabs shape="rounded" />
+        <NotificationTabs shape="rounded-sm" />
       </Panel>
     </>
   );

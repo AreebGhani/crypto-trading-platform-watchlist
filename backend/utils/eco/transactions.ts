@@ -6,7 +6,7 @@ import { logError } from "@b/utils/logger";
 import SolanaService from "../../blockchains/sol";
 import TronService from "@b/blockchains/tron";
 import MoneroService from "@b/blockchains/xmr";
-// import TonService from "@b/blockchains/ton";
+import TonService from "@b/blockchains/ton";
 
 const CACHE_EXPIRATION = 30;
 
@@ -47,9 +47,9 @@ export const fetchEcosystemTransactions = async (
     } else if (chain === "XMR") {
       const moneroService = await MoneroService.getInstance();
       return await moneroService.fetchTransactions("master_wallet");
-      // } else if (chain === "TON") {
-      //   const tonService = await TonService.getInstance();
-      //   return await tonService.fetchTransactions(address);
+    } else if (chain === "TON") {
+      const tonService = await TonService.getInstance();
+      return await tonService.fetchTransactions(address);
     } else {
       return await fetchAndParseTransactions(address, chain, config);
     }

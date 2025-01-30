@@ -18,7 +18,7 @@ interface Notification {
   updatedAt: string;
 }
 interface NotificationTabsProps {
-  shape?: "straight" | "rounded" | "smooth" | "curved" | "full";
+  shape?: "straight" | "rounded-sm" | "smooth" | "curved" | "full";
 }
 const NotificationItem: React.FC<{
   item: Notification;
@@ -124,12 +124,12 @@ const NotificationTabs: React.FC<NotificationTabsProps> = ({
   };
   return (
     <div className="relative w-full h-full flex flex-col overflow-x-hidden slimscroll">
-      <div className="flex-shrink-0 pe-1">
+      <div className="shrink-0 pe-1">
         <Tab.Group>
           <Tab.List
             className={`
               flex space-x-1 bg-muted-100 p-1 dark:bg-muted-900
-              ${shape === "rounded" ? "rounded-md" : ""}
+              ${shape === "rounded-sm" ? "rounded-md" : ""}
               ${shape === "smooth" ? "rounded-lg" : ""}
               ${shape === "curved" ? "rounded-xl" : ""}
               ${shape === "full" ? "rounded-full" : ""}
@@ -141,12 +141,12 @@ const NotificationTabs: React.FC<NotificationTabsProps> = ({
                 className={({ selected }) =>
                   cn(
                     "w-full py-2.5 text-sm font-medium leading-5",
-                    shape === "rounded" ? "rounded-md" : "",
+                    shape === "rounded-sm" ? "rounded-md" : "",
                     shape === "smooth" ? "rounded-lg" : "",
                     shape === "curved" ? "rounded-xl" : "",
                     shape === "full" ? "rounded-full" : "",
                     selected
-                      ? "bg-white text-primary-500 shadow dark:bg-muted-800"
+                      ? "bg-white text-primary-500 shadow-sm dark:bg-muted-800"
                       : "text-muted-400 hover:text-muted-500 dark:hover:text-muted-100"
                   )
                 }
@@ -156,7 +156,7 @@ const NotificationTabs: React.FC<NotificationTabsProps> = ({
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels className="flex-grow mt-2">
+          <Tab.Panels className="grow mt-2">
             {Object.entries(categories).map(([category, items]) => (
               <Tab.Panel key={category} className="relative py-3">
                 {items.length === 0 ? (
@@ -182,7 +182,7 @@ const NotificationTabs: React.FC<NotificationTabsProps> = ({
                         variant={"pastel"}
                         size={"sm"}
                         color={"danger"}
-                        shape={"rounded"}
+                        shape={"rounded-sm"}
                         onClick={() => handleClearClick(category)}
                       >
                         {clearIcon[category] ? (

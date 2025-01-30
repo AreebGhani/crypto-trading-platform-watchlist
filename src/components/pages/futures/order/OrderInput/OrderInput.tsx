@@ -9,7 +9,7 @@ import { useFuturesOrderStore } from "@/stores/futures/order";
 import { useRouter } from "next/router";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 import useFuturesMarketStore from "@/stores/futures/market";
 import { useTranslation } from "next-i18next";
 import { toast } from "sonner";
@@ -148,7 +148,7 @@ const OrderInputBase = ({ type, side }) => {
               {t("Available")} {pairBalance.toFixed(getPrecision("amount"))}{" "}
               {market?.pair}
             </span>
-            <AnimatedTooltip content={`Transfer ${market?.pair}`}>
+            <Tooltip content={`Transfer ${market?.pair}`}>
               <Link
                 href={
                   profile?.id
@@ -161,7 +161,7 @@ const OrderInputBase = ({ type, side }) => {
                   className="h-3 w-3 text-primary-500 cursor-pointer border border-primary-500 rounded-full hover:bg-primary-500 hover:text-white"
                 />
               </Link>
-            </AnimatedTooltip>
+            </Tooltip>
           </div>
           {type !== "MARKET" && (
             <span
@@ -179,7 +179,7 @@ const OrderInputBase = ({ type, side }) => {
             placeholder={type === "MARKET" ? "Market" : price.toString()}
             label={t("Price")}
             postLabel={market?.pair}
-            shape={"rounded-sm"}
+            shape={"rounded-xs"}
             disabled={type === "MARKET"}
             value={type === "MARKET" ? "" : price}
             onChange={(e) => setPrice(parseFloat(e.target.value))}
@@ -197,7 +197,7 @@ const OrderInputBase = ({ type, side }) => {
             placeholder="0.0"
             label={type === "MARKET" ? "" : "Amount"}
             postLabel={inputType === "AMOUNT" ? market?.currency : market?.pair}
-            shape={"rounded-sm"}
+            shape={"rounded-xs"}
             options={options}
             selected={inputType}
             setSelected={(value) => {
@@ -221,7 +221,7 @@ const OrderInputBase = ({ type, side }) => {
                 placeholder="0.0"
                 label={t("Stop Price")}
                 postLabel={market?.pair}
-                shape={"rounded-sm"}
+                shape={"rounded-xs"}
                 value={stopPrice ?? ""}
                 onChange={(e) =>
                   setStopPrice(parseFloat(e.target.value) || undefined)
@@ -240,7 +240,7 @@ const OrderInputBase = ({ type, side }) => {
                 placeholder="0.0"
                 label={t("Take Profit")}
                 postLabel={market?.pair}
-                shape={"rounded-sm"}
+                shape={"rounded-xs"}
                 value={takeProfitPrice ?? ""}
                 onChange={(e) =>
                   setTakeProfitPrice(parseFloat(e.target.value) || undefined)
@@ -275,7 +275,7 @@ const OrderInputBase = ({ type, side }) => {
               options={leverageOptions}
               value={leverage}
               onChange={(e) => setLeverage(parseFloat(e.target.value))}
-              shape={"rounded-sm"}
+              shape={"rounded-xs"}
             />
           ) : (
             <CompactInput
@@ -283,7 +283,7 @@ const OrderInputBase = ({ type, side }) => {
               className="input"
               label={t("Leverage")}
               value={leverage}
-              shape={"rounded-sm"}
+              shape={"rounded-xs"}
               disabled
             />
           )}
@@ -296,7 +296,7 @@ const OrderInputBase = ({ type, side }) => {
             }
             animated={false}
             className="w-full"
-            shape={"rounded-sm"}
+            shape={"rounded-xs"}
             onClick={() => {
               if (profile?.id) {
                 handlePlaceOrder();

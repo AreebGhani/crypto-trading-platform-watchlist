@@ -39,7 +39,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ items, separator = "slash" }) => {
 
                 {separator === "slash" ? (
                   <svg
-                    className="mx-2 h-5 w-5 flex-shrink-0 text-muted-400 dark:text-muted-600"
+                    className="mx-2 h-5 w-5 shrink-0 text-muted-400 dark:text-muted-600"
                     width="16"
                     height="16"
                     viewBox="0 0 16 16"
@@ -58,7 +58,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ items, separator = "slash" }) => {
                 )}
                 {separator === "chevron" ? (
                   <svg
-                    className="mx-2 h-3 w-3 flex-shrink-0 text-muted-400 dark:text-muted-600"
+                    className="mx-2 h-3 w-3 shrink-0 text-muted-400 dark:text-muted-600"
                     width="16"
                     height="16"
                     viewBox="0 0 16 16"
@@ -77,7 +77,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ items, separator = "slash" }) => {
                 )}
                 {separator === "dot" ? (
                   <svg
-                    className="mx-2 h-3 w-3 flex-shrink-0 text-muted-400 dark:text-muted-600"
+                    className="mx-2 h-3 w-3 shrink-0 text-muted-400 dark:text-muted-600"
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"
                     height="32"
@@ -99,7 +99,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ items, separator = "slash" }) => {
                 )}
                 {separator === "arrow" ? (
                   <svg
-                    className="mx-3 h-4 w-4 flex-shrink-0 text-muted-400 dark:text-muted-600"
+                    className="mx-3 h-4 w-4 shrink-0 text-muted-400 dark:text-muted-600"
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"
                     height="32"

@@ -219,12 +219,9 @@ const CategoryPage: React.FC<Props> = ({ category, error }) => {
 
 export async function getServerSideProps(context: any) {
   const { categoryName } = context.params;
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const baseUrl = `${protocol}://${context.req.headers.host}`;
-
   try {
-    const response = await $serverFetch({
-      url: `${baseUrl}/api/ext/ecommerce/category/${categoryName}`,
+    const response = await $serverFetch(context, {
+      url: `/api/ext/ecommerce/category/${categoryName}`,
     });
 
     if (!response.data) {

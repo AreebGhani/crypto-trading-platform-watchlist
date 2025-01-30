@@ -23,7 +23,7 @@ const DepositConfirmedBase = ({}: DepositConfirmedProps) => {
         </p>
       </div>
 
-      <div className="mx-auto mb-4 w-full max-w-lg rounded px-8 pb-8">
+      <div className="mx-auto mb-4 w-full max-w-lg rounded-sm px-8 pb-8">
         <Card color="contrast" className="p-6 text-center font-sans">
           <IconBox
             icon="ph:check-circle-duotone"

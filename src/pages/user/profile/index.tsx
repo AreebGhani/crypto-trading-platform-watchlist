@@ -16,7 +16,6 @@ import WagmiProviderWrapper from "@/context/useWagmi";
 import { useTranslation } from "next-i18next";
 import AccountDeletion from "@/components/pages/user/profile/AccountDeletion";
 
-const kycStatus = process.env.NEXT_PUBLIC_KYC_STATUS === "true" || false;
 const twoFactorStatus = process.env.NEXT_PUBLIC_2FA_STATUS === "true" || false;
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID;
 
@@ -48,9 +47,10 @@ const Tab = ({ label, activeTab, setActiveTab, tabName }) => {
 
 const Tabs = ({ mainTab, setMainTab }) => {
   const { t } = useTranslation();
+  const { settings } = useDashboardStore();
   return (
     <div className="flex gap-2 border-b border-muted-200 dark:border-muted-800 overflow-x-auto">
-      {kycStatus ? (
+      {settings?.kycStatus === "true" ? (
         <Tab
           label={t("Verification")}
           activeTab={mainTab}
@@ -105,7 +105,7 @@ const Tabs = ({ mainTab, setMainTab }) => {
 
 const UserSettings = () => {
   const { t } = useTranslation();
-  const { profile } = useDashboardStore();
+  const { profile, settings } = useDashboardStore();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<any>({});
@@ -139,7 +139,7 @@ const UserSettings = () => {
     if (tab) {
       setMainTab(tab.toUpperCase());
     } else {
-      setMainTab(kycStatus ? "KYC" : "PERSONAL");
+      setMainTab(settings?.kycStatus === "true" ? "KYC" : "PERSONAL");
     }
   }, [router.query]);
 
@@ -249,7 +249,7 @@ const UserSettings = () => {
         <div className="w-full h-full flex flex-col">
           <Tabs mainTab={mainTab} setMainTab={setMainTab} />
           <div className="w-full flex p-4 flex-col h-full">
-            {kycStatus ? (
+            {settings?.kycStatus === "true" ? (
               mainTab === "KYC" && <KycStatus />
             ) : (
               <>

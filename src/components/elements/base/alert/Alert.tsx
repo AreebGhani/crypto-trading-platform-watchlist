@@ -19,7 +19,7 @@ interface AlertProps {
     | "danger"
     | undefined
     | null;
-  shape?: "straight" | "rounded" | "rounded-sm" | "smooth" | "curved";
+  shape?: "straight" | "rounded-sm" | "rounded-xs" | "smooth" | "curved";
   className?: string;
   iconClassName?: string;
   style?: React.CSSProperties;
@@ -61,8 +61,8 @@ const Alert: FC<AlertProps> = ({
         {visible ? (
           <div
             className={`${className} flex items-center gap-2 border py-3 pe-2 ps-4
-        ${shape === "rounded-sm" ? "rounded-sm" : ""}
-        ${shape === "rounded" ? "rounded-md" : ""}
+        ${shape === "rounded-xs" ? "rounded-xs" : ""}
+        ${shape === "rounded-sm" ? "rounded-md" : ""}
         ${shape === "smooth" ? "rounded-lg" : ""}
         ${shape === "curved" ? "rounded-xl" : ""}
         ${

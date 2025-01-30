@@ -114,7 +114,7 @@ const Player: FC<PlayerProps> = ({
   };
   return (
     <div
-      className="relative w-full overflow-hidden rounded-md pt-[56.25%] [&>div]:absolute [&>div]:start-0 [&>div]:top-0 [&>div]:!w-full"
+      className="relative w-full overflow-hidden rounded-md pt-[56.25%] [&>div]:absolute [&>div]:left-0 [&>div]:top-0 [&>div]:w-full!"
       onMouseDown={mouseMoveHandler}
     >
       <ReactPlayer

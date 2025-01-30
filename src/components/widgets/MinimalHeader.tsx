@@ -5,7 +5,7 @@ import ThemeSwitcher from "@/components/widgets/ThemeSwitcher";
 
 const MinimalHeader = () => {
   return (
-    <div className="absolute start-0 top-0 w-full px-3 z-30">
+    <div className="absolute left-0 top-0 w-full px-3 z-30">
       <div className="mx-auto lg:max-w-[1152px]">
         <div className="flex min-h-[3.6rem] items-center justify-between">
           <div className="flex items-center">

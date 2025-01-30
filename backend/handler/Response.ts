@@ -10,6 +10,8 @@ import { getCommonExpiration, getStatusMessage } from "../utils";
 import { Request } from "./Request";
 import logger from "@b/utils/logger";
 
+const isProd = process.env.NODE_ENV === "production";
+
 export class Response {
   private aborted = false;
 
@@ -24,12 +26,11 @@ export class Response {
   }
 
   public handleError(code: number, message: any) {
+    const errorMsg = typeof message === "string" ? message : String(message);
     this.res.cork(() => {
-      this.res.writeStatus(`${code} ${getStatusMessage(code)}`).end(
-        JSON.stringify({
-          message,
-        })
-      );
+      this.res
+        .writeStatus(`${code} ${getStatusMessage(code)}`)
+        .end(JSON.stringify({ message: errorMsg }));
     });
   }
 
@@ -157,7 +158,7 @@ export class Response {
   }
 
   setSecureCookies({ accessToken, csrfToken, sessionId }, request) {
-    const secure = process.env.NODE_ENV === "production"; // Assuming NODE_ENV is set
+    const secure = isProd;
 
     this.setSecureCookie("accessToken", accessToken, {
       httpOnly: true,
@@ -239,12 +240,9 @@ export class Response {
 
     try {
       this.res.cork(() => {
-        this.handleCookiesInResponse(req, Number(statusCode), responseData);
-
         const response = this.compressResponse(req, responseData);
-
+        this.handleCookiesInResponse(req, Number(statusCode), responseData);
         this.writeCommonHeaders();
-
         this.res.writeStatus(
           `${statusCode} ${getStatusMessage(Number(statusCode))}`
         );
@@ -285,35 +283,48 @@ export class Response {
 
   private compressResponse(req: Request, responseData: any): Buffer {
     const acceptEncoding = req.headers["accept-encoding"] || "";
+    let rawData: Buffer;
 
-    // Convert the responseData to a Buffer for size checking
-    let response = responseData
-      ? Buffer.from(JSON.stringify(responseData))
-      : Buffer.from("{}");
-
-    // Set a threshold of 1KB (1024 bytes)
-    const sizeThreshold = 1024;
-
-    // If the response size is below the threshold, skip compression
-    if (response.length < sizeThreshold) {
-      this.res.writeHeader("Content-Encoding", "identity"); // No compression
-      return response;
+    try {
+      rawData = Buffer.from(JSON.stringify(responseData ?? {}));
+    } catch {
+      rawData = Buffer.from(JSON.stringify({}));
     }
 
-    // Compress the response based on accepted encodings
-    let contentEncoding = "identity"; // Default, no compression
-    if (acceptEncoding.includes("gzip")) {
-      response = zlib.gzipSync(response);
-      contentEncoding = "gzip";
-    } else if (acceptEncoding.includes("br") && zlib.brotliCompressSync) {
-      response = zlib.brotliCompressSync(response);
-      contentEncoding = "br";
-    } else if (acceptEncoding.includes("deflate")) {
-      response = zlib.deflateSync(response);
-      contentEncoding = "deflate";
+    const sizeThreshold = 1024;
+    if (rawData.length < sizeThreshold) {
+      this.res.writeHeader("Content-Encoding", "identity");
+      return rawData;
+    }
+
+    let contentEncoding = "identity";
+    try {
+      if (acceptEncoding.includes("gzip")) {
+        rawData = zlib.gzipSync(rawData);
+        contentEncoding = "gzip";
+      } else if (
+        acceptEncoding.includes("br") &&
+        typeof zlib.brotliCompressSync === "function"
+      ) {
+        rawData = zlib.brotliCompressSync(rawData);
+        contentEncoding = "br";
+      } else if (acceptEncoding.includes("deflate")) {
+        rawData = zlib.deflateSync(rawData);
+        contentEncoding = "deflate";
+      }
+    } catch (compressionError) {
+      // If compression fails, fall back to identity
+      logger(
+        "warn",
+        "response",
+        __filename,
+        `Compression error: ${compressionError.message}`
+      );
+      rawData = Buffer.from(JSON.stringify(responseData ?? {}));
+      contentEncoding = "identity";
     }
 
     this.res.writeHeader("Content-Encoding", contentEncoding);
-    return response;
+    return rawData;
   }
 }

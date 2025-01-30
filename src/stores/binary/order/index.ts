@@ -2,33 +2,14 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import $fetch from "@/utils/api";
 
-type Order = {
-  id: string;
-  userId: string;
-  symbol: string;
-  price: number;
-  amount: number;
-  profit: number;
-  side: "RISE" | "FALL";
-  type: "RISE_FALL";
-  status: "WIN" | "LOSS" | "DRAW" | "PENDING";
-  isDemo: boolean;
-  closedAt: string;
-  closePrice: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
-
 type OrderStore = {
   wallet: any;
   ask: number;
   bid: number;
   ordersTab: "OPEN" | "HISTORY";
-  orders: Order[];
-  openOrders: Order[];
+  orders: binaryOrderAttributes[];
+  openOrders: binaryOrderAttributes[];
   loading: boolean;
-  orderInProcess: boolean;
   practiceBalances: Record<string, number>;
 
   fetchWallet: (currency: string) => void;
@@ -36,20 +17,22 @@ type OrderStore = {
   setAsk: (ask: number) => void;
   setBid: (bid: number) => void;
   removeOrder: (orderId: string) => void;
-  setOrderInProcess: (status: boolean) => void;
 
   placeOrder: (
     currency: string,
     pair: string,
-    side: "RISE" | "FALL",
+    side: BinaryOrderSide,
     amount: number,
     closedAt: string,
     isDemo?: boolean,
-    type?: "RISE_FALL"
+    type?: BinaryOrderType,
+    barrier?: number,
+    strikePrice?: number,
+    payoutPerPoint?: number
   ) => void;
   setOrdersTab: (tab: "OPEN" | "HISTORY") => void;
-  setOrders: (orders: Order[]) => void;
-  setOpenOrders: (openOrders: Order[]) => void;
+  setOrders: (orders: binaryOrderAttributes[]) => void;
+  setOpenOrders: (openOrders: binaryOrderAttributes[]) => void;
 
   cancelOrder: (
     id: string,
@@ -68,6 +51,17 @@ type OrderStore = {
   getPracticeBalance: (currency: string, pair: string) => number;
 };
 
+function shallowCompareOrders(
+  a: binaryOrderAttributes[],
+  b: binaryOrderAttributes[]
+) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i].id !== b[i].id) return false;
+  }
+  return true;
+}
+
 export const useBinaryOrderStore = create<OrderStore>()(
   immer((set, get) => ({
     wallet: null,
@@ -77,14 +71,7 @@ export const useBinaryOrderStore = create<OrderStore>()(
     orders: [],
     openOrders: [],
     loading: false,
-    orderInProcess: false,
     practiceBalances: {},
-
-    setOrderInProcess: (status: boolean) => {
-      set((state) => {
-        state.orderInProcess = status;
-      });
-    },
 
     setOrdersTab: (tab: "OPEN" | "HISTORY") => {
       set((state) => {
@@ -112,26 +99,31 @@ export const useBinaryOrderStore = create<OrderStore>()(
       });
     },
 
-    fetchOrders: async (
-      currency: string,
-      pair: string,
-      isDemo: boolean = false
-    ) => {
+    fetchOrders: async (currency: string, pair: string, isDemo = false) => {
       set((state) => {
         state.loading = true;
       });
 
       const { ordersTab } = get();
-
       const url = `/api/exchange/binary/order`;
       const { data, error } = await $fetch({
         url: `${url}?currency=${currency}&pair=${pair}&type=${ordersTab}&isDemo=${isDemo}`,
         silent: true,
       });
 
-      if (!error) {
+      if (!error && Array.isArray(data)) {
         set((state) => {
-          state[ordersTab === "OPEN" ? "openOrders" : "orders"] = data;
+          const isOpen = ordersTab === "OPEN";
+          const currentOrders = isOpen ? state.openOrders : state.orders;
+
+          // Only update if there's a difference
+          if (!shallowCompareOrders(currentOrders, data)) {
+            if (isOpen) {
+              state.openOrders = data;
+            } else {
+              state.orders = data;
+            }
+          }
         });
       }
 
@@ -155,42 +147,60 @@ export const useBinaryOrderStore = create<OrderStore>()(
     placeOrder: async (
       currency: string,
       pair: string,
-      side: "RISE" | "FALL",
+      side: BinaryOrderSide,
       amount: number,
       closedAt: string,
       isDemo: boolean = false,
-      type: "RISE_FALL" = "RISE_FALL"
+      type: BinaryOrderType = "RISE_FALL",
+      barrier?: number,
+      strikePrice?: number,
+      payoutPerPoint?: number
     ) => {
       set((state) => {
         state.loading = true;
-        state.orderInProcess = true;
       });
 
       const { fetchWallet, setPracticeBalance, getPracticeBalance } = get();
       const url = "/api/exchange/binary/order";
+      const body: any = {
+        currency,
+        pair,
+        amount,
+        side,
+        closedAt,
+        isDemo,
+        type,
+      };
+
+      if (
+        type === "HIGHER_LOWER" ||
+        type === "TOUCH_NO_TOUCH" ||
+        type === "TURBO"
+      ) {
+        body.barrier = barrier;
+      }
+      if (type === "CALL_PUT") {
+        body.strikePrice = strikePrice;
+        body.payoutPerPoint = payoutPerPoint;
+      }
+      if (type === "TURBO") {
+        body.payoutPerPoint = payoutPerPoint;
+      }
+
       const { data, error } = await $fetch({
         url,
         method: "POST",
-        body: {
-          currency,
-          pair,
-          amount,
-          side,
-          closedAt,
-          isDemo,
-          type,
-        },
+        body,
       });
 
-      if (!error) {
+      if (!error && data?.order) {
         if (isDemo) {
           const newBalance = getPracticeBalance(currency, pair) - amount;
-          setPracticeBalance(currency, pair, newBalance); // Deduct the amount from practice balance
+          setPracticeBalance(currency, pair, newBalance);
         } else {
           fetchWallet(pair);
         }
 
-        // Push the new order to openOrders
         set((state) => {
           state.openOrders.push(data.order);
         });
@@ -201,13 +211,13 @@ export const useBinaryOrderStore = create<OrderStore>()(
       });
     },
 
-    setOrders: (orders: Order[]) => {
+    setOrders: (orders: binaryOrderAttributes[]) => {
       set((state) => {
         state.orders = orders;
       });
     },
 
-    setOpenOrders: (openOrders: Order[]) => {
+    setOpenOrders: (openOrders: binaryOrderAttributes[]) => {
       set((state) => {
         state.openOrders = openOrders;
       });
@@ -216,8 +226,8 @@ export const useBinaryOrderStore = create<OrderStore>()(
     cancelOrder: async (
       id: string,
       pair: string,
-      isDemo: boolean,
-      amount: number
+      isDemo?: boolean,
+      amount?: number
     ) => {
       set((state) => {
         state.loading = true;
@@ -237,13 +247,10 @@ export const useBinaryOrderStore = create<OrderStore>()(
           );
         });
 
-        if (isDemo) {
-          setPracticeBalance(
-            pair.split("/")[0],
-            pair.split("/")[1],
-            get().getPracticeBalance(pair.split("/")[0], pair.split("/")[1]) +
-              amount
-          ); // Return the amount to practice balance
+        if (isDemo && amount) {
+          const [cur, p] = pair.split("/");
+          const currentBalance = get().getPracticeBalance(cur, p);
+          setPracticeBalance(cur, p, currentBalance + amount);
         } else {
           fetchWallet(pair);
         }
@@ -251,7 +258,6 @@ export const useBinaryOrderStore = create<OrderStore>()(
 
       set((state) => {
         state.loading = false;
-        state.orderInProcess = false;
       });
     },
 
@@ -260,7 +266,6 @@ export const useBinaryOrderStore = create<OrderStore>()(
         state.openOrders = state.openOrders.filter(
           (order) => order.id !== orderId
         );
-        state.orderInProcess = false;
       });
     },
 

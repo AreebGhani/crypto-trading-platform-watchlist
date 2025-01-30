@@ -1,6 +1,24 @@
 import * as Sequelize from "sequelize";
 import { DataTypes, Model } from "sequelize";
 
+// Interface for attributes
+export interface ecosystemMarketAttributes {
+  id: string;
+  currency: string;
+  pair: string;
+  isTrending?: boolean;
+  isHot?: boolean;
+  metadata?: string;
+  status: boolean;
+  createdAt?: Date;
+  deletedAt?: Date;
+  updatedAt?: Date;
+}
+
+// Interface for creation attributes
+export interface ecosystemMarketCreationAttributes
+  extends Partial<ecosystemMarketAttributes> {}
+
 export default class ecosystemMarket
   extends Model<ecosystemMarketAttributes, ecosystemMarketCreationAttributes>
   implements ecosystemMarketAttributes
@@ -56,13 +74,12 @@ export default class ecosystemMarket
             isJSON(value) {
               try {
                 const json = JSON.parse(value);
-                // Here, you can add specific validations for each property if necessary.
                 if (typeof json !== "object" || json === null) {
                   throw new Error("Metadata must be a valid JSON object.");
                 }
-                if (typeof json.precision !== "object")
+                if (typeof json.precision !== "object") {
                   throw new Error("Invalid precision.");
-                // Continue with other validations as needed
+                }
               } catch (err) {
                 throw new Error(
                   "Metadata must be a valid JSON object: " + err.message
@@ -112,3 +129,5 @@ export default class ecosystemMarket
   }
   public static associate(models: any) {}
 }
+
+export { ecosystemMarket as ecosystemMarket };

@@ -253,7 +253,7 @@ const FiatDepositAmountBase = ({}: FiatDepositAmountProps) => {
           {t("Enter the amount you want to deposit")}
         </p>
       </div>
-      <div className="mx-auto w-full max-w-sm space-y-5 rounded">
+      <div className="mx-auto w-full max-w-sm space-y-5 rounded-sm">
         <div>
           <Input
             type="number"
@@ -320,7 +320,7 @@ const FiatDepositAmountBase = ({}: FiatDepositAmountProps) => {
             {depositAmount < Number(selectedDepositMethod?.minAmount) &&
               !paypalLoaded && (
                 <button
-                  className="w-full flex justify-center py-4 px-4 border border-transparent text-sm font-medium rounded-3xl text-white bg-gray-400 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
+                  className="w-full flex justify-center py-4 px-4 border border-transparent text-sm font-medium rounded-3xl text-white bg-gray-400 hover:bg-gray-500 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
                   type="button"
                   disabled
                 >
@@ -330,7 +330,7 @@ const FiatDepositAmountBase = ({}: FiatDepositAmountProps) => {
           </>
         )}
 
-        <div className="mx-auto !mt-16 max-w-sm">
+        <div className="mx-auto mt-16! max-w-sm">
           <div className="flex w-full gap-4 justify-center">
             <Button
               type="button"

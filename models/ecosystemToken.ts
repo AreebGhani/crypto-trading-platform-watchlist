@@ -1,6 +1,43 @@
 import * as Sequelize from "sequelize";
 import { DataTypes, Model } from "sequelize";
 
+// Interface for attributes
+export interface ecosystemTokenAttributes {
+  id: string;
+  contract: string;
+  name: string;
+  currency: string;
+  chain: string;
+  network: string;
+  type: string;
+  decimals: number;
+  status?: boolean;
+  precision?: number;
+  limits?: {
+    deposit?: {
+      min?: number;
+      max?: number;
+    };
+    withdrawal?: {
+      min?: number;
+      max?: number;
+    };
+  };
+  fee?: {
+    min: number;
+    percentage: number;
+  };
+  icon?: string;
+  contractType: "PERMIT" | "NO_PERMIT" | "NATIVE";
+  createdAt?: Date;
+  deletedAt?: Date;
+  updatedAt?: Date;
+}
+
+// Interface for creation attributes
+export interface ecosystemTokenCreationAttributes
+  extends Partial<ecosystemTokenAttributes> {}
+
 export default class ecosystemToken
   extends Model<ecosystemTokenAttributes, ecosystemTokenCreationAttributes>
   implements ecosystemTokenAttributes
@@ -120,18 +157,10 @@ export default class ecosystemToken
         limits: {
           type: DataTypes.JSON,
           allowNull: true,
-          get() {
-            const value = this.getDataValue("limits");
-            return value ? JSON.parse(value as any) : null;
-          },
         },
         fee: {
           type: DataTypes.JSON,
           allowNull: true,
-          get() {
-            const value = this.getDataValue("fee");
-            return value ? JSON.parse(value as any) : null;
-          },
         },
         icon: {
           type: DataTypes.STRING(1000),
@@ -169,3 +198,6 @@ export default class ecosystemToken
   }
   public static associate(models: any) {}
 }
+
+
+export { ecosystemToken as ecosystemToken };

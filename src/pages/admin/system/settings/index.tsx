@@ -15,103 +15,27 @@ import InvestmentSection from "@/components/pages/admin/settings/section/Investm
 import P2PSection from "@/components/pages/admin/settings/section/P2P";
 import AffiliateSection from "@/components/pages/admin/settings/section/Affiliate";
 import SocialLinksSection from "@/components/pages/admin/settings/section/Social";
+import AnimationsSection from "@/components/pages/admin/settings/section/Animations";
 
-interface FormData {
-  floatingLiveChat: boolean;
-  tradeRestrictions: boolean;
-  binaryRestrictions: boolean;
-  forexRestrictions: boolean;
-  botRestrictions: boolean;
-  icoRestrictions: boolean;
-  mlmRestrictions: boolean;
-  walletRestrictions: boolean;
-  depositRestrictions: boolean;
-  withdrawalRestrictions: boolean;
-  ecommerceRestrictions: boolean;
-  stakingRestrictions: boolean;
-  depositExpiration: boolean;
-  fiatWallets: boolean;
-  deposit: boolean;
-  withdraw: boolean;
-  transfer: boolean;
-  logo: string | null;
-  cardLogo: string | null;
-  darkLogo: string | null;
-  fullLogo: string | null;
-  darkFullLogo: string | null;
-  appleIcon57: string | null;
-  appleIcon60: string | null;
-  appleIcon72: string | null;
-  appleIcon76: string | null;
-  appleIcon114: string | null;
-  appleIcon120: string | null;
-  appleIcon144: string | null;
-  appleIcon152: string | null;
-  appleIcon180: string | null;
-  androidIcon192: string | null;
-  favicon32: string | null;
-  favicon96: string | null;
-  favicon16: string | null;
-  msIcon144: string | null;
-  mlmSystem: "DIRECT" | "BINARY" | "UNILEVEL";
-  binaryLevels: number;
-  unilevelLevels: number;
-  facebookLink: string | null;
-  twitterLink: string | null;
-  instagramLink: string | null;
-  linkedinLink: string | null;
-  [key: string]: any;
-}
-
-const initialFormData: FormData = {
-  floatingLiveChat: false,
-  tradeRestrictions: false,
-  binaryRestrictions: false,
-  forexRestrictions: false,
-  botRestrictions: false,
-  icoRestrictions: false,
-  mlmRestrictions: false,
-  walletRestrictions: false,
-  depositRestrictions: false,
-  withdrawalRestrictions: false,
-  ecommerceRestrictions: false,
-  stakingRestrictions: false,
-  depositExpiration: false,
-  fiatWallets: false,
-  deposit: false,
-  withdraw: false,
-  transfer: false,
-  logo: null,
-  cardLogo: null,
-  darkLogo: null,
-  fullLogo: null,
-  darkFullLogo: null,
-  appleIcon57: null,
-  appleIcon60: null,
-  appleIcon72: null,
-  appleIcon76: null,
-  appleIcon114: null,
-  appleIcon120: null,
-  appleIcon144: null,
-  appleIcon152: null,
-  appleIcon180: null,
-  androidIcon192: null,
-  favicon32: null,
-  favicon96: null,
-  favicon16: null,
-  msIcon144: null,
+const initialFormData = {
+  blogPostLayout: "DEFAULT",
   mlmSystem: "DIRECT",
   binaryLevels: 2,
   unilevelLevels: 2,
-  facebookLink: null,
-  twitterLink: null,
-  instagramLink: null,
-  linkedinLink: null,
+  lottieAnimationStatus: true,
+  mobileVerificationLottieEnabled: true,
+  appVerificationLottieEnabled: true,
+  emailVerificationLottieEnabled: true,
+  loginLottieEnabled: true,
+  investmentLottieEnabled: true,
+  icoLottieEnabled: true,
+  ecommerceLottieEnabled: true,
+  affiliateLottieEnabled: true,
+  binaryLottieEnabled: true,
+  forexLottieEnabled: true,
+  investmentPlansLottieEnabled: true,
+  stakingLottieEnabled: true,
 };
-
-interface SettingsData extends FormData {
-  mlmSettings?: string;
-}
 
 interface ImageField {
   name: string;
@@ -129,15 +53,15 @@ const SystemSettings: React.FC = () => {
   const { settings, isFetched } = useDashboardStore();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [originalData, setOriginalData] = useState<FormData>(initialFormData);
-  const [changes, setChanges] = useState<Partial<FormData>>({});
+  const [formData, setFormData] = useState(initialFormData);
+  const [originalData, setOriginalData] = useState(initialFormData);
+  const [changes, setChanges] = useState({});
   const [mainTab, setMainTab] = useState<string | null>(null);
   const [shouldSave, setShouldSave] = useState(false);
   const [kycStatus, setKycStatus] = useState<boolean | null>(null);
 
-  const initializeFormData = useCallback((settings: SettingsData) => {
-    const newFormData: FormData = { ...initialFormData, ...settings };
+  const initializeFormData = useCallback((settings) => {
+    const newFormData: any = { ...initialFormData, ...settings };
     if (settings.mlmSettings) {
       try {
         const mlmSettings = JSON.parse(settings.mlmSettings);
@@ -178,8 +102,8 @@ const SystemSettings: React.FC = () => {
 
   useEffect(() => {
     if (isFetched && settings && router.isReady) {
-      initializeFormData(settings as SettingsData);
-      checkRestrictions(settings as SettingsData);
+      initializeFormData(settings);
+      checkRestrictions(settings);
     }
   }, [isFetched, settings, router.isReady, initializeFormData]);
 
@@ -205,7 +129,7 @@ const SystemSettings: React.FC = () => {
     }
   }, [shouldSave]);
 
-  const checkRestrictions = async (settings: SettingsData) => {
+  const checkRestrictions = async (settings) => {
     const restrictions = [
       settings.tradeRestrictions,
       settings.binaryRestrictions,
@@ -305,7 +229,7 @@ const SystemSettings: React.FC = () => {
             },
           };
 
-    const newSettings: SettingsData = {
+    const newSettings = {
       ...formData,
       mlmSettings: JSON.stringify(mlmSettings),
     };
@@ -337,6 +261,7 @@ const SystemSettings: React.FC = () => {
     const sectionProps = {
       formData,
       handleInputChange,
+      handleFileChange,
       handleCancel,
       handleSave,
       hasChanges,
@@ -350,14 +275,10 @@ const SystemSettings: React.FC = () => {
         return <RestrictionsSection {...sectionProps} kycStatus={kycStatus} />;
       case "WALLET":
         return <WalletSection {...sectionProps} />;
+      case "ANIMATIONS":
+        return <AnimationsSection {...sectionProps} />;
       case "LOGOS":
-        return (
-          <LogosSection
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleFileChange={handleFileChange}
-          />
-        );
+        return <LogosSection {...sectionProps} />;
       case "INVEST":
         return <InvestmentSection {...sectionProps} />;
       case "P2P":
@@ -375,7 +296,7 @@ const SystemSettings: React.FC = () => {
 
   return (
     <Layout title={t("System Settings")} color="muted">
-      <main className="mx-auto max-w-7xl">
+      <main className="mx-auto">
         <div className="mb-12 flex items-center justify-between">
           <h2 className="font-sans text-2xl font-light leading-[1.125] text-muted-800 dark:text-muted-100">
             {t("Settings")}

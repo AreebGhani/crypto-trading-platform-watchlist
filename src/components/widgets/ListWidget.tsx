@@ -5,7 +5,7 @@ interface ListWidget extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   children: React.ReactNode;
   color?: "default" | "contrast" | "muted" | "mutedContrast";
-  shape?: "straight" | "rounded" | "smooth" | "curved" | "straight";
+  shape?: "straight" | "rounded-sm" | "smooth" | "curved" | "straight";
 }
 
 const ListWidget: FC<ListWidget> = ({

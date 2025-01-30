@@ -5,7 +5,7 @@ import { Icon, type IconifyIcon } from "@iconify/react";
 import { useTranslation } from "next-i18next";
 
 export const navItemBaseStyles =
-  "hover:bg-muted-100 hover:text-primary-500 dark:hover:bg-muted-800 leading-6 text-muted-500 dark:text-muted-400 relative flex cursor-pointer items-center gap-1 rounded-lg py-2 px-3";
+  "hover:bg-muted-100 hover:text-primary-500 dark:hover:bg-muted-800 leading-6 text-muted-500 dark:text-muted-400 relative flex cursor-pointer items-center gap-1 rounded-lg py-2.5 px-2";
 
 interface NavbarItemProps
   extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "className"> {

@@ -8,6 +8,7 @@ import {
   unauthorizedResponse,
 } from "@b/utils/query";
 import { basePostSchema } from "../utils";
+import { Op } from "sequelize";
 
 export const metadata: OperationObject = {
   summary: "Retrieves a single blog post by ID",
@@ -47,11 +48,13 @@ export const metadata: OperationObject = {
 };
 
 export default async (data: Handler) => {
-  return await getPost(data.params.slug);
+  const { params } = data;
+  const { slug } = params;
+  return await getPost(slug);
 };
 
 export async function getPost(slug: string): Promise<any | null> {
-  return await models.post.findOne({
+  const post = await models.post.findOne({
     where: { slug },
     include: [
       {
@@ -97,4 +100,39 @@ export async function getPost(slug: string): Promise<any | null> {
       },
     ],
   });
+
+  if (!post) {
+    return null; // If the post is not found, return null
+  }
+
+  // Fetch related articles (e.g., articles in the same category or with the same tags)
+  const relatedArticles = await models.post.findAll({
+    where: {
+      id: {
+        [Op.ne]: post.id, // Exclude the current post
+      },
+      categoryId: post.categoryId, // Match the category
+    },
+    limit: 5, // Limit to 5 related articles
+    order: [["createdAt", "DESC"]], // Order by recent articles
+    attributes: ["id", "title", "slug", "image", "createdAt"],
+    include: [
+      {
+        model: models.author,
+        as: "author",
+        include: [
+          {
+            model: models.user,
+            as: "user",
+            attributes: ["firstName", "lastName"],
+          },
+        ],
+      },
+    ],
+  });
+
+  return {
+    ...post.toJSON(),
+    relatedArticles,
+  };
 }

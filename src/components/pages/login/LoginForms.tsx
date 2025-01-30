@@ -95,7 +95,7 @@ const LoginFormsBase = () => {
           <div className="text-sm leading-5">
             <Link
               href="/forgot"
-              className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-none"
+              className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-hidden"
             >
               {t("Forgot your password")}
             </Link>
@@ -122,7 +122,7 @@ const LoginFormsBase = () => {
         <span>{t("Need an account")}</span>
         <Link
           href="/register"
-          className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-none"
+          className="font-medium text-primary-600 underline-offset-4 transition duration-150 ease-in-out hover:text-primary-500 hover:underline focus:underline focus:outline-hidden"
         >
           {t("Create an account")}
         </Link>

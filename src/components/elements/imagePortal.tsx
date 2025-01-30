@@ -11,7 +11,7 @@ const ImagePortal = ({ src, onClose }) => {
     <div
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
       onClick={onClose}
-      style={{ backdropFilter: "blur(5px)" }}
+      style={{ backdropFilter: "blur-sm(5px)" }}
     >
       <div
         className="rounded-lg shadow-lg overflow-hidden"

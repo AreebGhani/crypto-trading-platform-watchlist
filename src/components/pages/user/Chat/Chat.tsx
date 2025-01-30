@@ -139,10 +139,7 @@ const ChatBase = ({
         </div>
 
         {canReply && (
-          <div
-            className="absolute bottom-4 w-full z-10 px-4"
-            style={{ width: `${containerWidth}px` }}
-          >
+          <div className="absolute bottom-4 w-full z-10 px-4">
             {showScrollToBottomButton && (
               <div className="w-full flex justify-center">
                 <IconButton
@@ -157,52 +154,50 @@ const ChatBase = ({
                 </IconButton>
               </div>
             )}
-            <Card className="flex items-stretch">
-              <div className="relative w-full transition-all duration-300">
-                <Textarea
-                  id="compose-reply"
-                  className={`!border-none !border-transparent !bg-transparent !leading-8 !shadow-none transition-all duration-300 ${
-                    expanded ? "h-[175px]" : "h-12 overflow-hidden !resize-none"
-                  }`}
-                  rows={4}
-                  placeholder={t("Write a message...")}
-                  onFocus={() => setExpanded(true)}
-                  onBlur={handleTextareaBlur}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                />
-                <div className="flex gap-2 items-center justify-end absolute z-5 end-2 top-2 overflow-hidden">
-                  <IconButton
-                    color={"info"}
-                    variant="pastel"
-                    shape="rounded"
-                    disabled={isReplying}
-                  >
-                    <input
-                      id="upload-attachments"
-                      className="absolute start-0 top-0 z-[1] h-full w-full opacity-0"
-                      type="file"
-                      accept="image/*,.heic,.heif" // Add HEIC and HEIF explicitly
-                      onChange={(e) => handleFileUpload(e.target.files?.[0])}
-                    />
-                    <Icon
-                      icon="material-symbols-light:upload"
-                      className="relative h-6 w-6 p-0"
-                    />
-                  </IconButton>
-                  <IconButton
-                    color={message ? "primary" : "muted"}
-                    variant="pastel"
-                    shape="rounded"
-                    disabled={!message || isReplying}
-                    onClick={onClickSend}
-                  >
-                    <Icon
-                      icon="fluent:send-24-filled"
-                      className="relative -end-0.5 h-5 w-5 p-0"
-                    />
-                  </IconButton>
-                </div>
+            <Card className="relative w-full transition-all duration-300">
+              <Textarea
+                id="compose-reply"
+                className={`!border-none !border-transparent !bg-transparent !leading-8 !shadow-none transition-all duration-300 field-sizing-content -mb-2`}
+                rows={4}
+                placeholder={t("Write a message...")}
+                onFocus={() => setExpanded(true)}
+                onBlur={handleTextareaBlur}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <div className="flex gap-1.5 items-center justify-end absolute z-5 right-2 top-1.5 overflow-hidden">
+                <IconButton
+                  color={"info"}
+                  variant="pastel"
+                  shape="rounded"
+                  size={"sm"}
+                  disabled={isReplying}
+                >
+                  <input
+                    id="upload-attachments"
+                    className="absolute left-0 top-0 z-1 h-full w-full opacity-0"
+                    type="file"
+                    accept="image/*,.heic,.heif"
+                    onChange={(e) => handleFileUpload(e.target.files?.[0])}
+                  />
+                  <Icon
+                    icon="material-symbols-light:upload"
+                    className="relative h-6 w-6 p-0"
+                  />
+                </IconButton>
+                <IconButton
+                  color={message ? "primary" : "muted"}
+                  variant="pastel"
+                  shape="rounded"
+                  size={"sm"}
+                  disabled={!message || isReplying}
+                  onClick={onClickSend}
+                >
+                  <Icon
+                    icon="fluent:send-24-filled"
+                    className="relative -right-0.5 h-5 w-5 p-0"
+                  />
+                </IconButton>
               </div>
             </Card>
           </div>

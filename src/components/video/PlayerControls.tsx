@@ -44,7 +44,7 @@ const PlayerControls: FC<PlayerControlsProps> = ({
   return (
     <div
       ref={controlRef}
-      className="group/react-slider absolute inset-0 z-[1] flex flex-col justify-between bg-muted-900/60"
+      className="group/react-slider absolute inset-0 z-1 flex flex-col justify-between bg-muted-900/60"
     >
       <div className="hidden md:flex items-center justify-between px-8 py-6">
         <div>
@@ -136,7 +136,7 @@ const PlayerControls: FC<PlayerControlsProps> = ({
                   onNext?.();
                 }}
               >
-                <Icon icon="iconamoon:player-end-fill" className="h-4 w-4" />
+                <Icon icon="iconamoon:player-right-fill" className="h-4 w-4" />
               </button>
             </div>
             <div className="relative">

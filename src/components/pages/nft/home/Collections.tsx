@@ -27,7 +27,7 @@ const TopCollections: React.FC = () => {
             <Link
               key={collection.id}
               href={`/nft/collection/${collection.id}`}
-              className="flex items-center justify-between py-4 px-4 border-b border-muted-300 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-700 transition rounded-sm"
+              className="flex items-center justify-between py-4 px-4 border-b border-muted-300 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-700 transition rounded-xs"
             >
               {/* Left Section with Rank, Image, and Name */}
               <div className="flex items-center space-x-4">

@@ -46,10 +46,10 @@ export default function PasswordReset() {
       <main className="relative min-h-screen">
         <MinimalHeader />
         <div className="flex min-h-screen flex-col items-stretch justify-between">
-          <div className="flex flex-grow items-center px-6 py-12 md:px-12">
+          <div className="flex grow items-center px-6 py-12 md:px-12">
             <div className="container">
               <div className="columns flex items-center">
-                <div className="flex-shrink flex-grow md:p-3">
+                <div className="shrink grow md:p-3">
                   <div className="mx-auto -mt-10 mb-6 max-w-[420px] text-center font-sans">
                     <h1 className="mb-2 text-center font-sans text-3xl font-light leading-tight text-muted-800 dark:text-muted-100">{`${t(
                       "Reset Password"

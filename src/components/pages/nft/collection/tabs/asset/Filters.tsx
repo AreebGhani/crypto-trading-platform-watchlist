@@ -3,7 +3,7 @@ import Select from "@/components/elements/form/select/Select";
 import Input from "@/components/elements/form/input/Input";
 import IconButton from "@/components/elements/base/button-icon/IconButton";
 import { Icon } from "@iconify/react";
-import { AnimatedTooltip } from "@/components/elements/base/tooltips/AnimatedTooltip";
+import { Tooltip } from "@/components/elements/base/tooltips/Tooltip";
 
 interface FiltersProps {
   listingType: string;
@@ -48,11 +48,11 @@ const Filters: React.FC<FiltersProps> = ({
         label="Max. value"
       />
 
-      <AnimatedTooltip content="Filter">
+      <Tooltip content="Filter">
         <IconButton onClick={onFilter}>
           <Icon icon="mdi:filter" />
         </IconButton>
-      </AnimatedTooltip>
+      </Tooltip>
     </div>
   );
 };
